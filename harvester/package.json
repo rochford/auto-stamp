@@ -1,0 +1,22 @@
+{
+  "name": "stamp-stats",
+  "description": "Stamp statistics",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "APP_ID='timothyr-d52c-4a86-a74a-87858b5b8ebf' MONGO_SERVER_URL='mongodb://localhost:27017/test' node app.js"
+  },
+  "dependencies": {
+    "express": "4.10.7",
+    "jade": "^1.8.2",
+    "mongojs": "^0.18.0",
+    "npm": "^2.1.18",
+    "request": "^2.58.0",
+    "sentiment": "^1.0.2",
+    "stats-lite": "^1.0.3",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {
+    "mockery": "^1.4.0"
+  }
+}

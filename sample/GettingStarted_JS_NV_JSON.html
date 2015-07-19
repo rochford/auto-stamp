@@ -1,0 +1,612 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta name="AUTHOR" content="eBay API Documentation Team">
+<link rel="StyleSheet" href="API.css" type="text/css">
+<link rel="StyleSheet" href="ss-styles.css" type="text/css">
+<link rel="StyleSheet" href="ss-print.css" type="text/css" media="print">
+<link rel="StyleSheet" href="task.css" type="text/css">
+
+<title>Getting Started with the Finding API: Finding Items by Keywords</title>
+
+</head>
+<body>
+
+<nosearch>
+<!-- BEGIN WEBSIDESTORY CODE v3.0.0 (pro-no10)-->
+<!-- COPYRIGHT 1997-2003 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT No. 6,393,479 B1. Privacy notice at: http://websidestory.com/privacy -->
+<script language="javascript">
+var _pn="PUT+PAGE+NAME+HERE"; //page name(s)
+var _mlc="Documentation"; //multi-level content category
+var _cp="null"; //campaign
+var _acct="WR57061898MF01EN3"; //account number(s)
+var _pndef="title"; //default page name
+var _ctdef="full"; //default content category
+var _prc=""; //commerce price
+var _oid=""; //commerce order
+var _dlf=""; //download filter
+var _elf=""; //exit link filter
+var _epg=""; //event page identifier
+var _mn="wp180"; //machine name
+var _gn="phg.hitbox.com"; //gateway name
+</script><script language="javascript1.1" defer
+src="http://stats.hitbox.com/js/hbp-11up.js"></script><script
+language="javascript">if(navigator.appName!='netscape'&&navigator.
+appVersion.toString().charAt(0)!='3')document.write("<\!"+"--");//"</script><noscript>
+<img src="http://phg.hitbox.com/HG?hc=wp180&cd=1&hv=6&ce=u&hb=WR57061898MF01EN3&n=PUT+PAGE+NAME+HERE&vcon=CONTENT+CATEGORY" border='0' width='1' height='1>'
+</noscript><!--//-->
+
+<!-- END WEBSIDESTORY CODE  -->
+</nosearch>
+
+<a name="top"></a>
+<!-- Portal Top -->
+<div id="header">
+ <div class="pcontent">
+  <div id="gnheader" class="gbhdr">
+   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody>
+     <tr>
+      <td>
+       <div id="dynamicmenu-hdrCtr" class="hdrCtr">
+        <!-- Page Header Container -->
+        <div class="pageHeader">
+         <a rel="nofollow" id="logo" href="http://developer.ebay.com">
+          <img src="i/logoEbayDev_x45_ss.gif" alt="Tap into the largest e-commerce opportunity in the world" border="0" height="48" width="203">
+         </a>
+         <!-- Page Title -->
+          <h1 class="title">
+           <span class="title">eBay Finding API</span><br>
+           <span class="subtitle">Tutorial</span>
+          </h1>
+         <!-- End Page Title-->
+        </div>
+        <!-- End Page Header Container -->
+        <!-- Start Global Top Nav -->
+        <div class="topNav" align="right" style="padding: 0 0 5px 0;">
+         <a href="http://developer.ebay.com/support/">Support</a>
+          &nbsp;&nbsp;&nbsp;
+         <a href="http://developer.ebay.com/DevZone/support/knowledgebase/">Knowledge Base</a>
+          &nbsp;&nbsp;&nbsp;
+         <a href="http://developer.ebay.com/community/forums/">Forums</a>
+          &nbsp;&nbsp;&nbsp;
+         <a href="http://developer.ebay.com/support/docs/tutorials/">All Tutorials</a>
+          &nbsp;&nbsp;&nbsp;
+         <a href="http://developer.ebay.com/community/featured_projects/?name=Code+Samples+Project">All Code Samples</a>
+        </div>
+        <!-- End Global Top Nav -->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+         <tbody>
+          <tr>
+           <td class="brnd1"></td>
+           <td class="brnd2"></td>
+           <td class="brnd3"></td>
+           <td class="brnd4"></td>
+           <td class="brnd5"></td>
+           <td class="brnd6"></td>
+           <td class="brnd7"></td>
+          </tr>
+          <tr>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+           <td class="brnd8"></td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="snav">
+         <div class="snavE">
+          <div class="snavW">
+           <ul id="mainSubNav">
+            <li><a href="../../Concepts/FindingAPIGuide.html">Users Guide</a></li>
+            <li><a href="../../CallRef/index.html">Call Reference</a></li>
+            <li><a href="../../Concepts/MakingACall.html">Making a Call</a></li>
+            <li><a href="../index.html">Tutorials</a></li>
+            <li><a href="../../ReleaseNotes.html">Release Notes</a></li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+ </div>
+  <br>
+</div>
+<!-- Portal Bottom -->
+
+
+<a name="_top_"></a>
+<h1>Getting Started with the Finding API: Finding Items by Keywords</h1>
+
+<p>This tutorial shows how easy it is to use the eBay Finding API. The tutorial shows you how to build a simple JavaScript application that submits a <b class="con">findItemsByKeywords</b> call to search for eBay listings based on a keyword query. The code constructs a URL-format HTTP GET call that returns the results in JSON callback format. The code parses the response and constructs a simple HTML page that shows the results of the search.</p>
+
+<p>When you complete the tutorial, you'll have an application that looks like this when it runs:</p>
+
+<p><img src="GettingStarted_JS_NV_JSON.jpg" alt="Getting Started with the Finding API" width="689" height="471" border="0"></p>
+
+<p>For notes about the tutorial, additional resources, and suggestions for next steps, please see <a href="#next">Notes and Next Steps</a>. </p>
+<br><br>
+
+
+<a name="toc"></a>
+<h1>What's in this Tutorial</h1>
+
+<p>This tutorial contains the following sections:</p>
+
+<!-- Update steps in link list for tutorial -->
+<ul>
+<li><a href="#code"><strong>Complete Source Code</strong></a></li>
+<li><a href="#prereq"><strong>Before You Begin</strong></a></li>
+<li><a href="#step1"><strong>Step 1: Set up the API call</strong></a></li>
+<li><a href="#step2"><strong>Step 2: Add code to parse and display the call response</strong></a></li>
+<li><a href="#step3"><strong>Step 3: Insert an indexed array of item filters</strong></a></li>
+<li><a href="#step4"><strong>Step 4: Run the code</strong></a></li>
+<li><a href="#next"><strong>Notes and Next Steps</strong></a></li>
+<li><a href="#comments"><strong>User-Contributed Notes</strong></a></li>
+</ul>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="code"></a>
+<h1>Complete Source Code</h1>
+
+<p>The completed code is provided as a downloadable ZIP file, <a href="http://developer.ebay.com/DevZone/finding/HowTo/GettingStarted_JS_NV_JSON/GettingStarted_JS_NV_JSON.zip">GettingStarted_JS_NV_JSON.zip</a>. You must replace instances of "MyAppID" in the tutorial code with your production AppID. </p>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="prereq"></a>
+<h1>Before You Begin</h1>
+
+<p>There are a few prerequisites for completing this tutorial:</p>
+
+<ul>
+<li><a href="http://developer.ebay.com/join" target="_blank">Join the eBay Developers Program</a> and get your Access Keys.
+
+<p>Joining is free and you get 5,000 API calls a day just for joining! When you generate your application keys from your <a href="https://developer.ebay.com/DevZone/account/Default.aspx" target="_blank">My Account page</a>, note your Production AppID so you can substitute it in this tutorial where it says "MyAppID." This tutorial uses production data.</p></li>
+
+<li>Install <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server</a>.
+
+<p>Apache HTTP Server is a popular web server, capable of running JavaScript applications. Apache is easy to install and configure. The steps in this tutorial are written with the assumption you are using Apache. JavaScript is, however, compatible with most popular servers, so Apache is not strictly required. The tutorial code should run on any web server configured to support JavaScript.</p></li>
+
+</ul>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step1"></a>
+<h1>Step 1: Set up the API call</h1>
+
+<p>This step sets up the basic JavaScript code to construct the API request and the HTML code for displaying the results. </p>
+
+<p>To create the initial code for your Finding API call:</p>
+
+<ol>
+<li><b>Create a new HTML file, MySample.html, with the following code. </b>
+
+<p>Save the file as <code>MySample.html</code> in the DocumentRoot directory of your Apache installation (e.g., <code>C:\Program Files\Apache Software Foundation\Apache2.2\htdocs</code>). The file includes the JavaScript container (<code>&lt;script&gt; ... &lt;/script&gt;</code>) where you'll add the code to make an API request and parse the response. It also includes the basic HTML code for the page. </p>
+
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;eBay Search Results&lt;/title&gt;
+&lt;style type="text/css"&gt;body { font-family: arial,sans-serif;} &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;eBay Search Results&lt;/h1&gt;
+
+&lt;script&gt;
+
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br>
+</li>
+
+<li><b>Plan the values for the <b class="con">findItemsByKeywords</b> input parameters.</b>
+<br><br>
+
+<table class="indent">
+<tr>
+<th width="25%">Standard Parameter&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th width="25%">Sample value</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>OPERATION-NAME</td>
+<td>findItemsByKeywords</td>
+<td>The name of the call you are using. This is hard-coded to <code>findItemsByKeywords</code> in the following step.</td>
+</tr>
+<tr>
+<td>SERVICE-VERSION</td>
+<td>1.0.0</td>
+<td>The API version your application supports.</td>
+</tr>
+<tr>
+<td>SECURITY-APPNAME</td>
+<td>MyAppID</td>
+<td>The AppID you obtain by <a href="http://developer.ebay.com/join" target="_blank">joining the
+eBay Developers Program</a>. </td>
+</tr>
+<tr>
+<td>GLOBAL-ID</td>
+<td>EBAY-US</td>
+<td>The eBay site you want to search. For example, the eBay US site (<code>EBAY-US</code>) or the eBay Germany site (<code>EBAY-DE</code>).</td>
+</tr>
+<tr>
+<td>RESPONSE-DATA-FORMAT</td>
+<td>JSON</td>
+<td>The format of the call response. This tutorial works with a JSON response with "padding" (JSONP) that is executed as callback function in the tutorial app.</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>_cb_findItemsByKeywords</td>
+<td>The name of the padding (prefix) used to wrap the JSON response. This value corresponds to the callback function used in the tutorial for parsing the JSON response.</td>
+</tr>
+<tr>
+<td>REST-PAYLOAD</td>
+<td>N/A</td>
+<td>This parameter separates the standard headers from the payload part of the URL. It takes no argument.</td>
+</tr>
+</table>
+<br>
+
+<table class="indent">
+<tr>
+<th width="25%">Call-Specific Parameter</th>
+<th width="25%">Sample value</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>keywords</td>
+<td>harry%20potter</td>
+<td>The string of words you want to match with eBay item information, such as titles. The string must be URL-encoded. If you set keywords as a variable, you could use the <code>encodeURI()</code> JavaScript function to create an internet-safe string.</td>
+</tr>
+<tr>
+<td>paginationInput.entriesPerPage</td>
+<td>3</td>
+<td>The maximum number of items to return in the response. This is hard-coded as 3 in the following step.</td>
+</tr>
+</table>
+<br></li>
+
+<li><b>Add the code to construct the API request.</b>
+
+<p>Add the following JavaScript code inside the script tags (<code>&lt;script&gt; ... &lt;/script&gt;</code>). This code contains the input parameters from the step above, including the keyword query and your AppID (you must replace "MyAppID" your production AppID).</p>
+
+<p>After <code>MySample.html</code> is complete, the JavaScript program makes a <b class="con">findItemsByKeywords</b> call when a user opens the file.</p>
+
+<pre>
+// Construct the request
+// Replace MyAppID with your Production AppID
+var url = "http://svcs.ebay.com/services/search/FindingService/v1";
+    url += "?OPERATION-NAME=findItemsByKeywords";
+    url += "&SERVICE-VERSION=1.0.0";
+    url += "&SECURITY-APPNAME=MyAppID";
+    url += "&GLOBAL-ID=EBAY-US";
+    url += "&RESPONSE-DATA-FORMAT=JSON";
+    url += "&callback=_cb_findItemsByKeywords";
+    url += "&REST-PAYLOAD";
+    url += "&keywords=harry%20potter";
+    url += "&paginationInput.entriesPerPage=3";
+</pre>
+<br>
+</li>
+
+<li><b>Replace <code>MyAppID</code> in the URL request code with your Production AppID.</b>
+
+<table class="indent">
+<tbody><tr>
+<td class="notebox"><b>Important: </b>This tutorial uses the production endpoint for the Finding API, so you must use your production AppID for the application to work. Retrieve your AppID from your <a href="https://developer.ebay.com/DevZone/account/Default.aspx" target="_blank">My Account page</a>. The request will fail if a Sandbox AppID is used.</td>
+</tr>
+</tbody></table>
+
+<p>In the <code>url</code> variable added in the preceding step, replace the "MyAppID" value with your production AppID. </p>
+
+<pre>
+    url += "&SECURITY-APPNAME=<b>MyAppID</b>";
+</pre>
+</li>
+
+<li><b>Save the <code>MySample.html</code> file.</b>
+</li>
+</ol>
+
+<p>The tutorial code is not yet ready to run. Proceed to the next step to add the code that submits the API request and parses the response.</p>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step2"></a>
+<h1>Step 2: Add code to parse and display the call response</h1>
+
+<p>In this step you will add code to parse and then display the items returned by the request constructed in the last section.</p>
+
+<ol>
+<li><b>Add the HTML div tag to display the search results.</b>
+
+<p>This added div tag will be dynamically updated by the <code>_cb_findItemsByKeywords()</code> function added in the following steps. When the <code>_cb_findItemsByKeywords()</code> function runs, it inserts an HTML table of search results in the div tag.</p>
+
+<p>Add the following HTML code just after the HTML heading (<code>&lt;h1&gt; ... &lt;/h1&gt;</code>). </p>
+
+<pre>
+&lt;div id="results"&gt;&lt;/div&gt;
+</pre>
+</li>
+
+
+<li><b>Add a Javascript function matching the callback name in the URL request from the previous section.</b>
+
+<p>This added function will parse the JSON response and construct the HTML for displaying search results. The function name, <code>_cb_findItemsByKeywords</code>, matches the callback name specified in the request (<code>&amp;callback=_cb_findItemsByKeywords</code>). The callback parameter in the request specifies that the JSON response will be wrapped in a function call. When the tutorial script loads, the "callback" function (<code>_cb_findItemsByKeywords</code>) embedded in <code>MySample.html</code> is called with the JSON response as the parameter.</p>
+
+<p>Add the following code just after the opening script tag (<code>&lt;script&gt;</code>).</p>
+
+<pre>
+// Parse the response and build an HTML table to display search results
+function _cb_findItemsByKeywords(root) {
+}  // End _cb_findItemsByKeywords() function
+</pre>
+</li>
+
+<li><b>Inside the <code>_cb_findItemsByKeywords</code> function, add the code to parse the JSON response and build the HTML table to display the search results.</b>
+
+<p>The following JavaScript code creates an HTML table. The code loops through the array of items in the search results, adding a new row to the table for each item. Each row consists of the item's gallery image and title. The title links to the item's View Item page.</p>
+
+<p>The <code>getElementById("results")</code> method accesses the div tag with the specified ID (<code>id="results"</code>). The <code>innerHTML()</code> method sets the HTML contents of the div tag to the HTML table. The <code>html.join()</code> method joins all the pieces of the <code>html</code> variable to construct the HTML table used by the <code>innerHTML()</code> method.</p>
+
+<p>Add the following code inside the curly braces ("<code>{ }</code>") of the <code>_cb_findItemsByKeywords</code> function added in the preceding step.</p>
+
+<pre>
+  var items = root.findItemsByKeywordsResponse[0].searchResult[0].item || [];
+  var html = [];
+  html.push('&lt;table width="100%" border="0" cellspacing="0" cellpadding="3"&gt;&lt;tbody&gt;');
+  for (var i = 0; i &lt; items.length; ++i) {
+    var item     = items[i];
+    var title    = item.title;
+    var pic      = item.galleryURL;
+    var viewitem = item.viewItemURL;
+    if (null != title && null != viewitem) {
+      html.push('&lt;tr&gt;&lt;td&gt;' + '&lt;img src="' + pic + '" border="0"&gt;' + '&lt;/td&gt;' + 
+      '&lt;td&gt;&lt;a href="' + viewitem + '" target="_blank"&gt;' + title + '&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;');
+    }
+  }
+  html.push('&lt;/tbody&gt;&lt;/table&gt;');
+  document.getElementById("results").innerHTML = html.join("");
+</pre>
+</li>
+
+<li><b>Add code to automatically submit the call request.</b>
+
+<p>This code creates a <code>script</code> element in the body of the HTML document with a <code>src</code> attribute set to the value of the <code>url</code> variable added in the previous section (i.e., <code>&lt;script src="http://svcs.ebay.com/servic..."&gt;</code>). This script runs automatically, making the <b class="con">findItemsByKeywords</b> call everytime the page is loaded.</p>
+
+<p>Add the following code just after the last line of the <code>url</code> variable (<code>url&nbsp;+=&nbsp;"&paginationInput.entriesPerPage=3";</code>).</p>
+
+<pre>
+// Submit the request 
+s=document.createElement('script'); // create script element
+s.src= url;
+document.body.appendChild(s);
+</pre>
+</li>
+
+<li><b>Save the <code>MySample.html</code> file.</b> </li>
+</ol>
+
+<p>This file is now runnable, but we're not done yet. Skip ahead to <a href="#step4">Step 4</a> to see what it looks like, or proceed to the next step to add item filters to the request.</p>
+
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step3"></a>
+<h1>Step 3: Insert an indexed array of item filters</h1>
+
+<p>This step adds code to add item filters to your request. Whenever you use repeating fields in a URL-format request, you must index the fields for them to be properly processed. The code consists primarily of an array for item filter values and a function for indexing the array for use in the URL request.</p>
+
+<p>This step is optional. Item filters are not required, but they improve search accuracy. </p>
+
+<ol>
+<li><b>Add a JavaScript array for item filters.</b>
+<p>This array contains three item filters: MaxPrice, FreeShippingOnly, and ListingType.</p>
+
+<p>Add the following JavaScript array after the last line of the <code>_cb_findItemsByKeywords()</code> function, which is marked with a comment  (<code>//&nbsp;End&nbsp;_cb_findItemsByKeywords...</code>). </p>
+
+<pre>
+// Create a JavaScript array of the item filters you want to use in your request
+var filterarray = [
+  {"name":"MaxPrice", 
+   "value":"25", 
+   "paramName":"Currency", 
+   "paramValue":"USD"},
+  {"name":"FreeShippingOnly", 
+   "value":"true", 
+   "paramName":"", 
+   "paramValue":""},
+  {"name":"ListingType", 
+   "value":["AuctionWithBIN", "FixedPrice", "StoreInventory"], 
+   "paramName":"", 
+   "paramValue":""},
+  ];
+</pre>
+</li>
+
+<li><b>Declare a global variable for the item filter you will construct in this section.</b>
+<p>The following JavaScript code defines <code>urlfilter</code> as a new global variable. We will add code to give this variable a value in the next step.</p>
+
+<p>Add the following code directly after the <code>filterarry</code> variable added in the preceding step (<code>var filterarray = [ ... ];</code>).</p>
+
+<pre>
+// Define global variable for the URL filter
+var urlfilter = "";
+</pre>
+</li>
+
+<li><b>Add a function to build an indexed item filter array for use with a URL request.</b>
+
+<p>This function parses the item filter array, formats the filters as indexed URL parameters, and assigns their collective value to a variable, <code>urlfilter</code>.</p>
+
+<p>Add the following JavaScript code directly after the <code>urlfilter</code> variable definition added in the preceding step (<code>var&nbsp;urlfilter = "";</code>). </p>
+
+<pre>
+// Generates an indexed URL snippet from the array of item filters
+function  buildURLArray() {
+  // Iterate through each filter in the array
+  for(var i=0; i&lt;filterarray.length; i++) {
+    //Index each item filter in filterarray
+    var itemfilter = filterarray[i];
+    // Iterate through each parameter in each item filter
+    for(var index in itemfilter) {
+      // Check to see if the paramter has a value (some don't)
+      if (itemfilter[index] !== "") {
+        if (itemfilter[index] instanceof Array) {
+          for(var r=0; r&lt;itemfilter[index].length; r++) {
+          var value = itemfilter[index][r];
+          urlfilter += "&itemFilter\(" + i + "\)." + index + "\(" + r + "\)=" + value ;
+          }
+        } 
+        else {
+          urlfilter += "&itemFilter\(" + i + "\)." + index + "=" + itemfilter[index];
+        }
+      }
+    }
+  }
+}  // End buildURLArray() function
+
+// Execute the function to build the URL filter
+buildURLArray(filterarray);
+</pre>
+</li>
+
+<li><b>Append the indexed item filters to the end of the code used to construct the API call. </b>
+
+<p>Add the following line to the end of the <code>url</code> variable, directly after the line that adds pagination to the call (<code>url&nbsp;+=&nbsp;"&paginationInput.entriesPerPage=3";</code>). </p>
+
+<pre>
+    url += urlfilter;
+</pre>
+</li>
+
+<li><b>Save the <code>MySample.html</code> file.</b> </li>
+</ol>
+
+<p>The <code>MySample.html</code> file is complete! Proceed to the next step to see the results.</p>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step4"></a>
+<h1>Step 4: Run the code</h1>
+
+<p><b></b> Open the file in a browser (<a href="http://localhost/MySample.html" target="_blank">http://localhost/MySample.html</a>).</p>
+
+<p>The result should look similar to the following:</p>
+
+<p><img src="GettingStarted_JS_NV_JSON.jpg" alt="Getting Started with the Finding API" width="689" height="471" border="0"></p>
+
+<p>Congratulations! You have used the eBay Finding API to search for items on eBay and to display the search results to a user.</p>
+
+<p>For information about the business benefits of using the eBay Developers Program and for other important information, please see the <a href="http://developer.ebay.com/businessbenefits/" target="_blank">Business Benefits page</a>.</p>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="next"></a>
+<h1>Notes and Next Steps</h1>
+
+<p>This section contains notes about the tutorial and suggestions.</p>
+
+<h2>eBay Partner Network (eBay Affiliate Program)</h2>
+
+<p>You can <strong>earn money with the eBay Partner Network (eBay Affiliate Program)</strong>! Send users to eBay, and earn money for new active users (ACRUs) and successful transactions. For more information, visit the <a href="https://www.ebaypartnernetwork.com" target="_blank">eBay Partner Network</a>. This tutorial contains affiliate-related code. The code is commented-out because affiliate functionality is not available in the Sandbox environment. </p>
+
+<p>For information about the URL parameters for affiliate tracking, see the <a href="http://developer.ebay.com/DevZone/finding/Concepts/FindingAPIGuide.html#useaffiliate">Affiliate Tracking</a> section in the eBay Finding API Users Guide.</p>
+
+
+<h2>About the Application</h2>
+
+<p>The sample provided with this tutorial was built and tested on a Windows platform using Apache 2.2.4 for Windows.</p>
+
+<h2>About the Call</h2>
+
+<p>This tutorial is based on the <b class="con">findItemsByKeywords</b> call. See <a href="http://developer.ebay.com/DevZone/finding/CallRef/findItemsByKeywords.html"><b class="con">findItemsByKeywords</b></a> in the <i>Call Reference</i> for descriptions of all the input and output parameters, call samples, and other information. </p>
+
+<p>If you want your application to display the assembled URL request that is being sent to eBay, add the following JavaScript code just before the closing script tag (i.e., &lt;/script&gt;):</p>
+
+<pre class="indent">
+// Display the request as a clickable link for testing
+document.write("&lt;a href=\"" + url + "\"&gt;" + url + "&lt;/a&gt;");
+</pre>
+
+<p>You can adapt this tutorial code to other Finding API calls easily by changing the value of <code>OPERATION-NAME</code> to the call you want to use. Note that <b class="con">findItemsByCategory</b> and <b class="con">findItemsByProduct</b> do not support <b class="con">keywords</b> as input.</p>
+
+<h2>What's Next</h2>
+
+<p>Here are some suggestions for ways you could modify or extend the tutorial code to learn more about the API and create a more interesting application:</p>
+
+<ul>
+<li>Change the keywords in your query to see how the output is effected</li>
+<li>Modify the application to display additional fields</li>
+<li>Try different input parameters, such as <b class="con">sortOrder</b>, to control the results</li>
+<li>Add more, or different, item filters</li>
+<li>Programmatically populate the item filter array from UI interaction</li>
+<li>Adapt the item filter array and the array indexing function for use with aspect filters</li>
+</ul>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<a name="AdditionalResources"></a>
+<h2>Additional Resources</h2>
+
+  <p>More information about the eBay Finding API is available at these locations:</p>
+
+<ul>
+  <li><a href="http://developer.ebay.com/DevZone/finding/CallRef/index.html" target="_blank">Call Reference</a></li>
+  <li><a href="http://developer.ebay.com/DevZone/finding/Concepts/FindingAPIGuide.html" target="_blank">Users Guide</a></li>
+  <li><a href="http://developer.ebay.com/DevZone/finding/Concepts/MakingACall.html" target="_blank">Making an API Call</a></li>
+</ul>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+
+<a name="comments"></a>
+<h1>User-Contributed Notes</h1>
+
+<p>Share tips or code samples related to this call or document. Questions or observations are also welcome.</p>
+
+<p>eBay employees moderate these notes to ensure they're pertinent to the document and relevant to the community. Your submission will show up for all developers when it's activated by the moderator.</p>
+
+<table cellspacing="0" cellpadding="0" border="0" id="js">
+<tr>
+    <td rowspan="4" width="95%"><a name="userNotes"></a><script type="text/javascript" src="http://developer.ebay.com/external/module.ashx?type=comments"></script>&nbsp;</td>
+    <td height="5%"><a name="rating"></a><script type="text/javascript" src="http://developer.ebay.com/external/module.ashx?type=rating"></script>&nbsp;</td>
+</tr>
+<tr>
+    <td height="5%"><a name="bookmark"></a><script type="text/javascript" src="http://developer.ebay.com/external/module.ashx?type=bookmark"></script>&nbsp;</td>
+</tr>
+<tr>
+    <td height="5%"><a name="tagging"></a><script type="text/javascript" src="http://developer.ebay.com/external/module.ashx?type=tagging"></script>&nbsp;</td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+</tr>
+</table>
+<br>
+
+<p style="font-size: 80%;"  class="btt"><a href="#top">Back to top</a></p>
+
+<br><br>
+<hr>
+<br>
+
+<p align="center"><small>&copy; 2009&ndash;2010 eBay Inc. All rights reserved.<br>
+eBay and the eBay logo are registered trademarks of eBay Inc.<br>
+All other brands are the property of their respective owners.</small></p>
+
+<br>
+
+</body>
+</html>
