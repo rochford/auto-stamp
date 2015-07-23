@@ -6,97 +6,51 @@ var express = require('express'),
         _ = require('underscore'),
         request = require('request'),
         sentiment = require('sentiment'),
-        stats = require("stats-lite");
-var KEYWORDS = "penny black stamp";
-var excludeWords = [
-            'Enschede',
-            'hill', // recent publisher?
-            'europhilex', // recent publisher?
-            'rowland', // rowland hill recent publisher?
-            'by wadham',
-            '1970',
-            '1971', // postal strike
-            '1975',
-            '1978',
-            '1990',
-            '1994',
-            '2015',
-            'half penny',
-            'Litchfield',
-            'Wright & Creeke',
-            'PLATING Nissens Photos',
-            'THE STORY OF THE PENNY BLACK',
-            'GREAT BRITAIN: LINE ENGRAVED STAMPS 3rd Edition',
-            'isle of man',
-            'St Vincent',
-            'Guernsey',
-            'barbados',
-            'King Edward',
-            'bpma',
-            'machin',
-            'booklet',
-            'rare book',
-            'postal history',
-            'overprint',
-            'plating service',
-            'special event cover',
-            'centenary',
-            'reprint',
-            'reissue',
-            'perforated',
-            'forgery',
-            'forgeries',
-            'necklace',
-            'follies',
-            'drink coaster',
-            'mug',
-            'CeramicTiles',
-            'gents tie',
-            'rubber stamp',
-            'barcode',
-            'postage stamp cushion',
-            'reproduction',
-            'replica',
-            'auction catalogue',
-            'presentation packs',
-            'anniv',
-            'anniv.',
-            'anniversary',
-            'anniversay',
-            'annivesay',
-            '150th',
-            '150 th',
-            '150 year',
-            '175th',
-            '175 th',
-            '175 year',
-            'penny red',
-            'red brown plate',
-            'liberia'
-        ];
+        stats = require("stats-lite"),
+        rejectwords = require('./rejectwords.js');
 
-// Array to hold async tasks
-var asyncTasks = [];
+var KEYWORDS = "penny black stamp";
+
+var sentimentDictionary = {
+    'tear': -3,
+    'crease': -2,
+    'repaired': -2,
+    'creased': -2,
+    'stain': -2,
+    'bend': -1,
+    'qv': 1,
+    'close to 4 margins': 2,
+    'almost 4 margins': 2,
+    ' 4 margins': 4,
+    'vfu': 3,
+    'fu': 2,
+    'mnh': 2,
+    'wide': 2,
+    'lightly struck': 1,
+    'spacefiller': -1,
+    'cancelled': 1,
+    'crisp': 2
+};
 
 // Create a JavaScript array of the item filters you want to use in your request
 var filterarray = [
-            {"name":"MinPrice",
-                "value":"0.10",
-                "paramName":"Currency",
-                "paramValue":"GBP"},
-            {"name":"MaxPrice",
-                "value":"99999",
-                "paramName":"Currency",
-                "paramValue":"GBP"},
-            {"name":"HideDuplicateItems",
-                "value":"true",
-                "paramName":"",
-                "paramValue":""},
-            {"name":"ListingType",
-                "value":["Auction","AuctionWithBIN", "FixedPrice", "StoreInventory"],
-                "paramName":"",
-                "paramValue":""}
-        ];
+        {"name":"MinPrice",
+            "value":"0.10",
+            "paramName":"Currency",
+            "paramValue":"GBP"},
+        {"name":"MaxPrice",
+            "value":"99999",
+            "paramName":"Currency",
+            "paramValue":"GBP"},
+        {"name":"HideDuplicateItems",
+            "value":"true",
+            "paramName":"",
+            "paramValue":""},
+        {"name":"ListingType",
+            "value":["Auction","AuctionWithBIN", "FixedPrice", "StoreInventory"],
+            "paramName":"",
+            "paramValue":""}
+    ];
 
 // Define global variable for the URL filter
 var urlfilter = "";
@@ -128,21 +82,6 @@ function  buildURLArray() {
 // Execute the function to build the URL filter
 buildURLArray(filterarray);
 
-// Construct the request
-// Replace MyAppID with your Production AppID
-var url = "http://svcs.ebay.com/services/search/FindingService/v1";
-url += "?OPERATION-NAME=findItemsByKeywords";
-url += "&SERVICE-VERSION=1.0.0";
-url += "&SECURITY-APPNAME="+process.env.APP_ID;
-url += "&GLOBAL-ID=EBAY-GB";
-url += "&RESPONSE-DATA-FORMAT=JSON";
-//url += "&callback=_cb_findItemsByKeywords";
-url += "&REST-PAYLOAD";
-url += "&outputSelector=SellerInfo";
-url += "&keywords=" + encodeURIComponent(KEYWORDS);
-url += "&paginationInput.entriesPerPage=100";
-url += urlfilter;
-
 var totalPages = 1;
 var totalPrice = [];
 
@@ -161,17 +100,10 @@ function calculateAvgPrice()
     console.log("mode: %s", stats.mode(totalPrice))
     //    console.log("variance: %s", stats.variance(totalPrice))
     console.log("standard deviation: %s", stats.stdev(totalPrice))
-    console.log("20th percentile: %s", stats.percentile(totalPrice, 0.20))
-    console.log("30th percentile: %s", stats.percentile(totalPrice, 0.30))
-    console.log("40th percentile: %s", stats.percentile(totalPrice, 0.40))
-    console.log("50th percentile: %s", stats.percentile(totalPrice, 0.50))
-    console.log("60th percentile: %s", stats.percentile(totalPrice, 0.60))
-    console.log("70th percentile: %s", stats.percentile(totalPrice, 0.70))
-    console.log("80th percentile: %s", stats.percentile(totalPrice, 0.80))
-    console.log("85th percentile: %s", stats.percentile(totalPrice, 0.85))
-    console.log("90th percentile: %s", stats.percentile(totalPrice, 0.90))
-    console.log("95th percentile: %s", stats.percentile(totalPrice, 0.95))
-    console.log("98th percentile: %s", stats.percentile(totalPrice, 0.98))
+    var percentiles = [0.2,0.4,0.5,0.6,0.8,0.9];
+    for (var i = 0; i < percentiles.length; i++) {
+        console.log( "" + percentiles[i] + " percentile: %s", stats.percentile(totalPrice, percentiles[i]))
+    }
     console.log('');
 }
 
@@ -179,14 +111,14 @@ function handleItems(items) {
     for (var i = 0; i < items.length; ++i) {
         var myItem = {};
         var excludeItem = false;
-        var item     = items[i];
+        var item = items[i];
         myItem.itemid     = item.itemId[0];
         myItem.title    = item.title[0];
         myItem.condition      = item.condition;
         //myItem.sellingStatus = item.sellingStatus;
         myItem.currency =  item.sellingStatus[0].currentPrice[0]['@currencyId'];
         myItem.currentPrice =  parseFloat(item.sellingStatus[0].currentPrice[0]['__value__']);
-        var result = sentiment(myItem.title);
+        var result = sentiment(myItem.title, sentimentDictionary);
         myItem.sentiment = result.score;
 
         if (myItem.currency != "GBP") {
@@ -199,17 +131,11 @@ function handleItems(items) {
         }
         myItem.galleryURL      = item.galleryURL;
         myItem.viewitem = item.viewItemURL;
-        for(var y=0; y < excludeWords.length; y++) {
-            if(myItem.title.toLowerCase().indexOf(excludeWords[y]) !== -1) {
-                excludeItem = true;
-                break;
-            }
-            if(myItem.title.toLowerCase().indexOf("VR") !== -1) {
-                console.log(myItem.title);
-            }
+        if (rejectwords.rejectCheck(myItem.title)) {
+            excludeItem = true;
         }
 
-        if (!excludeItem && null != myItem.title) {
+        if (!excludeItem && null !== myItem.title) {
             //        console.log(myItem.title);
             db.stamps.update({itemid: myItem.itemid}, myItem, {upsert: true}, function (err, lastErrorObject) {
                 if (err)
@@ -222,6 +148,21 @@ function handleItems(items) {
 }
 
 function sendRequest(page, callback) {
+    // Construct the request
+    // Replace MyAppID with your Production AppID
+    var url = "http://svcs.ebay.com/services/search/FindingService/v1";
+    url += "?OPERATION-NAME=findCompletedItems";
+    url += "&SERVICE-VERSION=1.0.0";
+    url += "&SECURITY-APPNAME="+process.env.APP_ID;
+    url += "&GLOBAL-ID=EBAY-GB";
+    url += "&RESPONSE-DATA-FORMAT=JSON";
+    //url += "&callback=_cb_findItemsByKeywords";
+    url += "&REST-PAYLOAD";
+    url += "&outputSelector=SellerInfo";
+    url += "&keywords=" + encodeURIComponent(KEYWORDS);
+    url += "&paginationInput.entriesPerPage=100";
+    url += urlfilter;
+
     var cb = callback || request_cb;
     var tmpUrl = url + "&paginationInput.pageNumber="+page;
     request(tmpUrl, cb);
@@ -230,13 +171,9 @@ function sendRequest(page, callback) {
 function request_first_cb(error, response, body) {
     if (!error && response.statusCode == 200) {
         var root = JSON.parse(body);
-        var totalEntries = parseInt(root.findItemsByKeywordsResponse[0].paginationOutput[0].totalEntries[0]);
-        //        console.log('totalEntries: ' +totalEntries);
-        var pageNumber = parseInt(root.findItemsByKeywordsResponse[0].paginationOutput[0].pageNumber[0]);
-        //        console.log('pageNumber: ' +pageNumber);
-
-//        console.log(root);
-        totalPages = parseInt(root.findItemsByKeywordsResponse[0].paginationOutput[0].totalPages[0]);
+        var totalEntries = parseInt(root.findCompletedItemsResponse[0].paginationOutput[0].totalEntries[0]);
+        var pageNumber = parseInt(root.findCompletedItemsResponse[0].paginationOutput[0].pageNumber[0]);
+        totalPages = parseInt(root.findCompletedItemsResponse[0].paginationOutput[0].totalPages[0]);
 
         for (var i=1; i<=totalPages; i++) {
             sendRequest(i);
@@ -247,9 +184,8 @@ function request_first_cb(error, response, body) {
 function request_cb(error, response, body, cb) {
     if (!error && response.statusCode == 200) {
         var root = JSON.parse(body);
-        var items = root.findItemsByKeywordsResponse[0].searchResult[0].item || [];
+        var items = root.findCompletedItemsResponse[0].searchResult[0].item || [];
         handleItems(items);
-        process.stdout.write(".");
         calculateAvgPrice();
     } else {
         console.log(error);
@@ -257,4 +193,21 @@ function request_cb(error, response, body, cb) {
 }
 
 console.log('started');
-var timeoutTimer = setTimeout(function() { console.log("Timeout"); db.close(); }, 50*1000);
+var timeoutTimer = setTimeout(function() {
+    console.log("Timeout");
+    totalPages = 1;
+    totalPrice = [];
+    sendRequest(1, request_first_cb);
+}, 60*1000);
+
+var gracefulShutdown = function() {
+    console.log("Received signal, shutting down gracefully.");
+    db.close();
+    process.exit();
+}
+
+// listen for TERM signal .e.g. kill
+process.on ('SIGTERM', gracefulShutdown);
+
+// listen for INT signal e.g. Ctrl-C
+process.on ('SIGINT', gracefulShutdown);
