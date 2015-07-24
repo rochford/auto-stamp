@@ -1,0 +1,9 @@
+node_modules/
+test.db
+*.cbp
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.log
+*.save
+*.user

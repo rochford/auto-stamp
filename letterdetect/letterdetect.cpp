@@ -15,6 +15,8 @@
 
 #include <string>
 #include <iostream>
+#include <algorithm> // find
+
 #include <math.h>
 #include <string.h>
 #include <stdexcept>
@@ -22,21 +24,15 @@
 using namespace cv;
 using namespace std;
 
+static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
+
 static void help()
 {
     cout <<
-    "\nA program using pyramid scaling, Canny, contours, contour simpification and\n"
-    "memory storage (it's got it all folks) to find\n"
-    "squares in a list of images pic1-6.png\n"
-    "Returns sequence of squares detected on the image.\n"
-    "the sequence is stored in the specified memory storage\n"
-    "Call:\n"
-    "./squares\n"
     "Using OpenCV version %s\n" << CV_VERSION << "\n" << endl;
 }
 
-
-int thresh = 75, N = 20;
+int thresh = 50, N = 200;
 const char* wndname = "Square Detection Demo";
 
 // helper function:
@@ -59,7 +55,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
 
     Mat timg, gray0(image.size(), CV_8U), gray;
 
-    timg = image;
+    timg = image.clone();
     vector<vector<Point> > contours;
 
     // find squares in every color plane of the image
@@ -68,7 +64,6 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
     {
         int ch[] = {c, 0};
         mixChannels(&timg, 1, &gray0, 1, ch, 1);
-        imshow(wndname, gray0);
 
         // try several threshold levels
         for( int l = 0; l < N; l++ )
@@ -79,16 +74,20 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             {
                 // apply Canny. Take the upper threshold from slider
                 // and set the lower to 0 (which forces edges merging)
-                Canny(gray0, gray, 50, thresh, 3);
+                Canny(gray0, gray, 0, thresh, 3);
                 // dilate canny output to remove potential
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
+                imshow("grey", gray);
+            waitKey();
             }
             else
             {
                 // apply threshold if l!=0:
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
+//                imshow("grey #n", gray);
+//            waitKey();
             }
 
             // find contours and store them all as a list
@@ -128,15 +127,18 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                     // (all angles are ~90 degree) then write quandrange
                     // vertices to resultant sequence
                     if( maxCosine < 0.3 ) {
+                        if(std::find(squares.begin(), squares.end(), approx) != squares.end()) {
+                            /* v contains x */
+                        } else {
                         squares.push_back(approx);
 //                        cout << "shortvec = " << Mat(approx) << endl;
+                        }
                     }
                 }
             }
         }
     }
 }
-
 
 // the function draws all the squares in the image
 static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
@@ -148,31 +150,34 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
         polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
     }
 
-    imshow(wndname, image);
+//    imshow(wndname, image);
+//    waitKey();
 }
 
-static void writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
+static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
 {
+    char ret[2];
     for( size_t i = 0; i < squares.size(); i++ )
     {
         Point p1 = squares[i][0];
         Point p2 = squares[i][2];
-
-        //int n = (int)squares[i].size();
-        //polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
         Rect rect( p1, p2);
         Mat roi = image(rect).clone();
 
         // Pass it to Tesseract API
-        tesseract::TessBaseAPI tess;
-        tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
-        tess.SetVariable("tessedit_char_whitelist", whitelist);
-        tess.SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
-        tess.SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
-        tess.SetImage((uchar*)roi.data, roi.cols, roi.rows, 1, roi.cols);
+        tesseract::TessBaseAPI *tess = new tesseract::TessBaseAPI();
 
-        tess.Recognize(0);
-        tesseract::ResultIterator* ri = tess.GetIterator();
+        tess->Init(NULL, "eng", tesseract::OEM_DEFAULT);
+        tess->SetVariable("tessedit_char_whitelist", whitelist);
+        tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
+        tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
+        tess->SetImage((uchar*)roi.data, roi.cols, roi.rows, 1, roi.cols);
+
+        int ret = tess->Recognize(0);
+        if (ret) {
+            continue;
+        }
+        tesseract::ResultIterator* ri = tess->GetIterator();
         tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
         if (ri != 0) {
           do {
@@ -182,24 +187,83 @@ static void writeSquares(const char* whitelist, Mat& image, const vector<vector<
             float conf = ri->Confidence(level);
             int x1, y1, x2, y2;
             ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-            cout << "p1:" << p1 << ", p2:" << p2 << endl;
             printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n",
                      word, conf, x1, y1, x2, y2);
             delete[] word;
           } while (ri->Next(level));
         }
-        tess.End();
+        tess->End();
     }
+    return 0;
+}
+
+int detectLetters(string file, string& lr) {
+    cout << "starting: " << lr << endl;
+    vector<vector<Point> > squares;
+
+    Mat image = imread(file, 0);
+    if( image.empty() )
+    {
+        cout << "Couldn't load " << file << endl;
+        return -1;
+    }
+
+    int erosion_size = 1;
+    Mat element = getStructuringElement( MORPH_CROSS,
+                         Size( 2*erosion_size + 1, 2*erosion_size+1 ),
+                         Point( erosion_size, erosion_size ) );
+
+    Mat timg;
+    erode( image, timg, element );
+
+//    Mat t1 = image.clone(); //timg.clone();
+    Mat t1 = timg.clone();
+    Mat t2 = image.clone();
+    findSquares(t1, squares);
+    int ret = writeSquares(lr.c_str(), t2, squares);
+    return ret;
+//    drawSquares(image, squares);
 }
 
 int main(int argc, char** argv)
 {
-//    static const char* names[] = { /* "pic1.png", "pic2.png", "pic3.png",
-//        "pic4.png", "pic5.png", */ "pic6.png", 0 };
-//    help();
-    namedWindow( wndname, 1 );
-    vector<vector<Point> > squares;
 
+    string data[] = { "BB",
+                      "BH",
+                      "DB",
+                      "EB",
+                      "FC",
+                      "FF",
+                      "FI",
+                      "GI",
+                      "JI",
+                      "KE",
+                      "KF",
+                      "KL",
+                      "MG",
+                      "MK",
+                      "NB",
+                      "NG",
+                      "OL",
+                      "PB",
+                      "PC",
+                      "QA",
+                      "QD",
+                      "QE",
+                      "RA",
+                      "SJ",
+                      "SL",
+                      "TC",
+                      "TH"
+                    };
+//    namedWindow( wndname, 1 );
+
+    for (int i = 0; i < 26; i++) {
+        string letters = data[i];
+        detectLetters("../data/" + letters + ".jpg", letters);
+    }
+    return 0;
+#if 0
     string letters;
     string arg2(argv[1]);
     if (argc ==2) {
@@ -208,18 +272,7 @@ int main(int argc, char** argv)
     } else {
         letters = argv[2];
     }
-    Mat image = imread(argv[1], 0);
-    if( image.empty() )
-    {
-        cout << "Couldn't load " << argv[1] << endl;
-        return 1;
-    }
-
-    findSquares(image, squares);
-    writeSquares(letters.c_str(), image, squares);
-//    drawSquares(image, squares);
-
-//    waitKey();
-
+    detectLetters(argv[1], letters);
+#endif // 0
     return 0;
 }
