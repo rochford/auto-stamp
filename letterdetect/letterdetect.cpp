@@ -24,6 +24,102 @@
 using namespace cv;
 using namespace std;
 
+enum HorizontalPos {
+    HUnknown = -1000,
+    ExtremelyLeft = -4,
+    VeryLeft = -3,
+    Left = -2,
+    SlightlyLeft = -1,
+    HCentral = 0,
+    SlightlyRight = +1,
+    Right = +2,
+    VeryRight = +3,
+    ExtremelyRight = +4
+};
+
+enum VerticalPos {
+    VUnknownV = -1000,
+    ExtremelyHigh = -4,
+    VeryHigh = -3,
+    High = -2,
+    SlightlyHigh = -1,
+    VCentral = 0,
+    SlightlyLow = +1,
+    Low = +2,
+    VeryLow = +3,
+    ExtremelyLow = +4
+};
+
+
+void verticalAlignment(int a) {
+    switch (a) {
+    case -4:
+        cout << "ext high" ;
+        break;
+    case -3:
+        cout << "very high" ;
+        break;
+    case -2:
+        cout << "high" ;
+        break;
+    case -1:
+        cout << "sl high" ;
+        break;
+    case 0:
+        cout << "central" ;
+        break;
+    case 1:
+        cout << "sl low" ;
+        break;
+    case 2:
+        cout << "low" ;
+        break;
+    case 3:
+        cout << "very low" ;
+        break;
+    case 4:
+        cout << "ext low" ;
+        break;
+    default:
+        cout << "XXX: " << a ;
+    }
+}
+
+void horizontalAlignment(int a)
+{
+    switch (a) {
+    case -4:
+        cout << ", ext left" << endl;
+        break;
+    case -3:
+        cout << ", very left" << endl;
+        break;
+    case -2:
+        cout << ", left" << endl;
+        break;
+    case -1:
+        cout << ", sl left" << endl;
+        break;
+    case 0:
+        cout << ", central" << endl;
+        break;
+    case 1:
+        cout << ", sl right" << endl;
+        break;
+    case 2:
+        cout << ", right" << endl;
+        break;
+    case 3:
+        cout << ", very right" << endl;
+        break;
+    case 4:
+        cout << ", ext right" << endl;
+        break;
+    default:
+        cout << "XXX: " << a << endl;
+    }
+}
+
 static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
 
 static void help()
@@ -79,7 +175,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
                 // imshow("grey", gray);
-                // waitKey();
+                // waitKey(0);
             }
             else
             {
@@ -87,7 +183,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
                 //                imshow("grey #n", gray);
-                //            waitKey();
+                //            waitKey(0);
             }
 
             // find contours and store them all as a list
@@ -100,7 +196,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             {
                 // approximate contour with accuracy proportional
                 // to the contour perimeter
-                approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+                approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
 
                 // square contours should have 4 vertices after approximation
                 // relatively large area (to filter out noisy contours)
@@ -149,9 +245,6 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
         int n = (int)squares[i].size();
         polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
     }
-
-    //    imshow(wndname, image);
-    //    waitKey();
 }
 
 static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
@@ -161,9 +254,23 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
     {
         Point p1 = squares[i][0];
         Point p2 = squares[i][2];
+        if (squares[i][0].x < 2)
+            continue;
+        if (squares[i][2].x < 2)
+            continue;
+        Point  xp1(p1.x - 1, p1.y -1);
+        Point  xp2(p2.x + 1, p2.y + 1);
         Rect rect( p1, p2);
-        Mat roi = image(rect).clone();
-
+        Rect xrect( xp1, xp2);
+        Mat roi = image(xrect).clone();
+        Mat textRoi = image(rect).clone();
+#if 0
+        Size size(120,120);//the dst image size,e.g.100x100
+        Mat dst;
+        resize(roi,dst,size,3.0,3.0);//resize image
+        imshow("roi", dst);
+        waitKey(0);
+#endif // 0
         // Pass it to Tesseract API
         tesseract::TessBaseAPI *tess = new tesseract::TessBaseAPI();
 
@@ -171,14 +278,14 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
         tess->SetVariable("tessedit_char_whitelist", whitelist);
         tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
         tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
-        tess->SetImage((uchar*)roi.data, roi.cols, roi.rows, 1, roi.cols);
-
+        tess->SetImage((uchar*)textRoi.data, textRoi.cols, textRoi.rows, 1, textRoi.cols);
+        //        tess->SetRectangle(xp1.x, xp1.y, xrect.width, xrect.height);
         int ret = tess->Recognize(0);
         if (ret) {
             continue;
         }
         tesseract::ResultIterator* ri = tess->GetIterator();
-        tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
+        tesseract::PageIteratorLevel level = tesseract::RIL_SYMBOL;
         if (ri != 0) {
             do {
                 const char* word = ri->GetUTF8Text(level);
@@ -187,8 +294,22 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
                 float conf = ri->Confidence(level);
                 int x1, y1, x2, y2;
                 ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-                printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n",
-                       word, conf, x1, y1, x2, y2);
+                //                cout << "rect.w:" << xrect.width << ", rect.h:" << xrect.height << endl;
+
+                int offTop = y1;
+                int offBottom = xrect.height -y2;
+                int offLeft = x1;
+                int offRight = xrect.width -x2;
+                printf("word: '%s'(%.2f%); Align: (%d,%d)BoundingBox: %d,%d,%d,%d;\t",
+                       word, conf,
+                       offLeft - offRight,
+                       offTop - offBottom,
+                       x1,
+                       y1,
+                       x2,
+                       y2);
+                verticalAlignment(offTop - offBottom);
+                horizontalAlignment(offLeft -offRight);
                 delete[] word;
             } while (ri->Next(level));
         }
@@ -228,48 +349,48 @@ int detectLetters(string file, string& lr) {
 int main(int argc, char** argv)
 {
 
-    string data[] = {
-        "AA",
-        "BB",
-        "BH",
-        "BL",
-        "CC",
-        "CH",
-        "DB",
-        "DK",
-        "EB",
-        "FC",
-        "FF",
-        "FI",
-        "GG",
-        "GI",
-        "HH",
-        "IE",
-        "JI",
-        "KE",
-        "KF",
-        "KK",
-        "KL",
-        "LL",
-        "MG",
-        "MK",
-        "NB",
-        "NG",
-        "OL",
-        "PB",
-        "PC",
-        "QA",
-        "QD",
-        "QE",
-        "RA",
-        "SJ",
-        "SF",
-        "SL",
-        "TC",
-        "TH",
-        "TF",
-        "LAST"
-    };
+    string data[] = { "AL", // 7
+                      "AA",
+                      "BB",
+                      "BH",
+                      "BL",
+                      "CC",
+                      "CH",
+                      "DB",
+                      "DK",
+                      "EB",
+                      "FC",
+                      "FF",
+                      "FI",
+                      "GG",
+                      "GI",
+                      "HH",
+                      "IE",
+                      "JI",
+                      "KE",
+                      "KF",
+                      "KK",
+                      "KL",
+                      "LL",
+                      "MG",
+                      "MK",
+                      "NB",
+                      "NG",
+                      "OL",
+                      "PB",
+                      "PC",
+                      "QA",
+                      "QD",
+                      "QE",
+                      "RA",
+                      "SJ",
+                      "SF",
+                      "SL",
+                      "TC",
+                      "TH",
+                      "TF",
+                      "LAST"
+                    };
     //    namedWindow( wndname, 1 );
 
     string letters;
