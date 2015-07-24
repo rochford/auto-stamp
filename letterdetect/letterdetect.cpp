@@ -29,7 +29,7 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
 static void help()
 {
     cout <<
-    "Using OpenCV version %s\n" << CV_VERSION << "\n" << endl;
+            "Using OpenCV version %s\n" << CV_VERSION << "\n" << endl;
 }
 
 int thresh = 50, N = 200;
@@ -60,7 +60,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
 
     // find squares in every color plane of the image
     int c =0;
-//    for( int c = 0; c < 3; c++ )
+    //    for( int c = 0; c < 3; c++ )
     {
         int ch[] = {c, 0};
         mixChannels(&timg, 1, &gray0, 1, ch, 1);
@@ -78,16 +78,16 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // dilate canny output to remove potential
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
-                imshow("grey", gray);
-            waitKey();
+                // imshow("grey", gray);
+                // waitKey();
             }
             else
             {
                 // apply threshold if l!=0:
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
-//                imshow("grey #n", gray);
-//            waitKey();
+                //                imshow("grey #n", gray);
+                //            waitKey();
             }
 
             // find contours and store them all as a list
@@ -108,11 +108,11 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // Note: absolute value of an area is used because
                 // area may be positive or negative - in accordance with the
                 // contour orientation
-//                cout << "shortvec = " << Mat(approx) << endl;
+                //                cout << "shortvec = " << Mat(approx) << endl;
                 if( approx.size() == 4 &&
-                    fabs(contourArea(Mat(approx))) > 100 &&
-//                        fabs(contourArea(Mat(approx))) < 4000 &&
-                    isContourConvex(Mat(approx)) )
+                        fabs(contourArea(Mat(approx))) > 100 &&
+                        //                        fabs(contourArea(Mat(approx))) < 4000 &&
+                        isContourConvex(Mat(approx)) )
                 {
                     double maxCosine = 0;
 
@@ -130,8 +130,8 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                         if(std::find(squares.begin(), squares.end(), approx) != squares.end()) {
                             /* v contains x */
                         } else {
-                        squares.push_back(approx);
-//                        cout << "shortvec = " << Mat(approx) << endl;
+                            squares.push_back(approx);
+                            //                        cout << "shortvec = " << Mat(approx) << endl;
                         }
                     }
                 }
@@ -150,8 +150,8 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
         polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
     }
 
-//    imshow(wndname, image);
-//    waitKey();
+    //    imshow(wndname, image);
+    //    waitKey();
 }
 
 static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
@@ -180,17 +180,17 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
         tesseract::ResultIterator* ri = tess->GetIterator();
         tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
         if (ri != 0) {
-          do {
-            const char* word = ri->GetUTF8Text(level);
-            if (!word || !isalpha(*word))
-                continue;
-            float conf = ri->Confidence(level);
-            int x1, y1, x2, y2;
-            ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-            printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n",
-                     word, conf, x1, y1, x2, y2);
-            delete[] word;
-          } while (ri->Next(level));
+            do {
+                const char* word = ri->GetUTF8Text(level);
+                if (!word || !isalpha(*word))
+                    continue;
+                float conf = ri->Confidence(level);
+                int x1, y1, x2, y2;
+                ri->BoundingBox(level, &x1, &y1, &x2, &y2);
+                printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n",
+                       word, conf, x1, y1, x2, y2);
+                delete[] word;
+            } while (ri->Next(level));
         }
         tess->End();
     }
@@ -210,56 +210,71 @@ int detectLetters(string file, string& lr) {
 
     int erosion_size = 1;
     Mat element = getStructuringElement( MORPH_CROSS,
-                         Size( 2*erosion_size + 1, 2*erosion_size+1 ),
-                         Point( erosion_size, erosion_size ) );
+                                         Size( 2*erosion_size + 1, 2*erosion_size+1 ),
+                                         Point( erosion_size, erosion_size ) );
 
     Mat timg;
     erode( image, timg, element );
 
-//    Mat t1 = image.clone(); //timg.clone();
+    //    Mat t1 = image.clone(); //timg.clone();
     Mat t1 = timg.clone();
     Mat t2 = image.clone();
     findSquares(t1, squares);
     int ret = writeSquares(lr.c_str(), t2, squares);
     return ret;
-//    drawSquares(image, squares);
+    //    drawSquares(image, squares);
 }
 
 int main(int argc, char** argv)
 {
 
-    string data[] = { "BB",
-                      "BH",
-                      "DB",
-                      "EB",
-                      "FC",
-                      "FF",
-                      "FI",
-                      "GI",
-                      "JI",
-                      "KE",
-                      "KF",
-                      "KL",
-                      "MG",
-                      "MK",
-                      "NB",
-                      "NG",
-                      "OL",
-                      "PB",
-                      "PC",
-                      "QA",
-                      "QD",
-                      "QE",
-                      "RA",
-                      "SJ",
-                      "SL",
-                      "TC",
-                      "TH"
-                    };
-//    namedWindow( wndname, 1 );
+    string data[] = {
+        "AA",
+        "BB",
+        "BH",
+        "BL",
+        "CC",
+        "CH",
+        "DB",
+        "DK",
+        "EB",
+        "FC",
+        "FF",
+        "FI",
+        "GG",
+        "GI",
+        "HH",
+        "IE",
+        "JI",
+        "KE",
+        "KF",
+        "KK",
+        "KL",
+        "LL",
+        "MG",
+        "MK",
+        "NB",
+        "NG",
+        "OL",
+        "PB",
+        "PC",
+        "QA",
+        "QD",
+        "QE",
+        "RA",
+        "SJ",
+        "SF",
+        "SL",
+        "TC",
+        "TH",
+        "TF",
+        "LAST"
+    };
+    //    namedWindow( wndname, 1 );
 
-    for (int i = 0; i < 26; i++) {
-        string letters = data[i];
+    string letters;
+    int i = 0;
+    while ((letters = data[i++]) != "LAST") {
         detectLetters("../data/" + letters + ".jpg", letters);
     }
     return 0;
