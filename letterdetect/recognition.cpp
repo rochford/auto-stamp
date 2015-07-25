@@ -32,6 +32,7 @@ struct tess_data_struct recognize(Mat& textRoi, const char* whitelist)
     //        tess->SetRectangle(xp1.x, xp1.y, xrect.width, xrect.height);
     int ret = tess->Recognize(0);
     if (ret) {
+        tess->End();
         return td;
     }
     tesseract::ResultIterator* ri = tess->GetIterator();
@@ -40,7 +41,10 @@ struct tess_data_struct recognize(Mat& textRoi, const char* whitelist)
         do {
             char* word = ri->GetUTF8Text(level);
             if (!word || !isalpha(*word))
-                continue;
+            {
+                tess->End();
+                return td;
+            }
             float conf = ri->Confidence(level);
             int x1, y1, x2, y2;
             ri->BoundingBox(level, &x1, &y1, &x2, &y2);
