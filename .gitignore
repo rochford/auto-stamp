@@ -1,3 +1,6 @@
+letterdetect/erosion
+letterdetect/letterdetect
+letterdetect/corner
 node_modules/
 test.db
 *.cbp

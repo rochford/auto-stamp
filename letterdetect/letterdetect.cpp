@@ -1,7 +1,3 @@
-// The "Square Detector" program.
-// It loads several images sequentially and tries to find squares in
-// each image
-
 /*
  *g++ -I/usr/local/include/opencv -I/usr/local/include/opencv2 -L/usr/local/lib/ -g -o binary  squares.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_stitching -llept -ltesseract
  */
@@ -10,115 +6,22 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <tesseract/baseapi.h>
-#include <tesseract/resultiterator.h>
-
 #include <string>
 #include <iostream>
 #include <algorithm> // find
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <math.h>
 #include <string.h>
 #include <stdexcept>
 
+#include "alignment.h"
+#include "recognition.h"
+
 using namespace cv;
 using namespace std;
-
-enum HorizontalPos {
-    HUnknown = -1000,
-    ExtremelyLeft = -4,
-    VeryLeft = -3,
-    Left = -2,
-    SlightlyLeft = -1,
-    HCentral = 0,
-    SlightlyRight = +1,
-    Right = +2,
-    VeryRight = +3,
-    ExtremelyRight = +4
-};
-
-enum VerticalPos {
-    VUnknownV = -1000,
-    ExtremelyHigh = -4,
-    VeryHigh = -3,
-    High = -2,
-    SlightlyHigh = -1,
-    VCentral = 0,
-    SlightlyLow = +1,
-    Low = +2,
-    VeryLow = +3,
-    ExtremelyLow = +4
-};
-
-
-void verticalAlignment(int a) {
-    switch (a) {
-    case -4:
-        cout << "ext high" ;
-        break;
-    case -3:
-        cout << "very high" ;
-        break;
-    case -2:
-        cout << "high" ;
-        break;
-    case -1:
-        cout << "sl high" ;
-        break;
-    case 0:
-        cout << "central" ;
-        break;
-    case 1:
-        cout << "sl low" ;
-        break;
-    case 2:
-        cout << "low" ;
-        break;
-    case 3:
-        cout << "very low" ;
-        break;
-    case 4:
-        cout << "ext low" ;
-        break;
-    default:
-        cout << "XXX: " << a ;
-    }
-}
-
-void horizontalAlignment(int a)
-{
-    switch (a) {
-    case -4:
-        cout << ", ext left" << endl;
-        break;
-    case -3:
-        cout << ", very left" << endl;
-        break;
-    case -2:
-        cout << ", left" << endl;
-        break;
-    case -1:
-        cout << ", sl left" << endl;
-        break;
-    case 0:
-        cout << ", central" << endl;
-        break;
-    case 1:
-        cout << ", sl right" << endl;
-        break;
-    case 2:
-        cout << ", right" << endl;
-        break;
-    case 3:
-        cout << ", very right" << endl;
-        break;
-    case 4:
-        cout << ", ext right" << endl;
-        break;
-    default:
-        cout << "XXX: " << a << endl;
-    }
-}
 
 static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
 
@@ -258,62 +161,40 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
             continue;
         if (squares[i][2].x < 2)
             continue;
-        Point  xp1(p1.x - 1, p1.y -1);
-        Point  xp2(p2.x + 1, p2.y + 1);
-        Rect rect( p1, p2);
-        Rect xrect( xp1, xp2);
-        Mat roi = image(xrect).clone();
+        Point xp1(p1.x - 1, p1.y -1);
+        Point xp2(p2.x + 1, p2.y + 1);
+        Rect rect(p1, p2);
+        Rect xrect(xp1, xp2);
         Mat textRoi = image(rect).clone();
 #if 0
+        Mat roi = image(xrect).clone();
         Size size(120,120);//the dst image size,e.g.100x100
         Mat dst;
         resize(roi,dst,size,3.0,3.0);//resize image
         imshow("roi", dst);
         waitKey(0);
 #endif // 0
-        // Pass it to Tesseract API
-        tesseract::TessBaseAPI *tess = new tesseract::TessBaseAPI();
 
-        tess->Init(NULL, "eng", tesseract::OEM_DEFAULT);
-        tess->SetVariable("tessedit_char_whitelist", whitelist);
-        tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
-        tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
-        tess->SetImage((uchar*)textRoi.data, textRoi.cols, textRoi.rows, 1, textRoi.cols);
-        //        tess->SetRectangle(xp1.x, xp1.y, xrect.width, xrect.height);
-        int ret = tess->Recognize(0);
-        if (ret) {
+        // Pass it to Tesseract API
+        struct tess_data_struct td = recognize(textRoi, whitelist);
+        if (td.x1 == -1) {
             continue;
         }
-        tesseract::ResultIterator* ri = tess->GetIterator();
-        tesseract::PageIteratorLevel level = tesseract::RIL_SYMBOL;
-        if (ri != 0) {
-            do {
-                const char* word = ri->GetUTF8Text(level);
-                if (!word || !isalpha(*word))
-                    continue;
-                float conf = ri->Confidence(level);
-                int x1, y1, x2, y2;
-                ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-                //                cout << "rect.w:" << xrect.width << ", rect.h:" << xrect.height << endl;
 
-                int offTop = y1;
-                int offBottom = xrect.height -y2;
-                int offLeft = x1;
-                int offRight = xrect.width -x2;
-                printf("word: '%s'(%.2f%); Align: (%d,%d)BoundingBox: %d,%d,%d,%d;\t",
-                       word, conf,
-                       offLeft - offRight,
-                       offTop - offBottom,
-                       x1,
-                       y1,
-                       x2,
-                       y2);
-                verticalAlignment(offTop - offBottom);
-                horizontalAlignment(offLeft -offRight);
-                delete[] word;
-            } while (ri->Next(level));
-        }
-        tess->End();
+        int offTop = td.y1;
+        int offBottom = xrect.height - td.y2;
+        int offLeft = td.x1;
+        int offRight = xrect.width - td.x2;
+        printf("word: '%s'(%.2f%); Align: (%d,%d)BoundingBox: %d,%d,%d,%d;\t",
+               td.word, td.conf,
+               offLeft - offRight,
+               offTop - offBottom,
+               td.x1,
+               td.y1,
+               td.x2,
+               td.y2);
+        verticalAlignment(offTop - offBottom);
+        horizontalAlignment(offLeft -offRight);
     }
     return 0;
 }
@@ -346,69 +227,3 @@ int detectLetters(string file, string& lr) {
     //    drawSquares(image, squares);
 }
 
-int main(int argc, char** argv)
-{
-
-    string data[] = { "AL", // 7
-                      "AA",
-                      "BB",
-                      "BH",
-                      "BL",
-                      "CC",
-                      "CH",
-                      "DB",
-                      "DK",
-                      "EB",
-                      "FC",
-                      "FF",
-                      "FI",
-                      "GG",
-                      "GI",
-                      "HH",
-                      "IE",
-                      "JI",
-                      "KE",
-                      "KF",
-                      "KK",
-                      "KL",
-                      "LL",
-                      "MG",
-                      "MK",
-                      "NB",
-                      "NG",
-                      "OL",
-                      "PB",
-                      "PC",
-                      "QA",
-                      "QD",
-                      "QE",
-                      "RA",
-                      "SJ",
-                      "SF",
-                      "SL",
-                      "TC",
-                      "TH",
-                      "TF",
-                      "LAST"
-                    };
-    //    namedWindow( wndname, 1 );
-
-    string letters;
-    int i = 0;
-    while ((letters = data[i++]) != "LAST") {
-        detectLetters("../data/" + letters + ".jpg", letters);
-    }
-    return 0;
-#if 0
-    string letters;
-    string arg2(argv[1]);
-    if (argc ==2) {
-        size_t len = strlen(argv[1]);
-        letters = arg2.substr(len - 6);
-    } else {
-        letters = argv[2];
-    }
-    detectLetters(argv[1], letters);
-#endif // 0
-    return 0;
-}
