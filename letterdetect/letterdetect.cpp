@@ -9,27 +9,23 @@
 #include <string>
 #include <iostream>
 #include <algorithm> // find
+#include <memory>
+#include <stdexcept>
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <math.h>
 #include <string.h>
-#include <stdexcept>
 
 #include "alignment.h"
 #include "recognition.h"
+#include "debugutils.h"
 
 using namespace cv;
 using namespace std;
 
-int writeSquares(Recognition* recog, const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
-
-static void help()
-{
-    cout <<
-            "Using OpenCV version %s\n" << CV_VERSION << "\n" << endl;
-}
+int writeSquares(Recognition* recog, const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares );
 
 int thresh = 50, N = 200;
 const char* wndname = "Square Detection Demo";
@@ -48,7 +44,7 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 
 // returns sequence of squares detected on the image.
 // the sequence is stored in the specified memory storage
-static void findSquares( const Mat& image, vector<vector<Point> >& squares )
+static void findSquares(const Mat& image, vector<vector<Point> >& squares)
 {
     squares.clear();
 
@@ -93,13 +89,12 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             vector<Vec4i> hierarchy;
             findContours(gray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
-
             vector<Point> approx;
 
             // test each contour
             for( size_t i = 0; i < contours.size(); i++ )
             {
-//                cout << contours[i] << endl;
+                //                cout << contours[i] << endl;
                 // approximate contour with accuracy proportional
                 // to the contour perimeter
                 approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
@@ -116,19 +111,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                         //                        fabs(contourArea(Mat(approx))) < 4000 &&
                         isContourConvex(Mat(approx)) )
                 {
-#if 0
-                    Mat dst = Mat::zeros(gray.rows, gray.cols, CV_8UC3);
-                    int idx = 0;
-                    for( ; idx >= 0; idx = hierarchy[idx][0] )
-                    {
-                        Scalar color( rand()&255, rand()&255, rand()&255 );
-                        drawContours( dst, contours, idx, color, 1, 8, hierarchy );
-                    }
-
-                    namedWindow( "Components", 1 );
-                    imshow( "Components", dst );
-                    waitKey(0);
-#endif // 0
+//                    displateContours(gray, contours, hierarchy);
                     double maxCosine = 0;
 
                     for( int j = 2; j < 5; j++ )
@@ -155,21 +138,10 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
     }
 }
 
-// the function draws all the squares in the image
-static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
-{
-    for( size_t i = 0; i < squares.size(); i++ )
-    {
-        const Point* p = &squares[i][0];
-        int n = (int)squares[i].size();
-        polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
-    }
-}
-
-int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
+int writeSquares(const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares )
 {
     // Pass it to Tesseract API
-    Recognition* recog = new Recognition();
+    std::shared_ptr<Recognition> recog(new Recognition());
     recog->setWhitelist(whitelist);
 
     char ret[2];
@@ -186,15 +158,7 @@ int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >
         Rect rect(p1, p2);
         Rect xrect(xp1, xp2);
         Mat textRoi = image(rect).clone();
-#if 0
-        cout << xrect.tl() << xrect.br() << endl;
-        Mat roi = image(xrect).clone();
-        Size size(160,160);//the dst image size,e.g.100x100
-        Mat dst;
-        resize(roi,dst,size,4.0,4.0);//resize image
-        imshow("roi", dst);
-        waitKey(0);
-#endif // 0
+        //        scaledDisplayRect(image, xrect);
 
         struct tess_data_struct td = recog->recognize(textRoi);
         if (td.x1 == -1) {
@@ -204,20 +168,19 @@ int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >
         int offBottom = xrect.height - td.y2;
         int offLeft = td.x1;
         int offRight = xrect.width - td.x2;
-        printf("word: '%s'(%.2f%); Align: (%d,%d); [%d,%d,%d,%d] area=%d \t",
+        //   Rect area = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
+        printf("word: '%s'(%.2f%); Align: (%d,%d); [%d,%d,%d,%d]\t",
                td.word, td.conf,
                offLeft - offRight,
                offTop - offBottom,
                td.x1,
                td.y1,
                td.x2,
-               td.y2,
-               Rect(Point(td.x1, td.y1), Point(td.x2, td.y2)).area());
+               td.y2);
         verticalAlignment(offTop - offBottom);
         horizontalAlignment(offLeft -offRight);
         delete[] td.word;
     }
-    delete recog;
     return 0;
 }
 
@@ -247,6 +210,4 @@ int detectLetters(string file, string& lr) {
 
     int ret = writeSquares(lr.c_str(), t2, squares);
     return ret;
-    //    drawSquares(image, squares);
 }
-

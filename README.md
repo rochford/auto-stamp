@@ -13,8 +13,6 @@ letterdetect backlog
 ====================
 - test main() to test all ../data/ images
 - use smallest tesseract text bounding box for letter alignment
-- use smart pointers for tesseract API object
-- memory leak of tesseract word
 - litchfield plate detection source file
 - O Flaw thinking
 - node.js plugin considerations

@@ -5,7 +5,8 @@
 
 #include <tesseract/baseapi.h>
 
-using namespace cv;
+#include <memory>
+#include <string>
 
 struct tess_data_struct {
     int x1;
@@ -16,27 +17,19 @@ struct tess_data_struct {
     char* word;
 };
 
-
 class Recognition{
 public:
     Recognition()
-        : _tess(new tesseract::TessBaseAPI())
+        : _tess(std::shared_ptr<tesseract::TessBaseAPI>(new tesseract::TessBaseAPI()))
     {
         _tess->Init(NULL, "eng", tesseract::OEM_DEFAULT);
     }
-    ~Recognition()
-    {
-        if (_tess)
-        {
-            _tess->End();
-        }
-    }
+    ~Recognition() = default;
 
-    struct tess_data_struct recognize(Mat& textRoi);
-    void setWhitelist(const char* whitelist);
+    struct tess_data_struct recognize(cv::Mat& textRoi);
+    void setWhitelist(const std::string& whitelist);
 private:
-    tesseract::TessBaseAPI *_tess;
+    std::shared_ptr<tesseract::TessBaseAPI> _tess;
 };
-
 
 #endif // RECOGNITION_H

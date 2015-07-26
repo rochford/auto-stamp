@@ -1,3 +1,5 @@
+#ifndef ALIGNMENT_H
+#define ALIGNMENT_H
 
 enum HorizontalPos {
     HUnknown = -1000,
@@ -28,3 +30,4 @@ enum VerticalPos {
 void verticalAlignment(int a);
 void horizontalAlignment(int a);
 
+#endif // ALIGNMENT_H

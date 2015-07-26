@@ -1,7 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
 project (letterdetect)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 find_package( OpenCV REQUIRED )
-add_executable(letterdetect letterdetect.cpp alignment.cpp recognition.cpp main.cpp)
+add_executable(letterdetect letterdetect.cpp alignment.cpp recognition.cpp debugutils.cpp main.cpp)
 target_link_libraries(letterdetect ${OpenCV_LIBS} lept tesseract)
 
 find_package( OpenCV REQUIRED )

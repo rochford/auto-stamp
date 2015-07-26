@@ -1,24 +1,21 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include <tesseract/baseapi.h>
 #include <tesseract/resultiterator.h>
 
 #include <string>
 #include <iostream>
-// #include <algorithm> // find
-
-// #include <math.h>
 #include <string.h>
 #include <stdexcept>
 
 #include "recognition.h"
 
 using namespace std;
+using namespace cv;
 
-void Recognition::setWhitelist(const char* whitelist)
+void Recognition::setWhitelist(const std::string& whitelist)
 {
-    _tess->SetVariable("tessedit_char_whitelist", whitelist);
+    _tess->SetVariable("tessedit_char_whitelist", whitelist.c_str());
     _tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
     _tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
 }
