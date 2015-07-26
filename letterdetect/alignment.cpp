@@ -4,6 +4,7 @@ using namespace std;
 
 void verticalAlignment(int a) {
     switch (a) {
+    case -5:
     case -4:
         cout << "ext high" ;
         break;
@@ -29,6 +30,7 @@ void verticalAlignment(int a) {
         cout << "very low" ;
         break;
     case 4:
+    case 5:
         cout << "ext low" ;
         break;
     default:

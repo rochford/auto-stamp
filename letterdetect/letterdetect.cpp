@@ -2,9 +2,9 @@
  *g++ -I/usr/local/include/opencv -I/usr/local/include/opencv2 -L/usr/local/lib/ -g -o binary  squares.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_stitching -llept -ltesseract
  */
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <string>
 #include <iostream>
@@ -23,7 +23,7 @@
 using namespace cv;
 using namespace std;
 
-static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
+int writeSquares(Recognition* recog, const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
 
 static void help()
 {
@@ -90,13 +90,16 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             }
 
             // find contours and store them all as a list
-            findContours(gray, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+            vector<Vec4i> hierarchy;
+            findContours(gray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
 
             vector<Point> approx;
 
             // test each contour
             for( size_t i = 0; i < contours.size(); i++ )
             {
+//                cout << contours[i] << endl;
                 // approximate contour with accuracy proportional
                 // to the contour perimeter
                 approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
@@ -113,6 +116,19 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                         //                        fabs(contourArea(Mat(approx))) < 4000 &&
                         isContourConvex(Mat(approx)) )
                 {
+#if 0
+                    Mat dst = Mat::zeros(gray.rows, gray.cols, CV_8UC3);
+                    int idx = 0;
+                    for( ; idx >= 0; idx = hierarchy[idx][0] )
+                    {
+                        Scalar color( rand()&255, rand()&255, rand()&255 );
+                        drawContours( dst, contours, idx, color, 1, 8, hierarchy );
+                    }
+
+                    namedWindow( "Components", 1 );
+                    imshow( "Components", dst );
+                    waitKey(0);
+#endif // 0
                     double maxCosine = 0;
 
                     for( int j = 2; j < 5; j++ )
@@ -150,8 +166,12 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
     }
 }
 
-static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
+int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares )
 {
+    // Pass it to Tesseract API
+    Recognition* recog = new Recognition();
+    recog->setWhitelist(whitelist);
+
     char ret[2];
     for( size_t i = 0; i < squares.size(); i++ )
     {
@@ -167,35 +187,37 @@ static int writeSquares(const char* whitelist, Mat& image, const vector<vector<P
         Rect xrect(xp1, xp2);
         Mat textRoi = image(rect).clone();
 #if 0
+        cout << xrect.tl() << xrect.br() << endl;
         Mat roi = image(xrect).clone();
-        Size size(120,120);//the dst image size,e.g.100x100
+        Size size(160,160);//the dst image size,e.g.100x100
         Mat dst;
-        resize(roi,dst,size,3.0,3.0);//resize image
+        resize(roi,dst,size,4.0,4.0);//resize image
         imshow("roi", dst);
         waitKey(0);
 #endif // 0
 
-        // Pass it to Tesseract API
-        struct tess_data_struct td = recognize(textRoi, whitelist);
+        struct tess_data_struct td = recog->recognize(textRoi);
         if (td.x1 == -1) {
             continue;
         }
-
         int offTop = td.y1;
         int offBottom = xrect.height - td.y2;
         int offLeft = td.x1;
         int offRight = xrect.width - td.x2;
-        printf("word: '%s'(%.2f%); Align: (%d,%d)BoundingBox: %d,%d,%d,%d;\t",
+        printf("word: '%s'(%.2f%); Align: (%d,%d); [%d,%d,%d,%d] area=%d \t",
                td.word, td.conf,
                offLeft - offRight,
                offTop - offBottom,
                td.x1,
                td.y1,
                td.x2,
-               td.y2);
+               td.y2,
+               Rect(Point(td.x1, td.y1), Point(td.x2, td.y2)).area());
         verticalAlignment(offTop - offBottom);
         horizontalAlignment(offLeft -offRight);
+        delete[] td.word;
     }
+    delete recog;
     return 0;
 }
 
@@ -222,6 +244,7 @@ int detectLetters(string file, string& lr) {
     Mat t1 = timg.clone();
     Mat t2 = image.clone();
     findSquares(t1, squares);
+
     int ret = writeSquares(lr.c_str(), t2, squares);
     return ret;
     //    drawSquares(image, squares);

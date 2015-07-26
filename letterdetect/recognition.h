@@ -1,7 +1,9 @@
 #ifndef RECOGNITION_H
 #define RECOGNITION_H
 
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/core.hpp>
+
+#include <tesseract/baseapi.h>
 
 using namespace cv;
 
@@ -14,6 +16,27 @@ struct tess_data_struct {
     char* word;
 };
 
-struct tess_data_struct recognize(Mat& textRoi, const char* whitelist);
+
+class Recognition{
+public:
+    Recognition()
+        : _tess(new tesseract::TessBaseAPI())
+    {
+        _tess->Init(NULL, "eng", tesseract::OEM_DEFAULT);
+    }
+    ~Recognition()
+    {
+        if (_tess)
+        {
+            _tess->End();
+        }
+    }
+
+    struct tess_data_struct recognize(Mat& textRoi);
+    void setWhitelist(const char* whitelist);
+private:
+    tesseract::TessBaseAPI *_tess;
+};
+
 
 #endif // RECOGNITION_H

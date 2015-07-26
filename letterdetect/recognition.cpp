@@ -1,48 +1,51 @@
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <tesseract/baseapi.h>
 #include <tesseract/resultiterator.h>
 
 #include <string>
 #include <iostream>
-#include <algorithm> // find
+// #include <algorithm> // find
 
-#include <math.h>
+// #include <math.h>
 #include <string.h>
 #include <stdexcept>
 
 #include "recognition.h"
-struct tess_data_struct recognize(Mat& textRoi, const char* whitelist)
+
+using namespace std;
+
+void Recognition::setWhitelist(const char* whitelist)
+{
+    _tess->SetVariable("tessedit_char_whitelist", whitelist);
+    _tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
+    _tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
+}
+
+struct tess_data_struct Recognition::recognize(Mat& textRoi)
 {
     struct tess_data_struct td;
-
     td.x1 = -1;
     td.y1 = -1;
     td.x2 = -1;
     td.y2 = -1;
 
-    tesseract::TessBaseAPI *tess = new tesseract::TessBaseAPI();
+    _tess->Clear();
 
-    tess->Init(NULL, "eng", tesseract::OEM_DEFAULT);
-    tess->SetVariable("tessedit_char_whitelist", whitelist);
-    tess->SetVariable("tessedit_char_blacklist", "abcdefghijklmnopqrstuvwxyzUVWXYZ0123456789");
-    tess->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
-    tess->SetImage((uchar*)textRoi.data, textRoi.cols, textRoi.rows, 1, textRoi.cols);
+    _tess->SetImage((uchar*)textRoi.data, textRoi.cols, textRoi.rows, 1, textRoi.cols);
     //        tess->SetRectangle(xp1.x, xp1.y, xrect.width, xrect.height);
-    int ret = tess->Recognize(0);
+    int ret = _tess->Recognize(0);
     if (ret) {
-        tess->End();
         return td;
     }
-    tesseract::ResultIterator* ri = tess->GetIterator();
+    tesseract::ResultIterator* ri = _tess->GetIterator();
     tesseract::PageIteratorLevel level = tesseract::RIL_SYMBOL;
     if (ri != 0) {
         do {
             char* word = ri->GetUTF8Text(level);
             if (!word || !isalpha(*word))
             {
-                tess->End();
                 return td;
             }
             float conf = ri->Confidence(level);
@@ -54,11 +57,10 @@ struct tess_data_struct recognize(Mat& textRoi, const char* whitelist)
             td.x2 = x2;
             td.y2 = y2;
             td.conf = conf;
-            td.word = strcpy(td.word, word);
-            delete[] word;
+            td.word = word;
+//            delete[] word;
         } while (ri->Next(level));
     }
-    tess->End();
     return td;
 }
 

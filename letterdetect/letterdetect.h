@@ -23,10 +23,13 @@
 
 // #include "alignment.h"
 
+class Recognition;
+
 using namespace cv;
 using namespace std;
 
-static int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
+
+int writeSquares(const char* whitelist, Mat& image, const vector<vector<Point> >& squares );
 
 int detectLetters(string file, string& lr);
 

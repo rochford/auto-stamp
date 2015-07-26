@@ -1,23 +1,22 @@
-# auto-stamp
+auto-stamp
+==========
 Stamp detection, pricing and statistics.
 
-# Backlog
-=========
-=========
-
-harvester
-=========
+harvester backlog
+=================
 - Historic data requests to ebay
 - add in express webserver
 - exclude words to own module, regexp for the years
 - automated polling of the server
 
-letterdetect
-============
-- use smallest tesseract text bounding box for letter alignment
-- litchfield plate detection source file
+letterdetect backlog
+====================
 - test main() to test all ../data/ images
+- use smallest tesseract text bounding box for letter alignment
+- use smart pointers for tesseract API object
 - memory leak of tesseract word
-- node.js plugin considerations
+- litchfield plate detection source file
 - O Flaw thinking
-
+- node.js plugin considerations
+- more test cases
+- valgrind checking
