@@ -13,6 +13,8 @@
 using namespace std;
 using namespace cv;
 
+const char* wndname = "Square Detection Demo";
+
 // the function draws all the squares in the image
 static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 {
@@ -31,7 +33,7 @@ void scaledDisplayRect(Mat& image, Rect& xrect)
     Size size(160,160);//the dst image size,e.g.100x100
     Mat dst;
     resize(roi,dst,size,4.0,4.0);//resize image
-    imshow("roi", dst);
+    imshow(wndname, dst);
     waitKey(0);
 }
 

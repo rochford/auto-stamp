@@ -13,6 +13,8 @@
 using namespace std;
 using namespace cv;
 
+const double MIN_CONFIDENCE_PERCENT = 80.0;
+
 void Recognition::setWhitelist(const std::string& whitelist)
 {
     _tess->SetVariable("tessedit_char_whitelist", whitelist.c_str());
@@ -46,6 +48,8 @@ struct tess_data_struct Recognition::recognize(Mat& textRoi)
                 return td;
             }
             float conf = ri->Confidence(level);
+            if (conf < MIN_CONFIDENCE_PERCENT)
+                continue;
             int x1, y1, x2, y2;
             ri->BoundingBox(level, &x1, &y1, &x2, &y2);
             //                cout << "rect.w:" << xrect.width << ", rect.h:" << xrect.height << endl;

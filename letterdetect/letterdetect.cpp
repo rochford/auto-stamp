@@ -25,10 +25,7 @@
 using namespace cv;
 using namespace std;
 
-int writeSquares(Recognition* recog, const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares );
-
 int thresh = 50, N = 200;
-const char* wndname = "Square Detection Demo";
 
 // helper function:
 // finds a cosine of angle between vectors
@@ -44,7 +41,7 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 
 // returns sequence of squares detected on the image.
 // the sequence is stored in the specified memory storage
-static void findSquares(const Mat& image, vector<vector<Point> >& squares)
+static void findSquares(const Mat& image, vector<vector<Point>>& squares)
 {
     squares.clear();
 
@@ -73,16 +70,12 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
                 // dilate canny output to remove potential
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
-                // imshow("grey", gray);
-                // waitKey(0);
             }
             else
             {
                 // apply threshold if l!=0:
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
-                //                imshow("grey #n", gray);
-                //            waitKey(0);
             }
 
             // find contours and store them all as a list
@@ -138,7 +131,8 @@ static void findSquares(const Mat& image, vector<vector<Point> >& squares)
     }
 }
 
-int writeSquares(const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares )
+int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares,
+                      vector<struct tess_data_struct>& foundLetters)
 {
     // Pass it to Tesseract API
     std::shared_ptr<Recognition> recog(new Recognition());
@@ -149,11 +143,11 @@ int writeSquares(const std::string& whitelist, Mat& image, const vector<vector<P
     {
         Point p1 = squares[i][0];
         Point p2 = squares[i][2];
-        if (squares[i][0].x < 2)
+        if (squares[i][0].x <= 1)
             continue;
-        if (squares[i][2].x < 2)
+        if (squares[i][2].x <= 1)
             continue;
-        Point xp1(p1.x - 1, p1.y -1);
+        Point xp1(p1.x - 1, p1.y - 1);
         Point xp2(p2.x + 1, p2.y + 1);
         Rect rect(p1, p2);
         Rect xrect(xp1, xp2);
@@ -164,19 +158,32 @@ int writeSquares(const std::string& whitelist, Mat& image, const vector<vector<P
         if (td.x1 == -1) {
             continue;
         }
-        int offTop = td.y1;
-        int offBottom = xrect.height - td.y2;
-        int offLeft = td.x1;
-        int offRight = xrect.width - td.x2;
-        //   Rect area = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
-        printf("word: '%s'(%.2f%); Align: (%d,%d); [%d,%d,%d,%d]\t",
+        Rect bb = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
+        double centerX = bb.width /2;
+        double centerY = bb.height /2;
+        // calculate offset amount
+//        cout << xrect.width << ", " << xrect.height << endl;
+//        cout << centerX << ", " << centerY << endl;
+        if (bb.area() < 60)
+            continue;
+        int offTop = td.y1 + centerY;
+        int offBottom = xrect.height - td.y2 + centerY;
+        int offLeft = td.x1 + centerX;
+        int offRight = xrect.width - td.x2 + centerX;
+
+        printf("word: '%s'%.2f Align: %d,%d [%d,%d,%d,%d] area:%d\t",
                td.word, td.conf,
                offLeft - offRight,
                offTop - offBottom,
                td.x1,
                td.y1,
                td.x2,
-               td.y2);
+               td.y2,
+               bb.area());
+        td.hOffset = offLeft - offRight;
+        td.vOffset = offTop - offBottom;
+// TODO: XXX TIM        if (std::find(foundLetters.begin(), foundLetters.end(), ))
+// TODO: XXX TIM        foundLetters.push_back(td);
         verticalAlignment(offTop - offBottom);
         horizontalAlignment(offLeft -offRight);
         delete[] td.word;
@@ -184,7 +191,24 @@ int writeSquares(const std::string& whitelist, Mat& image, const vector<vector<P
     return 0;
 }
 
-int detectLetters(string file, string& lr) {
+
+int findLeftLetter(const std::string& letter, Mat& image, const vector<vector<Point> >& squares,
+                   vector<struct tess_data_struct>& foundLetters)
+{
+    findCornerLetters(letter, image, squares, foundLetters);
+    return 0;
+}
+
+int findRightLetter(const std::string& letter, Mat& image, const vector<vector<Point> >& squares,
+                   vector<struct tess_data_struct>& foundLetters)
+{
+    findCornerLetters(letter, image, squares, foundLetters);
+    return 0;
+}
+
+
+int detectLetters(const string& file, const string& lr) {
+    setup();
     cout << "starting: " << lr << endl;
     vector<vector<Point> > squares;
 
@@ -208,6 +232,17 @@ int detectLetters(string file, string& lr) {
     Mat t2 = image.clone();
     findSquares(t1, squares);
 
-    int ret = writeSquares(lr.c_str(), t2, squares);
+    vector<struct tess_data_struct> foundLetters;
+    vector<struct tess_data_struct> rightLetters;
+//    const std::string left = string(lr[0]);
+//    const std::string right = lr.at(1);
+//    int ret = findLeftLetter("A", t2, squares, leftLetters);
+//    ret = findRightLetter("L", t2, squares, rightLetters);
+    int ret = findCornerLetters(lr, t2, squares, foundLetters);
+/*    cout << "FOUND: " << leftLetters[0].x1 << "," << rightLetters[1].x1 << endl;
+    calculatePlate(lr,
+                   leftLetters[0].vOffset, leftLetters[0].hOffset,
+                   rightLetters[1].vOffset, rightLetters[1].hOffset);
+                   */
     return ret;
 }

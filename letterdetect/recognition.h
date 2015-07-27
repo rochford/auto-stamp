@@ -13,8 +13,12 @@ struct tess_data_struct {
     int y1;
     int x2;
     int y2;
+
     float conf;
     char* word;
+
+    int vOffset;
+    int hOffset;
 };
 
 class Recognition{
