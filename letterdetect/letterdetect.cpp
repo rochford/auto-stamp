@@ -158,6 +158,10 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
         if (td.x1 == -1) {
             continue;
         }
+        if (td.letter != whitelist.front()) {
+            continue;
+        }
+
         Rect bb = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
         double centerX = bb.width /2;
         double centerY = bb.height /2;
@@ -170,9 +174,12 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
         int offBottom = xrect.height - td.y2 + centerY;
         int offLeft = td.x1 + centerX;
         int offRight = xrect.width - td.x2 + centerX;
+        td.hOffset = offLeft - offRight;
+        td.vOffset = offTop - offBottom;
+        td.area = bb.area();
 
-        printf("word: '%s'%.2f Align: %d,%d [%d,%d,%d,%d] area:%d\t",
-               td.word, td.conf,
+        printf("letter: '%c',%.2f, Align: %d,%d [%d,%d,%d,%d] area:%d\t",
+               td.letter, td.conf,
                offLeft - offRight,
                offTop - offBottom,
                td.x1,
@@ -180,17 +187,11 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
                td.x2,
                td.y2,
                bb.area());
-        td.hOffset = offLeft - offRight;
-        td.vOffset = offTop - offBottom;
-// TODO: XXX TIM        if (std::find(foundLetters.begin(), foundLetters.end(), ))
-// TODO: XXX TIM        foundLetters.push_back(td);
-        verticalAlignment(offTop - offBottom);
-        horizontalAlignment(offLeft -offRight);
-        delete[] td.word;
+        foundLetters.push_back(td);
+        printAlignment(offTop - offBottom, offLeft -offRight);
     }
     return 0;
 }
-
 
 int findLeftLetter(const std::string& letter, Mat& image, const vector<vector<Point> >& squares,
                    vector<struct tess_data_struct>& foundLetters)
@@ -206,6 +207,12 @@ int findRightLetter(const std::string& letter, Mat& image, const vector<vector<P
     return 0;
 }
 
+bool comp(const tess_data_struct &a, const tess_data_struct &b)
+{
+    Rect aRect(Point(a.x1, a.y1), Point(a.x2, a.y2));
+    Rect bRect(Point(b.x1, b.y1), Point(b.x2, b.y2));
+    return aRect.area() > bRect.area();
+}
 
 int detectLetters(const string& file, const string& lr) {
     setup();
@@ -232,17 +239,29 @@ int detectLetters(const string& file, const string& lr) {
     Mat t2 = image.clone();
     findSquares(t1, squares);
 
-    vector<struct tess_data_struct> foundLetters;
+    vector<struct tess_data_struct> leftLetters;
     vector<struct tess_data_struct> rightLetters;
-//    const std::string left = string(lr[0]);
-//    const std::string right = lr.at(1);
-//    int ret = findLeftLetter("A", t2, squares, leftLetters);
-//    ret = findRightLetter("L", t2, squares, rightLetters);
-    int ret = findCornerLetters(lr, t2, squares, foundLetters);
-/*    cout << "FOUND: " << leftLetters[0].x1 << "," << rightLetters[1].x1 << endl;
-    calculatePlate(lr,
-                   leftLetters[0].vOffset, leftLetters[0].hOffset,
-                   rightLetters[1].vOffset, rightLetters[1].hOffset);
-                   */
+
+    char leftLetter = lr[0];
+    char rightLetter = lr[1];
+    int ret = findLeftLetter(&leftLetter, t2, squares, leftLetters);
+
+    ret = findRightLetter(&rightLetter, t2, squares, rightLetters);
+    // TODO: XXX TIM problem with same letter combinations e.g. AA, BB
+
+    // okay now identify the plate:
+    auto compareConfidence = [](const tess_data_struct &a, const tess_data_struct &b) { return a.conf > b.conf;};
+
+    struct tess_data_struct tdLeft = { -1000, -1000, -1000, -1000, 0.0f, 'x', -1, -1};
+    if (leftLetters.size()) {
+        std::partial_sort(leftLetters.begin(), leftLetters.begin() + 1, leftLetters.end(), compareConfidence);
+        tdLeft = leftLetters.front();
+    }
+    struct tess_data_struct tdRight = { -1000, -1000, -1000, -1000, 0.0f, 'x', -1, -1};
+    if (rightLetters.size()) {
+         std::partial_sort(rightLetters.begin(), rightLetters.begin() + 1, rightLetters.end(), compareConfidence);
+         tdRight = rightLetters.front();
+    }
+    calculatePlate(lr, tdLeft.vOffset, tdLeft.hOffset, tdRight.vOffset, tdRight.hOffset);
     return ret;
 }

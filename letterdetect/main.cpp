@@ -22,28 +22,28 @@ int main(int argc, char** argv)
 {
 
     string data[] = { "AL", // 7
-/*                      "AA",
-                      "BB",
+//                      "AA",
+//                      "BB",
                       "BH",
                       "BL",
-                      "CC",
+//                      "CC",
                       "CH",
                       "DB",
                       "DK",
                       "EB",
                       "FC",
-                      "FF",
+//                      "FF",
                       "FI",
-                      "GG",
+//                      "GG",
                       "GI",
-                      "HH",
+//                      "HH",
                       "IE",
                       "JI",
                       "KE",
                       "KF",
-                      "KK",
+//                      "KK",
                       "KL",
-                      "LL",
+//                      "LL",
                       "MG",
                       "MK",
                       "NB",
@@ -59,8 +59,8 @@ int main(int argc, char** argv)
                       "SF",
                       "SL",
                       "TC",
+                      "TF",
                       "TH",
-                      "TF", */
                       "LAST"
                     };
     //    namedWindow( wndname, 1 );

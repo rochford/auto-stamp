@@ -11,9 +11,12 @@ harvester backlog
 
 letterdetect backlog
 ====================
+- logic thinking for corner letter identification
+- better blacklist - exclude all but corner letters
+- litchfield plate detection source file
+- problem of same letter combinations (e.g. AA, BB) when deciding left and right letters
 - test main() to test all ../data/ images
 - use smallest tesseract text bounding box for letter alignment
-- litchfield plate detection source file
 - O Flaw thinking
 - node.js plugin considerations
 - more test cases

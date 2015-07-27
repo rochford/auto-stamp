@@ -15,10 +15,11 @@ struct tess_data_struct {
     int y2;
 
     float conf;
-    char* word;
+    char letter;
 
     int vOffset;
     int hOffset;
+    int area;
 };
 
 class Recognition{

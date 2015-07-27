@@ -41,26 +41,24 @@ struct tess_data_struct Recognition::recognize(Mat& textRoi)
     tesseract::ResultIterator* ri = _tess->GetIterator();
     tesseract::PageIteratorLevel level = tesseract::RIL_SYMBOL;
     if (ri != 0) {
-        do {
-            char* word = ri->GetUTF8Text(level);
-            if (!word || !isalpha(*word))
-            {
-                return td;
-            }
-            float conf = ri->Confidence(level);
-            if (conf < MIN_CONFIDENCE_PERCENT)
-                continue;
-            int x1, y1, x2, y2;
-            ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-            //                cout << "rect.w:" << xrect.width << ", rect.h:" << xrect.height << endl;
-            td.x1 = x1;
-            td.y1 = y1;
-            td.x2 = x2;
-            td.y2 = y2;
-            td.conf = conf;
-            td.word = word;
-//            delete[] word;
-        } while (ri->Next(level));
+        char* word = ri->GetUTF8Text(level);
+        if (!word || !isalpha(*word))
+        {
+            return td;
+        }
+        float conf = ri->Confidence(level);
+        if (conf < MIN_CONFIDENCE_PERCENT)
+            return td;
+        int x1, y1, x2, y2;
+        ri->BoundingBox(level, &x1, &y1, &x2, &y2);
+        //                cout << "rect.w:" << xrect.width << ", rect.h:" << xrect.height << endl;
+        td.x1 = x1;
+        td.y1 = y1;
+        td.x2 = x2;
+        td.y2 = y2;
+        td.conf = conf;
+        td.letter = word[0];
+        delete[] word;
     }
     return td;
 }

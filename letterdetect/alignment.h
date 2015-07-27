@@ -29,8 +29,8 @@ enum VerticalPos {
     ExtremelyLow = +4
 };
 
-void verticalAlignment(int a);
-void horizontalAlignment(int a);
+void printAlignment(int offsetVertical,
+                    int offsetHorizontal);
 void setup();
 void calculatePlate(const std::string& letterPair,
                     int leftVertical,
