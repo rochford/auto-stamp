@@ -8,132 +8,24 @@
 
 #include <string>
 #include <iostream>
-#include <algorithm> // find
 #include <memory>
-#include <stdexcept>
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <math.h>
 #include <string.h>
 
+#include "findsquares.h"
 #include "alignment.h"
 #include "recognition.h"
-#include "debugutils.h"
+#include "utils.h"
 
 using namespace cv;
 using namespace std;
 
-int thresh = 50, N = 200;
-
-// helper function:
-// finds a cosine of angle between vectors
-// from pt0->pt1 and from pt0->pt2
-static double angle( Point pt1, Point pt2, Point pt0 )
-{
-    double dx1 = pt1.x - pt0.x;
-    double dy1 = pt1.y - pt0.y;
-    double dx2 = pt2.x - pt0.x;
-    double dy2 = pt2.y - pt0.y;
-    return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
-}
-
-// returns sequence of squares detected on the image.
-// the sequence is stored in the specified memory storage
-static void findSquares(const Mat& image, vector<vector<Point>>& squares)
-{
-    squares.clear();
-
-    Mat timg, gray0(image.size(), CV_8U), gray;
-
-    timg = image.clone();
-    vector<vector<Point> > contours;
-
-    // find squares in every color plane of the image
-    int c =0;
-    //    for( int c = 0; c < 3; c++ )
-    {
-        int ch[] = {c, 0};
-        mixChannels(&timg, 1, &gray0, 1, ch, 1);
-
-        // try several threshold levels
-        for( int l = 0; l < N; l++ )
-        {
-            // hack: use Canny instead of zero threshold level.
-            // Canny helps to catch squares with gradient shading
-            if( l == 0 )
-            {
-                // apply Canny. Take the upper threshold from slider
-                // and set the lower to 0 (which forces edges merging)
-                Canny(gray0, gray, 0, thresh, 3);
-                // dilate canny output to remove potential
-                // holes between edge segments
-                dilate(gray, gray, Mat(), Point(-1,-1));
-            }
-            else
-            {
-                // apply threshold if l!=0:
-                //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
-                gray = gray0 >= (l+1)*255/N;
-            }
-
-            // find contours and store them all as a list
-            vector<Vec4i> hierarchy;
-            findContours(gray, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-
-            vector<Point> approx;
-
-            // test each contour
-            for( size_t i = 0; i < contours.size(); i++ )
-            {
-                //                cout << contours[i] << endl;
-                // approximate contour with accuracy proportional
-                // to the contour perimeter
-                approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
-
-                // square contours should have 4 vertices after approximation
-                // relatively large area (to filter out noisy contours)
-                // and be convex.
-                // Note: absolute value of an area is used because
-                // area may be positive or negative - in accordance with the
-                // contour orientation
-                //                cout << "shortvec = " << Mat(approx) << endl;
-                if( approx.size() == 4 &&
-                        fabs(contourArea(Mat(approx))) > 100 &&
-                        //                        fabs(contourArea(Mat(approx))) < 4000 &&
-                        isContourConvex(Mat(approx)) )
-                {
-//                    displateContours(gray, contours, hierarchy);
-                    double maxCosine = 0;
-
-                    for( int j = 2; j < 5; j++ )
-                    {
-                        // find the maximum cosine of the angle between joint edges
-                        double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
-                        maxCosine = MAX(maxCosine, cosine);
-                    }
-
-                    // if cosines of all angles are small
-                    // (all angles are ~90 degree) then write quandrange
-                    // vertices to resultant sequence
-                    if( maxCosine < 0.3 ) {
-                        if(std::find(squares.begin(), squares.end(), approx) != squares.end()) {
-                            /* v contains x */
-                        } else {
-                            squares.push_back(approx);
-                            //                        cout << "shortvec = " << Mat(approx) << endl;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares,
                       vector<struct tess_data_struct>& foundLetters)
 {
+    const int EDGE_OFFSET = 1;
     // Pass it to Tesseract API
     std::shared_ptr<Recognition> recog(new Recognition());
     recog->setWhitelist(whitelist);
@@ -143,12 +35,12 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
     {
         Point p1 = squares[i][0];
         Point p2 = squares[i][2];
-        if (squares[i][0].x <= 1)
+        if (squares[i][0].x <= EDGE_OFFSET)
             continue;
-        if (squares[i][2].x <= 1)
+        if (squares[i][2].x <= EDGE_OFFSET)
             continue;
-        Point xp1(p1.x - 1, p1.y - 1);
-        Point xp2(p2.x + 1, p2.y + 1);
+        Point xp1(p1.x - EDGE_OFFSET, p1.y - EDGE_OFFSET);
+        Point xp2(p2.x + EDGE_OFFSET, p2.y + EDGE_OFFSET);
         Rect rect(p1, p2);
         Rect xrect(xp1, xp2);
         Mat textRoi = image(rect).clone();
@@ -163,17 +55,14 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
         }
 
         Rect bb = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
-        double centerX = bb.width /2;
-        double centerY = bb.height /2;
-        // calculate offset amount
-//        cout << xrect.width << ", " << xrect.height << endl;
-//        cout << centerX << ", " << centerY << endl;
         if (bb.area() < 60)
             continue;
-        int offTop = td.y1 + centerY;
-        int offBottom = xrect.height - td.y2 + centerY;
-        int offLeft = td.x1 + centerX;
-        int offRight = xrect.width - td.x2 + centerX;
+
+        // calculate offset amount
+        int offTop = td.y1 + EDGE_OFFSET;
+        int offBottom = rect.height - td.y2 + EDGE_OFFSET;
+        int offLeft = td.x1 + EDGE_OFFSET;
+        int offRight = rect.width - td.x2 + EDGE_OFFSET;
         td.hOffset = offLeft - offRight;
         td.vOffset = offTop - offBottom;
         td.area = bb.area();

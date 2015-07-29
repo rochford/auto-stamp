@@ -4,7 +4,7 @@ project (letterdetect)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 find_package( OpenCV REQUIRED )
-add_executable(letterdetect letterdetect.cpp alignment.cpp recognition.cpp debugutils.cpp main.cpp)
+add_executable(letterdetect utils.cpp findsquares.cpp letterdetect.cpp alignment.cpp recognition.cpp main.cpp)
 target_link_libraries(letterdetect ${OpenCV_LIBS} lept tesseract)
 
 find_package( OpenCV REQUIRED )

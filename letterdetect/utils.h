@@ -1,5 +1,5 @@
-#ifndef DEBUG_UTILS_H
-#define DEBUG_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -14,4 +14,5 @@ void displateContours(cv::Mat& gray,
                       cv::InputArrayOfArrays contours,
                       std::vector<cv::Vec4i>& hierarchy);
 
-#endif // DEBUG_UTILS
+double angle( cv::Point pt1, cv::Point pt2, cv::Point pt0 );
+#endif // UTILS
