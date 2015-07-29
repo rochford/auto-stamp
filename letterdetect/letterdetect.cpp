@@ -25,7 +25,7 @@ using namespace std;
 int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vector<Point> >& squares,
                       vector<struct tess_data_struct>& foundLetters)
 {
-    const int EDGE_OFFSET = 1;
+    const int EDGE_OFFSET = 3;
     // Pass it to Tesseract API
     std::shared_ptr<Recognition> recog(new Recognition());
     recog->setWhitelist(whitelist);
@@ -35,14 +35,7 @@ int findCornerLetters(const std::string& whitelist, Mat& image, const vector<vec
     {
         Point p1 = squares[i][0];
         Point p2 = squares[i][2];
-        if (squares[i][0].x <= EDGE_OFFSET)
-            continue;
-        if (squares[i][2].x <= EDGE_OFFSET)
-            continue;
-        Point xp1(p1.x - EDGE_OFFSET, p1.y - EDGE_OFFSET);
-        Point xp2(p2.x + EDGE_OFFSET, p2.y + EDGE_OFFSET);
         Rect rect(p1, p2);
-        Rect xrect(xp1, xp2);
         Mat textRoi = image(rect).clone();
         //        scaledDisplayRect(image, xrect);
 
@@ -131,8 +124,8 @@ int detectLetters(const string& file, const string& lr) {
     vector<struct tess_data_struct> leftLetters;
     vector<struct tess_data_struct> rightLetters;
 
-    char leftLetter = lr[0];
-    char rightLetter = lr[1];
+    char leftLetter = lr[lr.length() - 2];
+    char rightLetter = lr[lr.length() - 1];
     int ret = findLeftLetter(&leftLetter, t2, squares, leftLetters);
 
     ret = findRightLetter(&rightLetter, t2, squares, rightLetters);
@@ -140,17 +133,25 @@ int detectLetters(const string& file, const string& lr) {
 
     // okay now identify the plate:
     auto compareConfidence = [](const tess_data_struct &a, const tess_data_struct &b) { return a.conf > b.conf;};
+    auto compareArea = [](const tess_data_struct &a, const tess_data_struct &b)
+    {
+        if (a.area == b.area)
+            return a.conf > b.conf;
+        return a.area > b.area;
+    };
 
     struct tess_data_struct tdLeft = { -1000, -1000, -1000, -1000, 0.0f, 'x', -1, -1};
     if (leftLetters.size()) {
-        std::partial_sort(leftLetters.begin(), leftLetters.begin() + 1, leftLetters.end(), compareConfidence);
+        std::partial_sort(leftLetters.begin(), leftLetters.begin() + 1, leftLetters.end(), compareArea);
         tdLeft = leftLetters.front();
     }
     struct tess_data_struct tdRight = { -1000, -1000, -1000, -1000, 0.0f, 'x', -1, -1};
     if (rightLetters.size()) {
-         std::partial_sort(rightLetters.begin(), rightLetters.begin() + 1, rightLetters.end(), compareConfidence);
+         std::partial_sort(rightLetters.begin(), rightLetters.begin() + 1, rightLetters.end(), compareArea);
          tdRight = rightLetters.front();
     }
-    calculatePlate(lr, tdLeft.vOffset, tdLeft.hOffset, tdRight.vOffset, tdRight.hOffset);
+    if (leftLetters.size() || rightLetters.size()) {
+        calculatePlate(lr, tdLeft.vOffset, tdLeft.hOffset, tdRight.vOffset, tdRight.hOffset);
+    }
     return ret;
 }
