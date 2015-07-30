@@ -14,8 +14,8 @@ target_link_libraries(erosion ${OpenCV_LIBS})
 add_executable(corner corner.cpp)
 target_link_libraries(corner ${OpenCV_LIBS})
 
-add_executable(platebyusercoords recognition.cpp alignment.cpp platebyusercoords.cpp)
-target_link_libraries(platebyusercoords ${OpenCV_LIBS} lept tesseract)
+# add_executable(platebyusercoords recognition.cpp alignment.cpp platebyusercoords.cpp)
+# target_link_libraries(platebyusercoords ${OpenCV_LIBS} lept tesseract)
 
 add_executable(contours findContours_demo.cpp)
 target_link_libraries(contours ${OpenCV_LIBS})
