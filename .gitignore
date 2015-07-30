@@ -1,6 +1,8 @@
 letterdetect/erosion
 letterdetect/letterdetect
 letterdetect/corner
+letterdetect/contours
+letterdetect/threshold
 node_modules/
 test.db
 *.cbp
