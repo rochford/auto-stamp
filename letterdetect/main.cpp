@@ -23,15 +23,20 @@ int main(int argc, char** argv)
 
     string data[] = { "AL", // 7
 //                      "AA",
+                      "AB", // 1a
                       "AE", // plate 1a
+                      "AF", // 8
                       "AI",
 //                      "BB",
                       "BH",
                       "BL",
+                      "CB", // 8
 //                      "CC",
                       "CH",
+                      "DC", // 6
                       "DB",
                       "DK",
+                      "DL", // 1a
                       "EB",
                       "FC",
 //                      "FF",
@@ -47,6 +52,7 @@ int main(int argc, char** argv)
                       "KF",
 //                      "KK",
                       "KL",
+                      "LA", // 4
 //                      "LL",
                       "MG",
                       "MK",
