@@ -138,8 +138,8 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 void displayCornerSquareOutput( const Mat& sq,
                                 const CornerSquareOutputInfo& middle )
 {
-    const Rect bb = boundingRect( Mat(middle._points) );
-    const Rect childBB = middle._childRect;
+    const Rect_<double> bb = boundingRect( Mat(middle._points) );
+    const Rect_<double> childBB = middle._childRect;
     cout << "Square bb (threshold " << middle._threshold << "):" << bb.tl() << ", " << bb.br();
     cout << "\t child:" << childBB.tl() << ", " << childBB.br();
     cout << " LEFT:" << childBB.x - bb.x;
@@ -155,12 +155,12 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
 {
     vector<CornerSquareOutputInfo> squares;
     vector<vector<Point> > contours;
-    for ( int thres = 30; thres < 150; thres++ )
+    for ( int thres = 20; thres < 170; thres++ )
     {
         Mat detected_edges, dst;
-        threshold( src_gray, dst, thres, 255, 1);
+        threshold( src_gray, dst, thres, 255, CV_THRESH_BINARY_INV );
         /// Reduce noise with a kernel 3x3
-        blur( dst, detected_edges, Size(3,3) );
+        blur( dst, detected_edges, Size( 3,3 ) );
 
         /// Canny detector
         Canny( detected_edges, detected_edges, thres, thres*3, 3 );
@@ -172,7 +172,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
 
         vector<Vec4i> hierarchy;
         // find contours and store them all as a tree
-        findContours(detected_edges, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+        findContours( detected_edges, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
 
         vector<Point> approx;
         // test each contour
@@ -184,7 +184,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             Rect bb = boundingRect( Mat(approx) );
 
             if (!bb.contains(input.leftPoint) &&
-                    !bb.contains(input.rightPoint))
+                !bb.contains(input.rightPoint))
             {
                 continue;
             }
@@ -201,7 +201,6 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                     double cosine = fabs(angle(approx[k%4], approx[k-2], approx[k-1]));
                     maxCosine = MAX(maxCosine, cosine);
                 }
-
 
                 // if cosines of all angles are small
                 // (all angles are ~90 degree) then write quandrange
@@ -234,6 +233,10 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                         if (childBB.br().y > br.y)
                             br.y = childBB.br().y;
                         childContour = hierarchy[childContour][0]; // next
+                    }
+                    if (tl == Point(1000,1000) || br == Point(0,0)) {
+                        // No children
+                        continue;
                     }
                     Rect totalChildrenRect(tl, br);
                     cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
@@ -275,8 +278,8 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
         CornerSquareOutputInfo right;
 
         while ( middle++ != squares.end()) {
-            if ( processLeftSquare && middle->_leftSquare ||
-                 processRightSquare && !middle->_leftSquare ) {
+            if ( ( processLeftSquare && middle->_leftSquare ) ||
+                 ( processRightSquare && !middle->_leftSquare ) ) {
                 continue;
             }
 
@@ -298,19 +301,22 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             displayCornerSquareOutput(sq, *middle);
         }
         if ( processLeftSquare && processRightSquare ) {
-            Rect lbb = boundingRect( Mat(left._points) );
-            Rect lchildBB = left._childRect;
-            int lleft = lchildBB.x - lbb.x;
-            int lright = lbb.br().x - lchildBB.br().x;
-            int ltop = lchildBB.y - lbb.y;
-            int lbottom =  lbb.br().y - lchildBB.br().y;
+            // multiply factor based on width height
+            Rect_<double> lbb = boundingRect( Mat(left._points) );
+            Rect_<double> lchildBB = left._childRect;
+            double fx = 1.0/(lbb.width/20.0);
+            double lleft = lchildBB.x*fx - lbb.x*fx;
 
-            Rect rbb = boundingRect( Mat(right._points) );
-            Rect rchildBB = right._childRect;
-            int rleft = rchildBB.x - rbb.x;
-            int rright = rbb.br().x - rchildBB.br().x;
-            int rtop = rchildBB.y - rbb.y;
-            int rbottom =  rbb.br().y - rchildBB.br().y;
+            double lright = lbb.br().x*fx - lchildBB.br().x*fx;
+            double ltop = lchildBB.y*fx - lbb.y*fx;
+            double lbottom =  lbb.br().y*fx - lchildBB.br().y*fx;
+
+            Rect_<double> rbb = boundingRect( Mat(right._points) );
+            Rect_<double> rchildBB = right._childRect;
+            double rleft = rchildBB.x*fx - rbb.x*fx;
+            double rright = rbb.br().x*fx - rchildBB.br().x*fx;
+            double rtop = rchildBB.y*fx - rbb.y*fx;
+            double rbottom =  rbb.br().y*fx - rchildBB.br().y*fx;
 
             calculatePlate( input.leftLetter + input.rightLetter,
                             ltop - lbottom, lleft - lright,

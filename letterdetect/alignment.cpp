@@ -28,9 +28,9 @@ void calculatePlate(const std::string& letterPair,
                     int rightVert,
                     int rightHoriz)
 {
-//    cout << "calculatePlate: " << letterPair << endl;
-//    cout << leftVert << ", "<< leftHoriz << endl;
-//    cout << rightVert << ", "<< rightHoriz << endl;
+    cout << "calculatePlate: " << letterPair << endl;
+    cout << leftVert << ", "<< leftHoriz << endl;
+    cout << rightVert << ", "<< rightHoriz << endl;
     bool leftIsValid = false;
     bool rightIsValid = false;
 
@@ -39,15 +39,15 @@ void calculatePlate(const std::string& letterPair,
     if (rightVert != -1000)
         rightIsValid = true;
 //    cout << leftIsValid << ", " << rightIsValid << endl;
-    int minLV = leftVert - 2;
-    int maxLV = leftVert + 2;
-    int minLH = leftHoriz - 2;
-    int maxLH = leftHoriz + 2;
+    int minLV = leftVert - 1;
+    int maxLV = leftVert + 1;
+    int minLH = leftHoriz - 1;
+    int maxLH = leftHoriz + 1;
 
-    int minRV = rightVert - 2;
-    int maxRV = rightVert + 2;
-    int minRH = rightHoriz - 2;
-    int maxRH = rightHoriz + 2;
+    int minRV = rightVert - 1;
+    int maxRV = rightVert + 1;
+    int minRH = rightHoriz - 1;
+    int maxRH = rightHoriz + 1;
 
     vector<LitchfieldItem> candidates;
     vector<LitchfieldItem> all = litchfieldLetterPosMap[letterPair];
@@ -138,6 +138,7 @@ void verticalAlignment(int a) {
 void horizontalAlignment(int a)
 {
     switch (a) {
+    case -5:
     case -4:
         cout << ", ext left" << endl;
         break;
@@ -163,6 +164,7 @@ void horizontalAlignment(int a)
         cout << ", very right" << endl;
         break;
     case 4:
+    case 5:
         cout << ", ext right" << endl;
         break;
     default:
@@ -932,6 +934,22 @@ void setup() {
     litchfieldLetterPosMap["DL"] = v;
     v.clear();
 
+    // EA
+    v.emplace_back("EA", 0, -1, 2, -2, 2);
+    v.emplace_back("EA", 1, -1, 2, -2, 2);
+    v.emplace_back("EA", 2, 0, -2, 0, 2);
+    v.emplace_back("EA", 4, 0, 0, 0, 0);
+    v.emplace_back("EA", 5, -2, 2, 0, 0);
+    v.emplace_back("EA", 6, -2, 0, 4, 2);
+    v.emplace_back("EA", 8, -2, -2, 0, 1);
+    v.emplace_back("EA", 9, -3, 2, 0, 0);
+    v.emplace_back("EA", 11, 1, 0, 3, 0);
+    v.emplace_back("EA", 3, 0, -2, 0, 0);
+    v.emplace_back("EA", 7, 0, 0, 0, 2);
+    v.emplace_back("EA", 10, 0, 0, -4, 0);
+    litchfieldLetterPosMap["EA"] = v;
+    v.clear();
+
     // EB
     v.emplace_back("EB", 0, 0, 1, 0, 2);
     v.emplace_back("EB", 1, 0, 1, 0, 2);
@@ -946,6 +964,70 @@ void setup() {
     v.emplace_back("EB", 3, -3, 2, -3, 2);
     v.emplace_back("EB", 7, 0, 0, 0, 0);
     litchfieldLetterPosMap["EB"] = v;
+    v.clear();
+
+    // EC
+    v.emplace_back("EC", 0, 1, 2, 0, -1);
+    v.emplace_back("EC", 1, 1, 2, 0, -1);
+    v.emplace_back("EC", 2, 2, 0, 0, -2);
+    v.emplace_back("EC", 4, 0, 0, 2, 0);
+    v.emplace_back("EC", 5, 0, 0, 2, -2);
+    v.emplace_back("EC", 6, -2, 0, -2, 0);
+    v.emplace_back("EC", 8, -2, -2, 2, 0);
+    v.emplace_back("EC", 9, -4, 2, -2, -2);
+    v.emplace_back("EC", 11, 0, 0, 0, 0);
+    v.emplace_back("EC", 3, -2, 0, -2, -2);
+    v.emplace_back("EC", 7, 0, -2, 0, -2);
+    v.emplace_back("EC", 10, 2, 0, -2, -2);
+    litchfieldLetterPosMap["EC"] = v;
+    v.clear();
+
+    // ED
+    v.emplace_back("ED", 0, 0, 0, -3, 0);
+    v.emplace_back("ED", 1, 0, 0, -3, 0);
+    v.emplace_back("ED", 4, 0, 1, 0, 1);
+    v.emplace_back("ED", 6, -1, 0, 0, 2);
+    v.emplace_back("ED", 7, -2, -1, -2, 0);
+    v.emplace_back("ED", 9, -4, 0, 2, 2);
+    v.emplace_back("ED", 11, 4, 2, 4, 2);
+    v.emplace_back("ED", 2, 0, 2, 0, 2);
+    v.emplace_back("ED", 3, -2, 2, 0, 2);
+    v.emplace_back("ED", 5, 0, 0, 0, 1);
+    v.emplace_back("ED", 8, -2, 1, -2, 0);
+    v.emplace_back("ED", 10, 2, 0, 0, 0);
+    litchfieldLetterPosMap["ED"] = v;
+    v.clear();
+
+    // EE
+    v.emplace_back("EE", 0, 2, 2, -2, 2);
+    v.emplace_back("EE", 1, 2, 2, -2, 2);
+    v.emplace_back("EE", 2, 0, -2, 0, 0);
+    v.emplace_back("EE", 4, 0, 1, -2, 0);
+    v.emplace_back("EE", 6, 0, 0, -2, 0);
+    v.emplace_back("EE", 8, -2, 0, -2, 0);
+    v.emplace_back("EE", 9, 0, 2, 0, 0);
+    v.emplace_back("EE", 11, -4, 0, -3, 2);
+    v.emplace_back("EE", 3, -3, 2, -3, 0);
+    v.emplace_back("EE", 5, 0, 1, 0, 0);
+    v.emplace_back("EE", 7, 2, -4, 4, 0);
+    v.emplace_back("EE", 10, 2, 2, 2, 0);
+    litchfieldLetterPosMap["EE"] = v;
+    v.clear();
+
+    // EF
+    v.emplace_back("EF", 0, 2, -2, -2, 0);
+    v.emplace_back("EF", 1, 2, -2, -2, 0);
+    v.emplace_back("EF", 2, 0, -2, 1, 0);
+    v.emplace_back("EF", 4, 0, 0, -2, -2);
+    v.emplace_back("EF", 6, -2, -1, 0, 0);
+    v.emplace_back("EF", 8, -1, 0, 0, 0);
+    v.emplace_back("EF", 9, -3, 0, 0, -2);
+    v.emplace_back("EF", 10, 1, 2, 3, 0);
+    v.emplace_back("EF", 11, 0, 3, -3, 0);
+    v.emplace_back("EF", 3, -2, 4, 4, -2);
+    v.emplace_back("EF", 5, 0, 0, 0, 0);
+    v.emplace_back("EF", 7, 0, 0, -2, -2);
+    litchfieldLetterPosMap["EF"] = v;
     v.clear();
 
     // FC
