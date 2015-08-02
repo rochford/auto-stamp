@@ -44,18 +44,18 @@ class CornerSquareOutputInfo {
 public:
     CornerSquareOutputInfo() = default;
     CornerSquareOutputInfo(vector<Point> ownPoints,
-                           vector<Point> childPoints,
+                           Rect childRect,
                            bool leftSquare,
                            Mat roi,
                            int thresh)
         : _points(ownPoints),
-          _childPoints(childPoints),
+          _childRect(childRect),
           _leftSquare(leftSquare),
           _roi(roi),
           _threshold(thresh)
     {}
     vector<Point> _points;
-    vector<Point> _childPoints;
+    Rect _childRect;
     bool _leftSquare;
     Mat _roi;
     int _threshold;
@@ -136,10 +136,10 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 }
 
 void displayCornerSquareOutput( const Mat& sq,
-                                CornerSquareOutputInfo& middle )
+                                const CornerSquareOutputInfo& middle )
 {
     const Rect bb = boundingRect( Mat(middle._points) );
-    const Rect childBB = boundingRect( Mat(middle._childPoints) );
+    const Rect childBB = middle._childRect;
     cout << "Square bb (threshold " << middle._threshold << "):" << bb.tl() << ", " << bb.br();
     cout << "\t child:" << childBB.tl() << ", " << childBB.br();
     cout << " LEFT:" << childBB.x - bb.x;
@@ -202,54 +202,59 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                     maxCosine = MAX(maxCosine, cosine);
                 }
 
+
                 // if cosines of all angles are small
                 // (all angles are ~90 degree) then write quandrange
                 // vertices to resultant sequence
                 if( maxCosine < 0.3 ) {
+                    bool leftSquare {false};
+                    if (bb.contains(input.leftPoint))
+                        leftSquare = true;
+
                     // must have a child (ie. letter in the box)
-                    const int childContour = hierarchy[j][2];
-                    if (childContour != -1) {
+
+                    // TODO: this needs to be a loop as might be several children.
+                    // e.g. letter 'K' made up from a couple of children contours.
+                    // The alignment will be incorrect if only use the first child.
+                    Point tl(1000,1000), br(0, 0);
+                    int childContour = hierarchy[j][2];
+                    while (childContour != -1) {
                         vector<Point> childApprox;
-
-                        // approximate contour with accuracy proportional
-                        // to the contour perimeter
-                        approxPolyDP(Mat(contours[childContour]), childApprox, /* arcLength(Mat(contours[childContour]), true)*0.001 */ 1, true);
-
-                        bool leftSquare {false};
-                        if (bb.contains(input.leftPoint))
-                            leftSquare = true;
-
-                        CornerSquareOutputInfo tmp(approx, childApprox, leftSquare, src_gray(bb).clone(), thres);
-                        if(std::find(squares.begin(), squares.end(), tmp) != squares.end()) {
-                            // v contains x
-                            continue;
-                        }
-
+                        approxPolyDP(Mat(contours[childContour]), childApprox, /* arcLength(Mat(contours[childContour]), true)*0.001 */ 0.001, true);
                         Rect childBB = boundingRect(Mat(childApprox));
-                        // If the child bounding rect not completely within the square, then continue
-                        // Note: absolute value of an area is used because
-                        // area may be positive or negative - in accordance with the
-                        // contour orientation
-                        if (fabs(bb.area()) < fabs(childBB.area()) ||
-                                !bb.contains(childBB.tl()) ||
-                                !bb.contains(childBB.br())) {
-                            continue;
-                        }
-#if 0
-                        // For alignment checking to work, all the squares need to be similar sizes,
-                        // so calculate new approx, childApprox,
-                        Mat normalizedSquare;
-                        resize(src_gray(bb).clone(),normalizedSquare,Size(40,40));
-#endif // 0
-                        squares.emplace_back(approx, childApprox, leftSquare, src_gray(bb).clone(), thres);
+                        cout << "Contour[" << childContour << "] " << " Child BB: " << childBB.tl() << ", " << childBB.br() << endl;
 
-                        const int grandChildContour = hierarchy[childContour][2];
-                        if (grandChildContour != -1) {
-                            // okay if A,B,C,D,E,...if letter has an inner contour like a 'O'
-                            vector<Point> grandChildApprox;
-                            approxPolyDP(Mat(contours[grandChildContour]), grandChildApprox, /* arcLength(Mat(contours[grandChildContour]), true)*0.001 */ 1, true);
-                        }
+                        if (childBB.tl().x < tl.x)
+                            tl.x = childBB.tl().x;
+                        if (childBB.tl().y < tl.y)
+                            tl.y = childBB.tl().y;
+
+                        if (childBB.br().x > br.x)
+                            br.x = childBB.br().x;
+                        if (childBB.br().y > br.y)
+                            br.y = childBB.br().y;
+                        childContour = hierarchy[childContour][0]; // next
                     }
+                    Rect totalChildrenRect(tl, br);
+                    cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
+
+                    CornerSquareOutputInfo tmp(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
+                    if(std::find(squares.begin(), squares.end(), tmp) != squares.end()) {
+                        // v contains x
+                        continue;
+                    }
+
+                    // If the child bounding rect not completely within the square, then continue
+                    // Note: absolute value of an area is used because
+                    // area may be positive or negative - in accordance with the
+                    // contour orientation
+                    if (fabs(bb.area()) < fabs(totalChildrenRect.area()) ||
+                            !bb.contains(totalChildrenRect.tl()) ||
+                            !bb.contains(totalChildrenRect.br())) {
+                        continue;
+                    }
+
+                    squares.emplace_back(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
                 }
             }
         }
@@ -283,7 +288,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                 right = *middle;
             }
             Rect bb = boundingRect( Mat(middle->_points) );
-            Rect childBB = boundingRect( Mat(middle->_childPoints) );
+            Rect childBB = middle->_childRect;
             Scalar color1 = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
             Scalar color2 = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
             rectangle(tmp, bb, color1, 2);
@@ -294,14 +299,14 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
         }
         if ( processLeftSquare && processRightSquare ) {
             Rect lbb = boundingRect( Mat(left._points) );
-            Rect lchildBB = boundingRect( Mat(left._childPoints) );
+            Rect lchildBB = left._childRect;
             int lleft = lchildBB.x - lbb.x;
             int lright = lbb.br().x - lchildBB.br().x;
             int ltop = lchildBB.y - lbb.y;
             int lbottom =  lbb.br().y - lchildBB.br().y;
 
             Rect rbb = boundingRect( Mat(right._points) );
-            Rect rchildBB = boundingRect( Mat(right._childPoints) );
+            Rect rchildBB = right._childRect;
             int rleft = rchildBB.x - rbb.x;
             int rright = rbb.br().x - rchildBB.br().x;
             int rtop = rchildBB.y - rbb.y;
