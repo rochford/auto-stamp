@@ -12,6 +12,7 @@ harvester backlog
 letterdetect backlog
 ====================
 - resize square boxes to all be same size - needed for alignment calculations
+- If red MX cancel is in Letter corner squares, try to filter it out.
 - litchfield plate detection if one 1 corner square known.
 - better blacklist - exclude all but corner letters
 - litchfield plate detection source file
