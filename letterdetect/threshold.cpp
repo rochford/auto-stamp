@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 
 #include "alignment.h"
 
@@ -300,29 +301,66 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             Mat sq = middle->_roi.clone();
             displayCornerSquareOutput(sq, *middle);
         }
-        if ( processLeftSquare && processRightSquare ) {
+
+        double fx = 1.0;
+        // multiply factor based on width height
+        Rect_<double> lbb;
+        Rect_<double> lchildBB;
+        double lleft;
+        double lright;
+        double ltop;
+        double lbottom;
+
+        Rect_<double> rbb;
+        Rect_<double> rchildBB;
+        double rleft;
+        double rright;
+        double rtop;
+        double rbottom;
+        if (processLeftSquare) {
             // multiply factor based on width height
-            Rect_<double> lbb = boundingRect( Mat(left._points) );
-            Rect_<double> lchildBB = left._childRect;
-            double fx = 1.0/(lbb.width/20.0);
-            double lleft = lchildBB.x*fx - lbb.x*fx;
-
-            double lright = lbb.br().x*fx - lchildBB.br().x*fx;
-            double ltop = lchildBB.y*fx - lbb.y*fx;
-            double lbottom =  lbb.br().y*fx - lchildBB.br().y*fx;
-
-            Rect_<double> rbb = boundingRect( Mat(right._points) );
-            Rect_<double> rchildBB = right._childRect;
-            double rleft = rchildBB.x*fx - rbb.x*fx;
-            double rright = rbb.br().x*fx - rchildBB.br().x*fx;
-            double rtop = rchildBB.y*fx - rbb.y*fx;
-            double rbottom =  rbb.br().y*fx - rchildBB.br().y*fx;
-
+            lbb = boundingRect( Mat(left._points) );
+            lchildBB = left._childRect;
+            fx = 1.0/(lbb.width/20.0);
+            lleft = lchildBB.x*fx - lbb.x*fx;
+            lright = lbb.br().x*fx - lchildBB.br().x*fx;
+            ltop = lchildBB.y*fx - lbb.y*fx;
+            lbottom =  lbb.br().y*fx - lchildBB.br().y*fx;
+        }
+        if (processRightSquare) {
+            rbb = boundingRect( Mat(right._points) );
+            rchildBB = right._childRect;
+            fx = 1.0/(rbb.width/20.0);
+            rleft = rchildBB.x*fx - rbb.x*fx;
+            rright = rbb.br().x*fx - rchildBB.br().x*fx;
+            rtop = rchildBB.y*fx - rbb.y*fx;
+            rbottom =  rbb.br().y*fx - rchildBB.br().y*fx;
+        }
+        if ( processLeftSquare && processRightSquare ) {
             calculatePlate( input.leftLetter + input.rightLetter,
                             ltop - lbottom, lleft - lright,
+                            rtop - rbottom,  rleft - rright );
+        } else if  ( processLeftSquare && !processRightSquare )  {
+            calculatePlate( input.leftLetter + input.rightLetter,
+                            ltop - lbottom, lleft - lright,
+                            -1000,  -1000 );
+        } else if  ( !processLeftSquare && processRightSquare )  {
+            calculatePlate( input.leftLetter + input.rightLetter,
+                            -1000, -1000,
                             rtop - rbottom,  rleft - rright );
         }
         imshow( window_name, tmp );
         waitKey( 0 );
+        vector<int> compression_params;
+        compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+        compression_params.push_back(90);
+
+        try {
+            imwrite("qvplate" + input.leftLetter + input.rightLetter + ".jpg", tmp, compression_params);
+        }
+        catch (runtime_error& ex) {
+            fprintf(stderr, "Exception converting image to PNG format: %s\n", ex.what());
+        }
+
     }
 }
