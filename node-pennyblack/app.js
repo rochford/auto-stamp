@@ -1,10 +1,12 @@
 "use strict";
 var cv = require('../node-opencv/lib/opencv');
+var request = require('request');
+var fs = require('fs');
 
 var constanttl = new cv.Point(1000, 1000);
 var constantbr = new cv.Point(0, 0);
 var lPoint = new cv.Point(54, 468);
-var rPoint = new cv.Point(415, 464);
+var rPoint = new cv.Point(425, 464);
 
 var leftArray = [];
 var rightArray = [];
@@ -17,7 +19,7 @@ function angle(pt1, pt2, pt0) {
     return (dx1*dx2 + dy1*dy2)/Math.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
-cv.readImage(process.argv[2], function(err, im) {
+function processStampImage(err, im) {
     if (err) throw err;
     var width = im.width();
     var height = im.height();
@@ -29,7 +31,7 @@ cv.readImage(process.argv[2], function(err, im) {
     im_gray.resize(77*6,88*6);
     im_gray.convertGrayscale();
 
-    for (var thresh= 20; thresh < 170; thresh++) {
+    for (var thresh= 20; thresh < 200; thresh++) {
         var dst = im_gray.threshold(thresh, 255, "Binary Inverted");
         dst.medianBlur(3);
         dst.canny(thresh, thresh*3);
@@ -72,7 +74,7 @@ cv.readImage(process.argv[2], function(err, im) {
 
                 if (maxCosine < 0.3) {
 
-//                    console.log(bb);
+                    //                    console.log(bb);
                     // child checking.
                     var childContour = contours.hierarchy(j);
                     var tl = new cv.Point(1000, 1000);
@@ -98,18 +100,18 @@ cv.readImage(process.argv[2], function(err, im) {
                         continue;
 
                     if ((bb.x < lPoint.x)
-                         && (lPoint.x < (bb.x + bb.width))
-                         && (bb.y < lPoint.y)
-                         && (lPoint.y < (bb.y + bb.height) )) {
+                            && (lPoint.x < (bb.x + bb.width))
+                            && (bb.y < lPoint.y)
+                            && (lPoint.y < (bb.y + bb.height) )) {
                         leftArray.push({boundingBox: bb, threshold: thresh, contour: j, childTl: { x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                     } else if ((bb.x < rPoint.x)
-                                       && (rPoint.x < (bb.x + bb.width))
-                                       && (bb.y < rPoint.y)
-                                       && (rPoint.y < (bb.y + bb.height) )) {
+                               && (rPoint.x < (bb.x + bb.width))
+                               && (bb.y < rPoint.y)
+                               && (rPoint.y < (bb.y + bb.height) )) {
                         rightArray.push({boundingBox: bb, threshold: thresh, contour: j, childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                     }
 
-                    console.log('total child rect: ' + tl.x + ', ' + tl.y);
+                    //console.log('total child rect: ' + tl.x + ', ' + tl.y);
                 }
             }
         }
@@ -117,14 +119,33 @@ cv.readImage(process.argv[2], function(err, im) {
 
     im_gray.save('gray.jpg');
     var left = leftArray[Math.floor(leftArray.length / 2)];
-    console.log(left);
-    var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
-    im_crop.save('qvplate'+ left.threshold +  'left' + '.jpg' );
-
+    if (left) {
+        console.log(left);
+        var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
+        im_crop.save('qvplate'+ left.threshold +  'left' + '.jpg' );
+    }
     var right = rightArray[Math.floor(rightArray.length / 2)];
-    console.log(right);
-    im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
-    im_crop.save('qvplate'+ right.threshold +  'right' + '.jpg' );
-
+    if (right) {
+        console.log(right);
+        im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
+        im_crop.save('qvplate'+ right.threshold +  'right' + '.jpg' );
+    }
     console.log('done');
-});
+}
+
+
+var s = new cv.ImageDataStream();
+
+s.on('load', function(matrix){
+    console.log('loaded');
+//    cv.readImage(matrix, processStampImage);
+    processStampImage(null, matrix);
+})
+s.on('end', function(matrix){
+    console.log('end');
+})
+
+// request('http://thumbs1.ebaystatic.com/d/l225/m/m49DWYRoVidktSF-QxAzsAQ.jpg').pipe(s);
+// request('http://thumbs1.ebaystatic.com/d/l225/m/mdmVN2j5ksmcIQQkoZYp35g.jpg').pipe(s);
+//request('http://thumbs3.ebaystatic.com/d/l225/m/mkZ4BNd8FNv0wNfSoppQjrw.jpg').pipe(s);
+request('http://thumbs3.ebaystatic.com/d/l225/m/mt2WWknJ-Q6xnBVMT0DpGDA.jpg').pipe(s);
