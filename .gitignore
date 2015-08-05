@@ -3,6 +3,7 @@ letterdetect/letterdetect
 letterdetect/corner
 letterdetect/contours
 letterdetect/threshold
+letterdetect/*.jpg
 node_modules/
 test.db
 *.cbp
@@ -12,3 +13,4 @@ Makefile
 *.log
 *.save
 *.user
+node-pennyblack/*.jpg
