@@ -3,7 +3,17 @@
   "description": "penny black corner letter detection",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "start": "PORT=3000 node app.js"
+  },
   "dependencies": {
+    "body-parser": "^1.13.3",
+    "connect": "^3.4.0",
+    "errorhandler": "^1.4.2",
+    "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "method-override": "^2.3.5",
+    "morgan": "^1.6.1",
     "request": "^2.60.0"
   }
 }

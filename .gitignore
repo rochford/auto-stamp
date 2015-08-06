@@ -14,3 +14,4 @@ Makefile
 *.save
 *.user
 node-pennyblack/*.jpg
+*.svn

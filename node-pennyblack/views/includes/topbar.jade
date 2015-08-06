@@ -1,0 +1,12 @@
+.navbar.navbar-inverse
+    .navbar-header
+        btn(type="button", class="navbar-toggle", data-toggle="collapse", data-target=".navbar-inverse-collapse")
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+        a(class="navbar-brand", href="/") QV Plate
+    .navbar-collapse.collapse.navbar-inverse-collapse
+        ul.nav.navbar-nav
+            li(class=path=='/about'?'active':undefined)
+                a(href="/about") About
+
