@@ -184,12 +184,16 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             approxPolyDP(Mat(contours[j]), approx, 4, true);
             Rect bb = boundingRect( Mat(approx) );
 
+            // square cannot contain both left & right
+            if (bb.contains(input.leftPoint) && bb.contains(input.rightPoint))
+            {
+                continue;
+            }
             if (!bb.contains(input.leftPoint) &&
                 !bb.contains(input.rightPoint))
             {
                 continue;
             }
-
             // square contours should have 4 vertices after approximation
             // and be convex.
             if( approx.size() == 4 && isContourConvex(Mat(approx)) )
