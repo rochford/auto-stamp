@@ -20,5 +20,8 @@ target_link_libraries(corner ${OpenCV_LIBS})
 add_executable(contours findContours_demo.cpp)
 target_link_libraries(contours ${OpenCV_LIBS})
 
-add_executable(threshold threshold.cpp alignment.cpp)
-target_link_libraries(threshold ${OpenCV_LIBS})
+add_executable(threshold threshold.cpp alignment.cpp recognition.cpp)
+target_link_libraries(threshold ${OpenCV_LIBS} lept tesseract)
+
+add_executable(oflaw oflaw.cpp)
+target_link_libraries(oflaw ${OpenCV_LIBS})
