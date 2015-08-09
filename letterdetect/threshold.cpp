@@ -149,7 +149,6 @@ void displayCornerSquareOutput( const Mat& sq,
     cout << " BOTTOM:" << bb.br().y - childBB.br().y << endl;
     imshow( middle._leftSquare ? "SE" : "SW", sq );
     waitKey(0);
-
 }
 
 void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input )
@@ -190,80 +189,76 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                 continue;
             }
             if (!bb.contains(input.leftPoint) &&
-                !bb.contains(input.rightPoint))
+                    !bb.contains(input.rightPoint))
             {
                 continue;
             }
-            // square contours should have 4 vertices after approximation
-            // and be convex.
-            if( approx.size() == 4 && isContourConvex(Mat(approx)) )
+            double maxCosine = 0;
+
+            for( int k = 2; k < approx.size() + 1; k++ )
             {
-                double maxCosine = 0;
+                // find the maximum cosine of the angle between joint edges
+                double cosine = fabs(angle(approx[k%4], approx[k-2], approx[k-1]));
+                maxCosine = MAX(maxCosine, cosine);
+            }
 
-                for( int k = 2; k < 5; k++ )
-                {
-                    // find the maximum cosine of the angle between joint edges
-                    double cosine = fabs(angle(approx[k%4], approx[k-2], approx[k-1]));
-                    maxCosine = MAX(maxCosine, cosine);
+            // if cosines of all angles are small
+            // (all angles are ~90 degree) then write quandrange
+            // vertices to resultant sequence
+            if( maxCosine < 0.3 )
+            {
+                bool leftSquare {false};
+                if (bb.contains(input.leftPoint))
+                    leftSquare = true;
+
+                // must have a child (ie. letter in the box)
+
+                // TODO: this needs to be a loop as might be several children.
+                // e.g. letter 'K' made up from a couple of children contours.
+                // The alignment will be incorrect if only use the first child.
+                Point tl(1000,1000), br(0, 0);
+                int childContour = hierarchy[j][2];
+                while (childContour != -1) {
+                    vector<Point> childApprox;
+                    approxPolyDP(Mat(contours[childContour]), childApprox, /* arcLength(Mat(contours[childContour]), true)*0.001 */ 0.001, true);
+                    Rect childBB = boundingRect(Mat(childApprox));
+                    // cout << "Contour[" << childContour << "] " << " Child BB: " << childBB.tl() << ", " << childBB.br() << endl;
+
+                    // TODO: XXX TIM if child contour goes out of box, then ignore it - MX cancel?
+                    if (childBB.tl().x < tl.x)
+                        tl.x = childBB.tl().x;
+                    if (childBB.tl().y < tl.y)
+                        tl.y = childBB.tl().y;
+
+                    if (childBB.br().x > br.x)
+                        br.x = childBB.br().x;
+                    if (childBB.br().y > br.y)
+                        br.y = childBB.br().y;
+                    childContour = hierarchy[childContour][0]; // next
+                }
+                if (tl == Point(1000,1000) || br == Point(0,0)) {
+                    // No children
+                    continue;
+                }
+                Rect totalChildrenRect(tl, br);
+                cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
+
+                CornerSquareOutputInfo tmp(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
+                if(std::find(squares.begin(), squares.end(), tmp) != squares.end()) {
+                    // v contains x
+                    continue;
                 }
 
-                // if cosines of all angles are small
-                // (all angles are ~90 degree) then write quandrange
-                // vertices to resultant sequence
-                if( maxCosine < 0.3 ) {
-                    bool leftSquare {false};
-                    if (bb.contains(input.leftPoint))
-                        leftSquare = true;
-
-                    // must have a child (ie. letter in the box)
-
-                    // TODO: this needs to be a loop as might be several children.
-                    // e.g. letter 'K' made up from a couple of children contours.
-                    // The alignment will be incorrect if only use the first child.
-                    Point tl(1000,1000), br(0, 0);
-                    int childContour = hierarchy[j][2];
-                    while (childContour != -1) {
-                        vector<Point> childApprox;
-                        approxPolyDP(Mat(contours[childContour]), childApprox, /* arcLength(Mat(contours[childContour]), true)*0.001 */ 0.001, true);
-                        Rect childBB = boundingRect(Mat(childApprox));
-                        cout << "Contour[" << childContour << "] " << " Child BB: " << childBB.tl() << ", " << childBB.br() << endl;
-
-                        if (childBB.tl().x < tl.x)
-                            tl.x = childBB.tl().x;
-                        if (childBB.tl().y < tl.y)
-                            tl.y = childBB.tl().y;
-
-                        if (childBB.br().x > br.x)
-                            br.x = childBB.br().x;
-                        if (childBB.br().y > br.y)
-                            br.y = childBB.br().y;
-                        childContour = hierarchy[childContour][0]; // next
-                    }
-                    if (tl == Point(1000,1000) || br == Point(0,0)) {
-                        // No children
-                        continue;
-                    }
-                    Rect totalChildrenRect(tl, br);
-                    cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
-
-                    CornerSquareOutputInfo tmp(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
-                    if(std::find(squares.begin(), squares.end(), tmp) != squares.end()) {
-                        // v contains x
-                        continue;
-                    }
-
-                    // If the child bounding rect not completely within the square, then continue
-                    // Note: absolute value of an area is used because
-                    // area may be positive or negative - in accordance with the
-                    // contour orientation
-                    if (fabs(bb.area()) < fabs(totalChildrenRect.area()) ||
-                            !bb.contains(totalChildrenRect.tl()) ||
-                            !bb.contains(totalChildrenRect.br())) {
-                        continue;
-                    }
-
-                    squares.emplace_back(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
+                // If the child bounding rect not completely within the square, then continue
+                // Note: absolute value of an area is used because
+                // area may be positive or negative - in accordance with the
+                // contour orientation
+                if (fabs(bb.area()) < fabs(totalChildrenRect.area())) {
+                    continue;
                 }
+
+                cout << "approx.size: " << approx.size() << endl;
+                squares.emplace_back(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
             }
         }
     }
