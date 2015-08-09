@@ -1414,6 +1414,38 @@ void setup() {
     litchfieldLetterPosMap["GF"] = v;
     v.clear();
 
+    // GG
+    v.emplace_back("GG", 0, 2, 2, -2, -2);
+    v.emplace_back("GG", 1, 2, 2, -2, -2);
+    v.emplace_back("GG", 4, -2, 2, -3, 0);
+    v.emplace_back("GG", 6, -2, -2, 2, -2);
+    v.emplace_back("GG", 9, 0, -2, 0, 2);
+    v.emplace_back("GG", 11, -1, 0, 0, 0);
+    v.emplace_back("GG", 2, 0, 0, -3, -2);
+    v.emplace_back("GG", 3, 2, -2, 0, 2);
+    v.emplace_back("GG", 5, 0, -3, 2, -2);
+    v.emplace_back("GG", 7, 0, 0, -2, -2);
+    v.emplace_back("GG", 8, -2, -2, -2, 0);
+    v.emplace_back("GG", 10, 0, 0, 2, -2);
+    litchfieldLetterPosMap["GG"] = v;
+    v.clear();
+
+    // GH
+    v.emplace_back("GH", 0, 1, -3, 1, -1);
+    v.emplace_back("GH", 1, 1, -3, 1, -1);
+    v.emplace_back("GH", 2, -1, 0, 0, 2);
+    v.emplace_back("GH", 4, -2, 2, 1, 0);
+    v.emplace_back("GH", 9, 0, 2, -1, 1);
+    v.emplace_back("GH", 10, 2, 0, -1, 2);
+    v.emplace_back("GH", 11, 0, -2, 2, 0);
+    v.emplace_back("GH", 3, 0, -2, -1, 0);
+    v.emplace_back("GH", 5, 2, 0, 0, -2);
+    v.emplace_back("GH", 6, -4, -2, -2, 2);
+    v.emplace_back("GH", 7, -2, -2, -3, 0);
+    v.emplace_back("GH", 8, -2, -2, -2, 2);
+    litchfieldLetterPosMap["GH"] = v;
+    v.clear();
+
     // GI
     v.emplace_back("GI", 0, 3, 0, 2, 0);
     v.emplace_back("GI", 1, 3, 0, 2, 0);
@@ -1444,6 +1476,134 @@ void setup() {
     v.emplace_back("GJ", 8, -2, -2, -4, 0);
     v.emplace_back("GJ", 11, -2, -2, -4, 2);
     litchfieldLetterPosMap["GJ"] = v;
+    v.clear();
+
+    // GK
+    v.emplace_back("GK", 0, 0, -2, -2, -2);
+    v.emplace_back("GK", 1, 2, 0, 0, 2);
+    v.emplace_back("GK", 2, 2, -2, 2, 0);
+    v.emplace_back("GK", 4, 0, 2, 0, 2);
+    v.emplace_back("GK", 5, 0, 0, 2, -2);
+    v.emplace_back("GK", 6, -2, -2, 0, -3);
+    v.emplace_back("GK", 7, -2, 1, 0, 0);
+    v.emplace_back("GK", 8, -2, -2, 0, -3);
+    v.emplace_back("GK", 9, 3, 0, 0, 0);
+    v.emplace_back("GK", 11, 0,0, 2, 0);
+    v.emplace_back("GK", 3, -2, -2, 0, -2);
+    v.emplace_back("GK", 10, -2, 0, 0, 2);
+    litchfieldLetterPosMap["GK"] = v;
+    v.clear();
+
+    // GL
+    v.emplace_back("GL", 0, -2, 0, -2, -2);
+    v.emplace_back("GL", 1, -2, 0, -2, -2);
+    v.emplace_back("GL", 2, 0, 0, -1, -2);
+    v.emplace_back("GL", 4, -2, -2, -2, 0);
+    v.emplace_back("GL", 6, -2, -2, 0, 0);
+    v.emplace_back("GL", 7, -2, 0, 1, -1);
+    v.emplace_back("GL", 8, -2, -2, -1, -2);
+    v.emplace_back("GL", 10, 3, -2, 2, 0);
+    v.emplace_back("GL", 11, 0, 4, -2, 2);
+    v.emplace_back("GL", 3, -2, -2, 0, 0);
+    v.emplace_back("GL", 5, -2, 0, 1, -1);
+    v.emplace_back("GL", 9, 0, -4, 0, 0);
+    litchfieldLetterPosMap["GL"] = v;
+    v.clear();
+
+    //HA
+    v.emplace_back("HA", 0, 2, -2, 0, 2);
+    v.emplace_back("HA", 1, 2, -2, 0, 2);
+    v.emplace_back("HA", 2, 0, 2, 0, 0);
+    v.emplace_back("HA", 3, -4, 2, 0, 0);
+    v.emplace_back("HA", 4, -2, 2, -2, 0);
+    v.emplace_back("HA", 5, -2, -2, 2, 0);
+    v.emplace_back("HA", 6, -2, 2, -2, 2);
+    v.emplace_back("HA", 7, -4, -2, 0, 0);
+    v.emplace_back("HA", 8, -3, -2, 1, 0);
+    v.emplace_back("HA", 9, 0, 0, -2, 0);
+    v.emplace_back("HA", 10, -1, 2, 2, 2);
+    v.emplace_back("HA", 11, 2, 0, -2, 2);
+    litchfieldLetterPosMap["HA"] = v;
+    v.clear();
+
+    // HB
+    v.emplace_back("HB", 0, 2, -2, 1, 1);
+    v.emplace_back("HB", 1, 2, -2, 1, 1);
+    v.emplace_back("HB", 4, -2, 4, 0, -2);
+    v.emplace_back("HB", 5, -2, -4, 0, 2);
+    v.emplace_back("HB", 7, -2, -2, 0, 0);
+    v.emplace_back("HB", 9, 4, 0, -1, 2);
+    v.emplace_back("HB", 10, -1, 2, 2, 0);
+    v.emplace_back("HB", 11, 2, 0, -3, 3);
+    v.emplace_back("HB", 2, 0, 2, 0, 1);
+    v.emplace_back("HB", 3, 3, -2, -2, 2);
+    v.emplace_back("HB", 6, -2, 1, 0, 0);
+    v.emplace_back("HB", 8, -3, -2, 0, 2);
+    litchfieldLetterPosMap["HB"] = v;
+    v.clear();
+
+    // HC
+    v.emplace_back("HC", 0, 2, -2, 0, -2);
+    v.emplace_back("HC", 1, 2, -2, 0, -2);
+    v.emplace_back("HC", 2, 0, 2, 3, -2);
+    v.emplace_back("HC", 3, 2, 2, -2, -2);
+    v.emplace_back("HC", 4, 3, 2, 0, -1);
+    v.emplace_back("HC", 5, -2, -4, 2, -2);
+    v.emplace_back("HC", 6, 0, 3, 3, -2);
+    v.emplace_back("HC", 8, -2, -1, 2, -2);
+    v.emplace_back("HC", 9, 1, 0, -2, -2);
+    v.emplace_back("HC", 10, -2, 2, -3, -1);
+    v.emplace_back("HC", 11, 2, -2, 0, -2);
+    v.emplace_back("HC", 7, -2, -2, -1, -3);
+    litchfieldLetterPosMap["HC"] = v;
+    v.clear();
+
+    // HD
+    v.emplace_back("HD", 0, 2, -2, -2, 0);
+    v.emplace_back("HD", 1, 2, -2, -2, 0);
+    v.emplace_back("HD", 2, 2, 2, 0, 2);
+    v.emplace_back("HD", 3, 0, 2, 0, 2);
+    v.emplace_back("HD", 4, 4, 2, 0, 0);
+    v.emplace_back("HD", 5, -2, -3, -2, 1);
+    v.emplace_back("HD", 7, 0, -2, 0, 0);
+    v.emplace_back("HD", 10, -2, 1, -3, 2);
+    v.emplace_back("HD", 11, 0, 2, 0, 2);
+    v.emplace_back("HD", 6, -2, 2, -1, 1);
+    v.emplace_back("HD", 8, -2, -1, 0, -2);
+    v.emplace_back("HD", 9, 0, 0, 2, 4);
+    litchfieldLetterPosMap["HD"] = v;
+    v.clear();
+
+    // HE
+    v.emplace_back("HE", 0, 0, -2, 2, 1);
+    v.emplace_back("HE", 1, 0, -2, 2, 1);
+    v.emplace_back("HE", 2, 0, 2, -3, 2);
+    v.emplace_back("HE", 4, -2, 2, 0, -2);
+    v.emplace_back("HE", 5, -2, -4, -3, -1);
+    v.emplace_back("HE", 6, 0, 0, 0, 0);
+    v.emplace_back("HE", 8, -2, 0, 0, 0);
+    v.emplace_back("HE", 9, 2, 0, 2, -2);
+    v.emplace_back("HE", 11, 2, 1, -2, 0);
+    v.emplace_back("HE", 3, 0, 2, -2, 2);
+    v.emplace_back("HE", 7, -2, 0, 0, 0);
+    v.emplace_back("HE", 10, 0, 0, 2, 0);
+    litchfieldLetterPosMap["HE"] = v;
+    v.clear();
+
+    // HF
+    v.emplace_back("HF", 0, 2, -2, 0, -2);
+    v.emplace_back("HF", 1, 2, -2, 0, -2);
+    v.emplace_back("HF", 4, 3, 2, 0, 0);
+    v.emplace_back("HF", 5, -2, -4, -3, 2);
+    v.emplace_back("HF", 8, -2, 1, 0, 0);
+    v.emplace_back("HF", 9, -2, -2, 2, -2);
+    v.emplace_back("HF", 11, 2, 2, -2, -2);
+    v.emplace_back("HF", 2, -2, 2, 0, -1);
+    v.emplace_back("HF", 3, 3, 2, 3, 0);
+    v.emplace_back("HF", 6, 0, 2, 2, -2);
+    v.emplace_back("HF", 7, -4, -2, 0, 0);
+    v.emplace_back("HF", 10, 0, 2, -1, 0);
+    litchfieldLetterPosMap["HF"] = v;
     v.clear();
 
     // IE
