@@ -11,20 +11,21 @@ harvester backlog
 
 letterdetect backlog
 ====================
-- more corner suqare detection improvements.
-- test suite to test multiple stamps.
+- more corner square detection improvements.
+- unit test case cleanup threshold.h and main_threshold.cpp
+- mechanism to verify expected result in unit test
+- more stamps in test suite
 - litchfield plate detection source file
-- resize square boxes to all be same size - needed for alignment calculations
 - If red MX cancel is in Letter corner squares, try to filter it out.
 - better blacklist - exclude all but corner letters
 - test main() to test all ../data/ images
 - if a child contour in a corner square goes out of the square then ignore it - probably a MX cancel
 - O Flaw thinking
 - node.js plugin considerations
-- more test cases
 - valgrind checking
 
 node-pennyblack backlog
 =======================
-Draft UI flow.
-NGINX DNS- share server with animalguess.com
+- port threshold changes to node-pennyblack
+- Draft UI flow.
+- NGINX DNS- share server with animalguess.com

@@ -3,6 +3,8 @@ letterdetect/letterdetect
 letterdetect/corner
 letterdetect/contours
 letterdetect/threshold
+letterdetect/test_threshold
+letterdetect/oflaw
 letterdetect/*.jpg
 node_modules/
 test.db

@@ -1,5 +1,5 @@
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,124 +8,26 @@
 #include <memory>
 #include <stdexcept>
 
+#include "threshold.h"
 #include "alignment.h"
 
 using namespace cv;
 using namespace std;
-
-class CornerSquareInput {
-public:
-    CornerSquareInput(const string& l, const string& r)
-        : leftLetter(l), rightLetter(r), leftPoint(Point(-1, -1)), rightPoint(Point(-1, -1))
-    {}
-    /*    CornerSquareInput(const string& l, const string& r, Point lp, Point rp)
-        : leftLetter(l), rightLetter(r), leftPoint(lp), rightPoint(rp)
-    {}
-    */
-    bool setPoint(Point pt)
-    {
-        if (leftPoint == Point(-1, -1))
-            leftPoint = pt;
-        else {
-
-            rightPoint = pt;
-            return true;
-        }
-        return false;
-    }
-
-    string leftLetter;
-    string rightLetter;
-    Point leftPoint;
-    Point rightPoint;
-    string file;
-};
-
-class CornerSquareOutputInfo {
-public:
-    CornerSquareOutputInfo() = default;
-    CornerSquareOutputInfo(vector<Point> ownPoints,
-                           Rect childRect,
-                           bool leftSquare,
-                           Mat roi,
-                           int thresh)
-        : _points(ownPoints),
-          _childRect(childRect),
-          _leftSquare(leftSquare),
-          _roi(roi),
-          _threshold(thresh)
-    {}
-    vector<Point> _points;
-    Rect _childRect;
-    bool _leftSquare;
-    Mat _roi;
-    int _threshold;
-};
 
 bool operator==(const CornerSquareOutputInfo& lhs,
                 const CornerSquareOutputInfo& rhs){ return lhs._points == rhs._points; }
 
 /// Global variables
 
-int threshold_value = 0;
-int const max_value = 255;
-int const max_BINARY_value = 255;
+// int threshold_value = 0;
+// int const max_value = 255;
+// int const max_BINARY_value = 255;
 RNG rng(12345);
 
-string window_name = "Stamp Image";
+// string window_name = "Stamp Image";
 
 /// Function headers
 void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input );
-
-void CallBackFunc( int event, int x, int y, int flags, void* userdata )
-{
-    if  ( event == EVENT_LBUTTONDOWN )
-    {
-        cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-        CornerSquareInput* i =  static_cast<CornerSquareInput*>(userdata);
-        bool ret = i->setPoint( Point( x, y ) );
-        if ( ret )
-            destroyWindow( window_name );
-    }
-}
-
-int main( int argc, char** argv )
-{
-    setup();
-    string leftLetter, rightLetter;
-    string arg2( argv[1] );
-    if ( argc==2 ) {
-        size_t len = strlen(argv[1]);
-        leftLetter = arg2.at(len - 6);
-        rightLetter = arg2.at(len - 5);
-    }
-
-    CornerSquareInput in { leftLetter, rightLetter };
-    /// Load an image
-    Mat src = imread( argv[1], 1 );
-    if( src.empty() )
-    {
-        cout << "Couldn't load " << argv[1] << endl;
-        return -1;
-    }
-
-    Mat src_gray;
-    /// Convert the image to Gray
-    cvtColor( src, src_gray, CV_RGB2GRAY );
-
-    resize( src_gray, src_gray, Size(77*6,88*6) );
-
-    /// Create a window to display results
-    namedWindow( window_name, CV_WINDOW_AUTOSIZE );
-
-    //set the callback function for any mouse event
-    setMouseCallback( window_name, CallBackFunc, (void*)&in );
-
-    imshow( window_name, src_gray );
-    waitKey( 0 );
-    /// Call the function to initialize
-    Threshold_Demo( 0, 0, src, src_gray, in );
-}
 
 static double angle( Point pt1, Point pt2, Point pt0 )
 {
@@ -336,6 +238,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                         lvert, lhoriz,
                         rvert,  rhoriz );
 
+#if 0
         imshow( window_name, tmp );
         waitKey( 0 );
         vector<int> compression_params;
@@ -348,6 +251,6 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
         catch (runtime_error& ex) {
             fprintf(stderr, "Exception converting image to PNG format: %s\n", ex.what());
         }
-
+#endif // 0
     }
 }
