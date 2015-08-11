@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 #include <stdexcept>
 
 #include "alignment.h"
@@ -22,8 +23,8 @@ public:
     CornerSquareInput(const string& l, const string& r)
         : leftLetter(l), rightLetter(r), leftPoint(Point(-1, -1)), rightPoint(Point(-1, -1))
     {}
-    CornerSquareInput(const string& l, const string& r, Point lp, Point rp, string file)
-        : leftLetter(l), rightLetter(r), leftPoint(lp), rightPoint(rp), file(file)
+    CornerSquareInput(const string& l, const string& r, Point lp, Point rp, string file, vector<int> results)
+        : leftLetter(l), rightLetter(r), leftPoint(lp), rightPoint(rp), file(file), expectedResults(results)
     {}
 
     bool setPoint(Point pt)
@@ -43,6 +44,7 @@ public:
     Point leftPoint;
     Point rightPoint;
     string file;
+    vector<int> expectedResults;
 };
 
 class CornerSquareOutputInfo {
@@ -68,11 +70,11 @@ public:
 
 
 /// Function headers
-void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input );
+vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input );
 
 static double angle( Point pt1, Point pt2, Point pt0 );
 
 void displayCornerSquareOutput( const Mat& sq,
                                 const CornerSquareOutputInfo& middle );
 
-#endif THRESHOLD_H
+#endif // THRESHOLD_H

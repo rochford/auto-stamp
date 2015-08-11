@@ -2,6 +2,7 @@
 #define ALIGNMENT_H
 
 #include <string>
+#include <vector>
 
 enum HorizontalPos {
     HUnknown = -1000,
@@ -32,7 +33,7 @@ enum VerticalPos {
 void printAlignment(int offsetVertical,
                     int offsetHorizontal);
 void setup();
-void calculatePlate(const std::string& letterPair,
+std::vector<int> calculatePlate(const std::string& letterPair,
                     int leftVertical,
                     int leftHoriz,
                     int rightVert,

@@ -36,7 +36,6 @@ void CallBackFunc( int event, int x, int y, int flags, void* userdata )
 
 int main( int argc, char** argv )
 {
-    setup();
     string leftLetter, rightLetter;
     string arg2( argv[1] );
     if ( argc==2 ) {

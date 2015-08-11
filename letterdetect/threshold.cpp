@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 #include <stdexcept>
 
 #include "threshold.h"
@@ -27,7 +28,7 @@ RNG rng(12345);
 // string window_name = "Stamp Image";
 
 /// Function headers
-void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input );
+vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input );
 
 static double angle( Point pt1, Point pt2, Point pt0 )
 {
@@ -53,8 +54,9 @@ void displayCornerSquareOutput( const Mat& sq,
     waitKey(0);
 }
 
-void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input )
+vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input )
 {
+    setup();
     vector<CornerSquareOutputInfo> squares;
     vector<vector<Point> > contours;
     for ( int thres = 20; thres < 170; thres++ )
@@ -143,7 +145,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                     continue;
                 }
                 Rect totalChildrenRect(tl, br);
-                cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
+                //cout << "Total Child Rect BB: " << totalChildrenRect.tl() << ", " << totalChildrenRect.br() << endl;
 
                 CornerSquareOutputInfo tmp(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
                 if(std::find(squares.begin(), squares.end(), tmp) != squares.end()) {
@@ -159,7 +161,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
                     continue;
                 }
 
-                cout << "approx.size: " << approx.size() << endl;
+                //cout << "approx.size: " << approx.size() << endl;
                 squares.emplace_back(approx, totalChildrenRect, leftSquare, src_gray(bb).clone(), thres);
             }
         }
@@ -200,7 +202,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             rectangle(tmp, childBB, color2, 1);
 
             Mat sq = middle->_roi.clone();
-            displayCornerSquareOutput(sq, *middle);
+//            displayCornerSquareOutput(sq, *middle);
         }
 
         double fx = 1.0;
@@ -234,7 +236,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             rhoriz = rleft - rright;
         }
 
-        calculatePlate( input.leftLetter + input.rightLetter,
+        vector<int> plates = calculatePlate( input.leftLetter + input.rightLetter,
                         lvert, lhoriz,
                         rvert,  rhoriz );
 
@@ -252,5 +254,7 @@ void Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInpu
             fprintf(stderr, "Exception converting image to PNG format: %s\n", ex.what());
         }
 #endif // 0
+
+        return plates;
     }
 }

@@ -22,7 +22,7 @@ public:
 map<string, vector<LitchfieldItem>> litchfieldLetterPosMap;
 
 
-void calculatePlate(const std::string& letterPair,
+vector<int> calculatePlate(const std::string& letterPair,
                     int leftVert,
                     int leftHoriz,
                     int rightVert,
@@ -85,11 +85,13 @@ void calculatePlate(const std::string& letterPair,
         }
     }
 
+    vector<int> plates;
     cout << "Candidates: ";
     if (candidates.size())
     {
         for (auto i : candidates) {
             cout << i.plate << ", ";
+            plates.push_back(i.plate);
         }
         cout << endl;
     }
@@ -97,6 +99,7 @@ void calculatePlate(const std::string& letterPair,
     {
         cout << "[]" << endl;
     }
+    return plates;
 }
 
 void verticalAlignment(int a) {
