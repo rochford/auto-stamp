@@ -56,7 +56,6 @@ void displayCornerSquareOutput( const Mat& sq,
 
 vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSquareInput input )
 {
-    setup();
     vector<CornerSquareOutputInfo> squares;
     vector<vector<Point> > contours;
     for ( int thres = 20; thres < 170; thres++ )
