@@ -2282,6 +2282,296 @@ void setup() {
     litchfieldLetterPosMap["KL"] = v;
     v.clear();
 
+    // LA
+    v.emplace_back("LA", 0, 0, -1, 1, 1);
+    v.emplace_back("LA", 1, 0, -1, 1, 1);
+    v.emplace_back("LA", 2, 0, 0, 0, 0);
+    v.emplace_back("LA", 3, 0, -1, 0, 2);
+    v.emplace_back("LA", 4, 2, 2, 0, 0);
+    v.emplace_back("LA", 5, 2, -2, 0, 0);
+    v.emplace_back("LA", 6, 1, -2, 0, 0);
+    v.emplace_back("LA", 7, 0, 1, 0, 0);
+    v.emplace_back("LA", 11, -2, 2, -3, 1);
+    v.emplace_back("LA", 8, 0, 0, 0, 0);
+    v.emplace_back("LA", 9, -2, 0, -2, 0);
+    v.emplace_back("LA", 10, -3, 2, -1, 0);
+    litchfieldLetterPosMap["LA"] = v;
+    v.clear();
+
+    // LB
+    v.emplace_back("LB", 0, -1, 0, -2, 2);
+    v.emplace_back("LB", 1, -1, 0, -2, 2);
+    v.emplace_back("LB", 2, -2, 0, -2, 2);
+    v.emplace_back("LB", 3, 0, 0, -1, 2);
+    v.emplace_back("LB", 4, 0, -2, 0, 1);
+    v.emplace_back("LB", 6, 0, -1, 2, 0);
+    v.emplace_back("LB", 7, 0, 0, 4, 0);
+    v.emplace_back("LB", 8, -4, -2, 0, -1);
+    v.emplace_back("LB", 9, 0, 0, -2, 2);
+    v.emplace_back("LB", 11, 4, 4, -2, 0);
+    v.emplace_back("LB", 5, 2, -1, 0, 0);
+    v.emplace_back("LB", 10, 3, 2, -3, 2);
+    litchfieldLetterPosMap["LB"] = v;
+    v.clear();
+
+    // LC
+    v.emplace_back("LC", 0, -2, 1, 2, -2);
+    v.emplace_back("LC", 1, -2, 1, 2, -2);
+    v.emplace_back("LC", 3, 0, 0, -2, -2);
+    v.emplace_back("LC", 4, 2, 0, 2, -2);
+    v.emplace_back("LC", 5, 0, -2, 0, 0);
+    v.emplace_back("LC", 6, 0, 0, -2, 1);
+    v.emplace_back("LC", 7, 0, -1, 0, -2);
+    v.emplace_back("LC", 11, 4, 0, 1, 0);
+    v.emplace_back("LC", 2, -2, 0, 0, -4);
+    v.emplace_back("LC", 8, 1, -1, -2, 0);
+    v.emplace_back("LC", 9, -2, 0, 0, 0);
+    v.emplace_back("LC", 10, 2, 2, -3, -2);
+    litchfieldLetterPosMap["LC"] = v;
+    v.clear();
+
+    // LD
+    v.emplace_back("LD", 0, 0, 0, -2, 0);
+    v.emplace_back("LD", 1, 0, 0, -2, 0);
+    v.emplace_back("LD", 3, 0, 2, -1, 2);
+    v.emplace_back("LD", 4, 0, 0, 0, 0);
+    v.emplace_back("LD", 5, 0, -2, -2, 2);
+    v.emplace_back("LD", 7, 0, 0, 0, 1);
+    v.emplace_back("LD", 8, -2, -2, 0, 1);
+    v.emplace_back("LD", 11, 3, 2, 0, 3);
+    v.emplace_back("LD", 2, -1, 0, 0, 2);
+    v.emplace_back("LD", 6, 0, -1, 0, 0);
+    v.emplace_back("LD", 9, -1, 0, 0, 2);
+    v.emplace_back("LD", 10, 2, 2, -2, 1);
+    litchfieldLetterPosMap["LD"] = v;
+    v.clear();
+
+    // LE
+    v.emplace_back("LE", 0, 0, 0, 3, 2);
+    v.emplace_back("LE", 1, 0, 0, 3, 2);
+    v.emplace_back("LE", 2, 0, 0, 0, 2);
+    v.emplace_back("LE", 3, 0, 0, -3, 3);
+    v.emplace_back("LE", 4, 0, 0, 0, 0);
+    v.emplace_back("LE", 5, 2, 0, 2, -2);
+    v.emplace_back("LE", 7, 0, -2, -2, 0);
+    v.emplace_back("LE", 9, -2, -2, 0, 0);
+    v.emplace_back("LE", 11, 4, 0, -3, 2);
+    v.emplace_back("LE", 6, -1, 0, -2, 0);
+    v.emplace_back("LE", 8, 0, 1, -1, 0);
+    v.emplace_back("LE", 10, 2, 2, 2, -2);
+    litchfieldLetterPosMap["LE"] = v;
+    v.clear();
+
+    // LF
+    v.emplace_back("LF", 0, -2, 0, -2, 0);
+    v.emplace_back("LF", 1, -2, 0, -2, 0);
+    v.emplace_back("LF", 2, -2, 0, 2, 0);
+    v.emplace_back("LF", 3, 0, 2, 2, 0);
+    v.emplace_back("LF", 5, -2, 0, 0, 2);
+    v.emplace_back("LF", 8, 0, 2, -4, 0);
+    v.emplace_back("LF", 9, -1, 1, -1, 0);
+    v.emplace_back("LF", 11, 4, 0, -3, 1);
+    v.emplace_back("LF", 4, 0, 0, 0, -1);
+    v.emplace_back("LF", 6, 0, -2, 2, -2);
+    v.emplace_back("LF", 7, 0, 0, 0, -2);
+    v.emplace_back("LF", 10, 2, 2, 3, 0);
+    litchfieldLetterPosMap["LF"] = v;
+    v.clear();
+
+    // LG
+    v.emplace_back("LG", 0, -2, 0, -2, -2);
+    v.emplace_back("LG", 1, -2, 0, -2, -2);
+    v.emplace_back("LG", 2, 0, 0, -3, -2);
+    v.emplace_back("LG", 3, 1, 0, -2, -1);
+    v.emplace_back("LG", 4, 0, 0, -2, 0);
+    v.emplace_back("LG", 5, -2, 2, 1, -1);
+    v.emplace_back("LG", 11, 2, 3, -3, 0);
+    v.emplace_back("LG", 6, 0, 0, -2, 0);
+    v.emplace_back("LG", 7, -1, -1, 1, -2);
+    v.emplace_back("LG", 8, -2, -2, -2, 0);
+    v.emplace_back("LG", 9, 2, 0, 1, 1);
+    v.emplace_back("LG", 10, 0, 4, 2, 1);
+    litchfieldLetterPosMap["LG"] = v;
+    v.clear();
+
+    // LH
+    v.emplace_back("LH", 0, 0, 0, 1, -1);
+    v.emplace_back("LH", 1, 0, 0, 1, -1);
+    v.emplace_back("LH", 3, 0, 0, 3, -3);
+    v.emplace_back("LH", 4, 0, 0, -3, -2);
+    v.emplace_back("LH", 5, -3, 0, -2, -2);
+    v.emplace_back("LH", 6, 0, 0, 0, 0);
+    v.emplace_back("LH", 7, 0, 0, -2, -2);
+    v.emplace_back("LH", 11, 3, 3, -3, 0);
+    v.emplace_back("LH", 2, -2, 0, 2, 2);
+    v.emplace_back("LH", 8, 0, -2, 0, 0);
+    v.emplace_back("LH", 9, -2, 0, -2, -2);
+    v.emplace_back("LH", 10, 4, 2, 1, 0);
+    litchfieldLetterPosMap["LH"] = v;
+    v.clear();
+
+    // LI
+    v.emplace_back("LI", 0, 0, 0, 2, 2);
+    v.emplace_back("LI", 1, 0, 0, 2, 2);
+    v.emplace_back("LI", 2, -2, 0, -4, 0);
+    v.emplace_back("LI", 3, 0, 0, -2, -2);
+    v.emplace_back("LI", 4, 0, -2, 1, 0);
+    v.emplace_back("LI", 5, -2, 0, 0, -2);
+    v.emplace_back("LI", 6, 2, -2, 1, -2);
+    v.emplace_back("LI", 7, 0, -2, 1, 0);
+    v.emplace_back("LI", 8, -2, -2, 0, 0);
+    v.emplace_back("LI", 10, -4, 2, 0, 2);
+    v.emplace_back("LI", 11, 0, 2, -2, 2);
+    v.emplace_back("LI", 9, -2, 1, 2, 2);
+    litchfieldLetterPosMap["LI"] = v;
+    v.clear();
+
+    // LJ
+    v.emplace_back("LJ", 3, 0, 0, -4, 0);
+    v.emplace_back("LJ", 6, -3, 0, 1, -2);
+    v.emplace_back("LJ", 7, 0, 0, 0, -2);
+    v.emplace_back("LJ", 11, 0, 2, -4, 1);
+    v.emplace_back("LJ", 0, -2, 0, -2, 0);
+    v.emplace_back("LJ", 1, -2, 0, -2, 0);
+    v.emplace_back("LJ", 2, -2, 2, 2, -2);
+    v.emplace_back("LJ", 4, 0, 0, -2, 0);
+    v.emplace_back("LJ", 5, -2, 0, 0, 0);
+    v.emplace_back("LJ", 8, 0, 0, 0, 0);
+    v.emplace_back("LJ", 9, -1, 1, -3, 0);
+    v.emplace_back("LJ", 10, 0, 2, 4, -2);
+    litchfieldLetterPosMap["LJ"] = v;
+    v.clear();
+
+    // LK
+    v.emplace_back("LK", 0, 0, -2, 2, 0);
+    v.emplace_back("LK", 1, 0, -2, 2, 0);
+    v.emplace_back("LK", 2, -2, 0, 1, 0);
+    v.emplace_back("LK", 6, 2, 0, 3, 2);
+    v.emplace_back("LK", 7, 0, 2, 0, 0);
+    v.emplace_back("LK", 9, 0, 2, 4, 0);
+    v.emplace_back("LK", 10, 0, 2, -2, 2);
+    v.emplace_back("LK", 11, 0, 2, -2, 0);
+    v.emplace_back("LK", 3, 0, -2, 2, 0);
+    v.emplace_back("LK", 4, 0, 0, -2, 0);
+    v.emplace_back("LK", 5, -2, 2, 0, 0);
+    v.emplace_back("LK", 8, -2, 0, -2, 0);
+    litchfieldLetterPosMap["LK"] = v;
+    v.clear();
+
+    // LL
+    v.emplace_back("LL", 0, -1, 0, -2, 0);
+    v.emplace_back("LL", 1, -1, 0, -2, 0);
+    v.emplace_back("LL", 2, -2, 0, -2, 0);
+    v.emplace_back("LL", 5, -2, 2, 2, 0);
+    v.emplace_back("LL", 6, 0, 0, 0, -2);
+    v.emplace_back("LL", 7, 0, 0, 0, -2);
+    v.emplace_back("LL", 8, -2, -2, -2, -2);
+    v.emplace_back("LL", 9, 1, 0, -2, 0);
+    v.emplace_back("LL", 11, -3, 2, -4, 2);
+    v.emplace_back("LL", 3, 0, -2, -2, -1);
+    v.emplace_back("LL", 4, -2, -3, -1, 1);
+    v.emplace_back("LL", 10, 2, 2, 2, 2);
+    litchfieldLetterPosMap["LL"] = v;
+    v.clear();
+
+    // MA
+    v.emplace_back("MA", 0, -2, 0, -1, 2);
+    v.emplace_back("MA", 1, -2, 0, -1, 2);
+    v.emplace_back("MA", 2, -2, 0, -2, 0);
+    v.emplace_back("MA", 4, -2, 2, 4, 0);
+    v.emplace_back("MA", 5, 0, 0, 2, 1);
+    v.emplace_back("MA", 6, 2, 2, 0, 0);
+    v.emplace_back("MA", 8, -2, 0, 0, 0);
+    v.emplace_back("MA", 9, 2, 2, -2, -2);
+    v.emplace_back("MA", 10, 2, 2, -2, 0);
+    v.emplace_back("MA", 11, 0, 2, 0, 0);
+    v.emplace_back("MA", 3, 0, 0, 0, 0);
+    v.emplace_back("MA", 7, -2, 0, -2, 0);
+    litchfieldLetterPosMap["MA"] = v;
+    v.clear();
+
+    // MB
+    v.emplace_back("MB", 0, -2, 0, -1, 2);
+    v.emplace_back("MB", 1, -2, 0, -1, 2);
+    v.emplace_back("MB", 2, 0, 0, -2, 2);
+    v.emplace_back("MB", 4, 0, 2, 0, 1);
+    v.emplace_back("MB", 5, 0, 0, 0, 0);
+    v.emplace_back("MB", 6, 1, 0, 0, 0);
+    v.emplace_back("MB", 7, 0, 2, -2, 2);
+    v.emplace_back("MB", 9, 0, -2, -2, 2);
+    v.emplace_back("MB", 11, 2, 2, -2, 2);
+    v.emplace_back("MB", 3, 0, 0, -3, 2);
+    v.emplace_back("MB", 8, -2, 0, 0, 0);
+    v.emplace_back("MB", 10, 0, 0, -2, 0);
+    litchfieldLetterPosMap["MB"] = v;
+    v.clear();
+
+    // MC
+    v.emplace_back("MC", 0, -2, 0, 0, -2);
+    v.emplace_back("MC", 1, -2, 0, 0, -2);
+    v.emplace_back("MC", 3, -2, 2, 0, -2);
+    v.emplace_back("MC", 4, -2, 0, 0, -2);
+    v.emplace_back("MC", 5, -2, 0, -1, -2);
+    v.emplace_back("MC", 6, 2, 3, -2, 1);
+    v.emplace_back("MC", 8, -1, 1, 0, -2);
+    v.emplace_back("MC", 9, 2, 0, -3, 0);
+    v.emplace_back("MC", 11, -1, 2, -2, 0);
+    v.emplace_back("MC", 2, -2, 0, 2, -2);
+    v.emplace_back("MC", 7, -2, 1, -1, -2);
+    v.emplace_back("MC", 10, 0, 2, -2, 0);
+    litchfieldLetterPosMap["MC"] = v;
+    v.clear();
+
+
+    // MD
+    v.emplace_back("MD", 0, 0, 0, -2, 0);
+    v.emplace_back("MD", 1, 0, 0, -2, 0);
+    v.emplace_back("MD", 2, 0, 0, 0, 2);
+    v.emplace_back("MD", 3, -2, 0, 0, 1);
+    v.emplace_back("MD", 4, 0, -2, -2, 0);
+    v.emplace_back("MD", 5, 0, 0, -2, 2);
+    v.emplace_back("MD", 6, 0, 3, 0, 0);
+    v.emplace_back("MD", 7, 0, 0, 0, 0);
+    v.emplace_back("MD", 8, -2, -1, 0, 2);
+    v.emplace_back("MD", 10, -1, 2, -2, 0);
+    v.emplace_back("MD", 11, 3, 1, -2, 2);
+    v.emplace_back("MD", 9, -3, 2, -4, 2);
+    litchfieldLetterPosMap["MD"] = v;
+    v.clear();
+
+    // ME
+    v.emplace_back("ME", 0, 0, 0, 0, 2);
+    v.emplace_back("ME", 1, 0, 0, 0, 2);
+    v.emplace_back("ME", 2, -2, 0, 0, 2);
+    v.emplace_back("ME", 4, -2, 1, 2, -2);
+    v.emplace_back("ME", 5, -2, 0, 0, -2);
+    v.emplace_back("ME", 6, -2, 3, -2, -2);
+    v.emplace_back("ME", 8, -2, 0, 0, -1);
+    v.emplace_back("ME", 9, -2, -2, 0, 0);
+    v.emplace_back("ME", 11, -2, 2, -4, 2);
+    v.emplace_back("ME", 3, -1, 0, -3, 4);
+    v.emplace_back("ME", 7, -1, 2, -2, -2);
+    v.emplace_back("ME", 10, 1, 2, 2, 0);
+    litchfieldLetterPosMap["ME"] = v;
+    v.clear();
+
+
+    // MF
+    v.emplace_back("MF", 0, 0, -1, 0, 0);
+    v.emplace_back("MF", 1, 0, -1, 0, 0);
+    v.emplace_back("MF", 2, -3, -2, 0, 2);
+    v.emplace_back("MF", 3, 0, 0, 4, 0);
+    v.emplace_back("MF", 4, 0, 0, 3, -2);
+    v.emplace_back("MF", 5, -2, 1, 0, 2);
+    v.emplace_back("MF", 6, 2, 0, 2, 0);
+    v.emplace_back("MF", 8, -2, 0, 0, 0);
+    v.emplace_back("MF", 9, 0, 2, 0, -2);
+    v.emplace_back("MF", 10, 2, 2, 0, -2);
+    v.emplace_back("MF", 11, 4, 0, -4, 0);
+    v.emplace_back("MF", 7, -2, 0, 0, -2);
+    litchfieldLetterPosMap["MF"] = v;
+    v.clear();
+
     // MG
     v.emplace_back("MG", 0, -2, 1, 0, -2);
     v.emplace_back("MG", 1, -2, 1, 0, -2);
@@ -2296,6 +2586,54 @@ void setup() {
     v.emplace_back("MG", 8, -2, -2, -3, -1);
     v.emplace_back("MG", 10, -2, 2, 0, -2);
     litchfieldLetterPosMap["MG"] = v;
+    v.clear();
+
+    // MH
+    v.emplace_back("MH", 0, -2, 0, 2, 0);
+    v.emplace_back("MH", 1, -2, 0, 2, 0);
+    v.emplace_back("MH", 2, -2, 0, -3, 1);
+    v.emplace_back("MH", 3, -2, 2, -2, 0);
+    v.emplace_back("MH", 4, 0, 2, 0,-2);
+    v.emplace_back("MH", 6, 0, 0, 0, 2);
+    v.emplace_back("MH", 8, -2, 0, -2, 0);
+    v.emplace_back("MH", 9, -3, -2, -2, -2);
+    v.emplace_back("MH", 11, 3, 2, -2, 0);
+    v.emplace_back("MH", 5, -2, 2, -3, 1);
+    v.emplace_back("MH", 7, 0, 0, -2, -3);
+    v.emplace_back("MH", 10, -2, 2, 4, 0);
+    litchfieldLetterPosMap["MH"] = v;
+    v.clear();
+
+    // MI
+    v.emplace_back("MI", 0, 0, 0, 2, 2);
+    v.emplace_back("MI", 1, 0, 0, 2, 2);
+    v.emplace_back("MI", 3, -2, 0, 0, 0);
+    v.emplace_back("MI", 4, 0, 2, 0, -2);
+    v.emplace_back("MI", 6, 0, 2, 1, -2);
+    v.emplace_back("MI", 7, -2, 0, 2, -2);
+    v.emplace_back("MI", 8, -2, 0, 0, -2);
+    v.emplace_back("MI", 9, 0, 2, -2, 2);
+    v.emplace_back("MI", 10, 0, 2, -2, 0);
+    v.emplace_back("MI", 11, 3, 2, -3, 2);
+    v.emplace_back("MI", 2, -2, 0, -2, 0);
+    v.emplace_back("MI", 5, -2, 0, 2, 2);
+    litchfieldLetterPosMap["MI"] = v;
+    v.clear();
+
+    // MJ
+    v.emplace_back("MJ", 0, 1, 1, 0, -1);
+    v.emplace_back("MJ", 1, 1, 1, 0, -1);
+    v.emplace_back("MJ", 3, -2, 2, -3, -2);
+    v.emplace_back("MJ", 4, 0, 0, 0, -2);
+    v.emplace_back("MJ", 6, 0, 0, 1, -1);
+    v.emplace_back("MJ", 9, 3, 0, 0, 0);
+    v.emplace_back("MJ", 10, 2, 2, 0, -2);
+    v.emplace_back("MJ", 11, 1, 2, -2, 0);
+    v.emplace_back("MJ", 2, -1, 0, -3, 0);
+    v.emplace_back("MJ", 5, 0, 0, -2, -2);
+    v.emplace_back("MJ", 7, -1, 2, -2, -1);
+    v.emplace_back("MJ", 8, -2, 0, -3, 0);
+    litchfieldLetterPosMap["MJ"] = v;
     v.clear();
 
     // MK
@@ -2314,6 +2652,38 @@ void setup() {
     litchfieldLetterPosMap["MK"] = v;
     v.clear();
 
+    // ML
+    v.emplace_back("ML", 2, -1, 1, -1, 0);
+    v.emplace_back("ML", 3, 1, -3, -2, -1);
+    v.emplace_back("ML", 4, 0, 2, 0, 0);
+    v.emplace_back("ML", 5, 0, 0, 2, -2);
+    v.emplace_back("ML", 6, -1, 0, -3, -1);
+    v.emplace_back("ML", 8, -2, -1, -1, 0);
+    v.emplace_back("ML", 9, 0, 1, 0, 0);
+    v.emplace_back("ML", 11, 4, 2, -3, 2);
+    v.emplace_back("ML", 0, -2, 0, -2, 0);
+    v.emplace_back("ML", 1, -2, 0, -2, 0);
+    v.emplace_back("ML", 7, 0, 0, 2, -2);
+    v.emplace_back("ML", 10, -2, 2, -2, 2);
+    litchfieldLetterPosMap["ML"] = v;
+    v.clear();
+
+    // NA
+    v.emplace_back("NA", 0, -2, 0, 2, 2);
+    v.emplace_back("NA", 1, -2, 0, 2, 2);
+    v.emplace_back("NA", 2, -2, 0, 2, 1);
+    v.emplace_back("NA", 4, 0, 2, 3, 0);
+    v.emplace_back("NA", 5, -2, 2, 3, 0);
+    v.emplace_back("NA", 6, 4, 0, 0, 0);
+    v.emplace_back("NA", 7, 0, 0, 2, 1);
+    v.emplace_back("NA", 8, -2, -2, 0, 0);
+    v.emplace_back("NA", 9, -3, 2, 1, 0);
+    v.emplace_back("NA", 10, 2, 0, -3, 2);
+    v.emplace_back("NA", 11, 0, 0, -2, 2);
+    v.emplace_back("NA", 3, 0, 2, 0, 2);
+    litchfieldLetterPosMap["NA"] = v;
+    v.clear();
+
     // NB
     v.emplace_back("NB", 0, 0, -2, -2, 0);
     v.emplace_back("NB", 1, 0, -2, -2, 0);
@@ -2330,6 +2700,70 @@ void setup() {
     litchfieldLetterPosMap["NB"] = v;
     v.clear();
 
+    // NC
+    v.emplace_back("NC", 0, 0, 0, 0, 0);
+    v.emplace_back("NC", 1, 0, 0, 0, 0);
+    v.emplace_back("NC", 2, 0, -2, 0, -2);
+    v.emplace_back("NC", 3, 0, 0, 0, -1);
+    v.emplace_back("NC", 4, 2, 2, 0, -2);
+    v.emplace_back("NC", 5, 0, 0, -2, -2);
+    v.emplace_back("NC", 8, -3, -2, -2, -1);
+    v.emplace_back("NC", 9, 0, 0, -3, -1);
+    v.emplace_back("NC", 11, -2, -2, -2, -1);
+    v.emplace_back("NC", 6, 0, 0, 4, -1);
+    v.emplace_back("NC", 7, 0, 0, -1, -2);
+    v.emplace_back("NC", 10, 0, -2, -2, -1);
+    litchfieldLetterPosMap["NC"] = v;
+    v.clear();
+
+    // ND
+    v.emplace_back("ND", 0, -2, 1, -2, -2);
+    v.emplace_back("ND", 1, -2, 1, -2, -2);
+    v.emplace_back("ND", 4, 0, 0, 2, 2);
+    v.emplace_back("ND", 5, 0, 2, -2, 2);
+    v.emplace_back("ND", 6, 2, 1, 4, 0);
+    v.emplace_back("ND", 8, -2, -1, 0, 2);
+    v.emplace_back("ND", 9, -2, 2, -3, 2);
+    v.emplace_back("ND", 10, -2, -2, -3, 2);
+    v.emplace_back("ND", 11, 0, -2, 0, -2);
+    v.emplace_back("ND", 2, 0, 0, -1, 0);
+    v.emplace_back("ND", 3, 0, 2, -2, 2);
+    v.emplace_back("ND", 7, 0, 0, 0, 0);
+    litchfieldLetterPosMap["ND"] = v;
+    v.clear();
+
+    // NE
+    v.emplace_back("NE", 0, 0, 0, 0, 2);
+    v.emplace_back("NE", 1, 0, 0, 0, 2);
+    v.emplace_back("NE", 2, 1, -2, -4, 2);
+    v.emplace_back("NE", 4, 0, 0, 0, 0);
+    v.emplace_back("NE", 7, 0, 0, -1, 1);
+    v.emplace_back("NE", 9, -2, 2, 0, 3);
+    v.emplace_back("NE", 10, 0, 0, 1, -2);
+    v.emplace_back("NE", 11, 2, 0, 3, 2);
+    v.emplace_back("NE", 3, 2, 1, -2, 2);
+    v.emplace_back("NE", 5, 0, -3, -2, 0);
+    v.emplace_back("NE", 6, 3, 2, -2, -2);
+    v.emplace_back("NE", 8, -2, -2, -1, -1);
+    litchfieldLetterPosMap["NE"] = v;
+    v.clear();
+
+    // NF
+    v.emplace_back("NF", 0, -2, 0, 0, 0);
+    v.emplace_back("NF", 1, -2, 0, 0, 0);
+    v.emplace_back("NF", 4, 3, 0, 2, -2);
+    v.emplace_back("NF", 5, -2, 2, 3, 2);
+    v.emplace_back("NF", 7, 0, 0, 4, -3);
+    v.emplace_back("NF", 8, -2, 0, 0, 0);
+    v.emplace_back("NF", 9, -2, 2, 0, 0);
+    v.emplace_back("NF", 10, -2, 0, 0, 0);
+    v.emplace_back("NF", 11, 0, -2, -4, 2);
+    v.emplace_back("NF", 2, 0, -2, 0, -2);
+    v.emplace_back("NF", 3, 0, 2, 2, 2);
+    v.emplace_back("NF", 6, 2, 0, 0, -2);
+    litchfieldLetterPosMap["NF"] = v;
+    v.clear();
+
     // NG
     v.emplace_back("NG", 0, 0, 0, -2, -1);
     v.emplace_back("NG", 1, 0, 0, -2, -1);
@@ -2344,6 +2778,86 @@ void setup() {
     v.emplace_back("NG", 7, 4, -2, -2, -2);
     v.emplace_back("NG", 8, -2, 0, 2, -2);
     litchfieldLetterPosMap["NG"] = v;
+    v.clear();
+
+    // NH
+    v.emplace_back("NH", 0, -2, 2, 2, -2);
+    v.emplace_back("NH", 1, -2, 2, 2, -2);
+    v.emplace_back("NH", 4, 0, -2, -2, 0);
+    v.emplace_back("NH", 5, -2, 2, 2, 0);
+    v.emplace_back("NH", 6, 0, -2, -1, 2);
+    v.emplace_back("NH", 9, -2, 0, -2, 0);
+    v.emplace_back("NH", 10, 1, -2, 1, 2);
+    v.emplace_back("NH", 11, -2, -1, 2, -2);
+    v.emplace_back("NH", 2, 0, 0, -3, 2);
+    v.emplace_back("NH", 3, -2, 2, 0, 2);
+    v.emplace_back("NH", 7, -2, 1, -2, -2);
+    v.emplace_back("NH", 8, -2, 0, -2, 0);
+    litchfieldLetterPosMap["NH"] = v;
+    v.clear();
+
+    // NI
+    v.emplace_back("NI", 0, 2, -2, 2, 1);
+    v.emplace_back("NI", 1, 2, -2, 2, 1);
+    v.emplace_back("NI", 5, -2, 2, 2, -2);
+    v.emplace_back("NI", 6, 0, 1, 1, 0);
+    v.emplace_back("NI", 7, 0, 0, 1, -2);
+    v.emplace_back("NI", 8, -2, 0, 0, -2);
+    v.emplace_back("NI", 9, -3, 2, 3, 2);
+    v.emplace_back("NI", 10, -2, -2, 2, 0);
+    v.emplace_back("NI", 11, 0, -1, -1, 2);
+    v.emplace_back("NI", 2, -2, -2, -2, 0);
+    v.emplace_back("NI", 3, -2, 0, 0, 2);
+    v.emplace_back("NI", 4, -2, -2, 1, -2);
+    litchfieldLetterPosMap["NI"] = v;
+    v.clear();
+
+    // NJ
+    v.emplace_back("NJ", 0, -2, 2, -2, 0);
+    v.emplace_back("NJ", 1, -2, 2, -2, 0);
+    v.emplace_back("NJ", 2, -1, -2, -2, 0);
+    v.emplace_back("NJ", 3, -2, 0, 0, -2);
+    v.emplace_back("NJ", 4, 0, 0, 0, -2);
+    v.emplace_back("NJ", 5, -3, 0, 0, -2);
+    v.emplace_back("NJ", 6, 3, 2, 2, -2);
+    v.emplace_back("NJ", 9, -2, 2, 2, -2);
+    v.emplace_back("NJ", 10, -2, -2, -2, 0);
+    v.emplace_back("NJ", 11, -2, 0, -4, 0);
+    v.emplace_back("NJ", 7, 0, 0, 0, 0);
+    v.emplace_back("NJ", 8, -3, -2, -2, 0);
+    litchfieldLetterPosMap["NJ"] = v;
+    v.clear();
+
+    // NK
+    v.emplace_back("NK", 0, -2, 2, 0, 0);
+    v.emplace_back("NK", 1, -2, 2, 0, 0);
+    v.emplace_back("NK", 2, 0, 0, -2, 2);
+    v.emplace_back("NK", 4, 0, 0, 0, 0);
+    v.emplace_back("NK", 6, 2, 0, 2, -2);
+    v.emplace_back("NK", 9, -1, 2, -2, 0);
+    v.emplace_back("NK", 10, -2, 0, -2, 2);
+    v.emplace_back("NK", 11, -4, 0, 4, 0);
+    v.emplace_back("NK", 3, -2, 2, 0, 2);
+    v.emplace_back("NK", 5, -2, 2, 2, -2);
+    v.emplace_back("NK", 7, 0, -2, 2, 2);
+    v.emplace_back("NK", 8, -2, -1, 0, -2);
+    litchfieldLetterPosMap["NK"] = v;
+    v.clear();
+
+    // NL
+    v.emplace_back("NL", 0, -1, 1, -2, -2);
+    v.emplace_back("NL", 1, -1, 1, -2, -2);
+    v.emplace_back("NL", 2, -1, 0, -2, -2);
+    v.emplace_back("NL", 3, -2, 2, 0, 0);
+    v.emplace_back("NL", 4, -2, 0, -2, 0);
+    v.emplace_back("NL", 5, -4, 2, 0, -2);
+    v.emplace_back("NL", 7, 0, 0, -2, 0);
+    v.emplace_back("NL", 8, -1, 0, -2, 0);
+    v.emplace_back("NL", 9, -2, 2, 0, 0);
+    v.emplace_back("NL", 11, 0, 0, 2, 2);
+    v.emplace_back("NL", 6, 3, 2, 0, -2);
+    v.emplace_back("NL", 10, -2, -2, 0, 2);
+    litchfieldLetterPosMap["NL"] = v;
     v.clear();
 
     // OL
