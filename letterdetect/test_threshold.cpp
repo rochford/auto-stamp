@@ -30,33 +30,39 @@ SUITE(CornerLettersSuite)
     CornerSquareInput ee { "E", "E", Point(34,497), Point(389,504), "../data/1EE.jpg", {1}};
     CornerSquareInput fh { "F", "H", Point(56,497), Point(402,489), "../data/FH.jpg", {2}};
     CornerSquareInput fj { "F", "J", Point(95,442), Point(393,459), "../data/1FJ.jpg", {1}};
+    CornerSquareInput gi { "G", "I", Point(92,476), Point(400,459), "../data/6GI.jpg", {6}};
     CornerSquareInput hh { "H", "H", Point(40,475), Point(390,460), "../data/11HH.JPG", {11}};
     CornerSquareInput hi { "H", "I", Point(82,459), Point(400,441), "../data/6HI.jpg", {6}};
     CornerSquareInput ic { "I", "C", Point(68,458), Point(409,483), "../data/0IC.jpg", {0}};
     CornerSquareInput id { "I", "D", Point(58,474), Point(397,497), "../data/ID.jpg", {}};
     CornerSquareInput kl { "K", "L", Point(37,484), Point(425,456), "../data/KL.jpg", {3, 4, 6, 10, 7}};
+    CornerSquareInput lc { "L", "C", Point(64,460), Point(417,490), "../data/0LC.jpg", {0}};
     CornerSquareInput ja { "J", "A", Point(91,483), Point(385,451), "../data/JA.jpg", {9}};
+    CornerSquareInput na { "N", "A", Point(95,483), Point(388,448), "../data/1NA.jpg", {1}};
     CornerSquareInput nl { "N", "L", Point(61,491), Point(419,476), "../data/5NL.jpg", {5}};
     CornerSquareInput ob { "O", "B", Point(74,481), Point(392,445), "../data/7OB.jpg", {7}};
     vector<CornerSquareInput> data {
-//                aa,
-                al,
+        //                aa,
+        al,
                 be,
                 cd,
                 df,
                 ea,
-//                ec,
-//                ed,
-//                ee,
+                //                ec,
+                //                ed,
+                //                ee,
                 fh,
                 fj,
-//                hh,
-//                        hi,
-//                kl,
-//                id,
+                gi,
+                //                hh,
+                //                        hi,
+                //                kl,
+                //                id,
+                lc,
                 ic,
-//                        nl,
-//                        ob
+                na,
+                //                        nl,
+                //                        ob
     };
 
     TEST(smoke_stamps)
