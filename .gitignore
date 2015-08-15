@@ -6,6 +6,8 @@ letterdetect/threshold
 letterdetect/test_threshold
 letterdetect/oflaw
 letterdetect/*.jpg
+calc_plate/test_threshold
+calc_plate/threshold
 node_modules/
 test.db
 *.cbp
@@ -17,3 +19,4 @@ Makefile
 *.user
 node-pennyblack/*.jpg
 *.svn
+*.cmake

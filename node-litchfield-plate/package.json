@@ -1,0 +1,15 @@
+{
+  "name": "node-litchfield-plate",
+  "version": "0.1.0",
+  "description": "Litchfield penny black plate classification",
+  "main": "plate.js",
+  "private": true,
+  "dependencies": {
+    "bindings": "~1.2.1",
+    "nan": "^2.0.0"
+  },
+  "scripts": {
+    "test": "node plate.js"
+  },
+  "gypfile": true
+}
