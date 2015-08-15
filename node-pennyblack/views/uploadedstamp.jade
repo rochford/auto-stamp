@@ -7,7 +7,19 @@ html(lang="en")
                 div.jumbotron
                     legend #{pageTitle}
                     img(src="#{stampImg}",  max-height="300px", max-width="200px",alt="penny black")
-                    p I created AnimalGuess as this guessing game is well known and I wanted to see if I could develop a good algorithm.
+                    p Enter the information about the stamp...
+                    form(method='post',action='/stampdata')
+                        div.row
+                            | XXX
+                            input(name='stampurl',class="form-control",type='hidden',value="#{stampImg}")
+                        div.row
+                            | Left Letter
+                            input(name='letterleft',class="form-control",type='text')
+                        div.row
+                            | Right Letter
+                            input(name='letterright',class="form-control",type='text')
+                        div.row
+                            input(name='submit',type='submit',class="btn btn-primary").submit-button
                     p
                         #{data}
 

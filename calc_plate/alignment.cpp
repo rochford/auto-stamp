@@ -14,9 +14,6 @@ vector<int> LitchfieldData::calculatePlate(const std::string& letterPair,
                     int rightHoriz,
                                            int maxOffset)
 {
-    cout << "calculatePlate: " << letterPair << endl;
-    cout << leftVert << ", "<< leftHoriz << endl;
-    cout << rightVert << ", "<< rightHoriz << endl;
     bool leftIsValid = false;
     bool rightIsValid = false;
 
@@ -24,7 +21,7 @@ vector<int> LitchfieldData::calculatePlate(const std::string& letterPair,
         leftIsValid = true;
     if (rightVert != -1000)
         rightIsValid = true;
-//    cout << leftIsValid << ", " << rightIsValid << endl;
+
     int minLV = leftVert - maxOffset;
     int maxLV = leftVert + maxOffset;
     int minLH = leftHoriz - maxOffset;
@@ -72,18 +69,11 @@ vector<int> LitchfieldData::calculatePlate(const std::string& letterPair,
     }
 
     vector<int> plates;
-    cout << "Candidates: ";
     if (candidates.size())
     {
         for (auto i : candidates) {
-            cout << i.plate << ", ";
             plates.push_back(i.plate);
         }
-        cout << endl;
-    }
-    else
-    {
-        cout << "[]" << endl;
     }
     return plates;
 }

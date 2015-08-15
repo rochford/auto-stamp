@@ -239,6 +239,18 @@ vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSqu
         vector<int> plates = litchfield.calculatePlate( input.leftLetter + input.rightLetter,
                         lvert, lhoriz,
                         rvert,  rhoriz );
+        cout << "Candidates: ";
+        if (plates.size())
+        {
+            for (auto i : plates) {
+                cout << i << ", ";
+            }
+            cout << endl;
+        }
+        else
+        {
+            cout << "[]" << endl;
+        }
 
 #if 0
         imshow( window_name, tmp );

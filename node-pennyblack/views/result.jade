@@ -1,0 +1,16 @@
+doctype html
+html(lang="en")
+        include includes/header
+        body
+            include includes/topbar
+            div.container
+                div.jumbotron
+                    legend #{pageTitle}
+                    img(src="#{stampImg}",  max-height="300px", max-width="200px",alt="penny black")
+                    p The result is...
+                    img(src="#{leftLetterImg}",  max-height="30px", max-width="30px",alt="penny black")
+                    img(src="#{rightLetterImg}",  max-height="30px", max-width="30px",alt="penny black")
+                    p
+                        #{data}
+
+

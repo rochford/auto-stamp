@@ -1,7 +1,8 @@
 "use strict";
 
 var cv = require('../../node-opencv/lib/opencv'),
-    request = require('request');
+    request = require('request'),
+    plate = require('../../node-litchfield-plate/build/Release/plate');
 
 exports.index =  function (req, res) {
     console.log("app.get(/index) ");
@@ -10,31 +11,38 @@ exports.index =  function (req, res) {
                            pageTitle: 'Upload'});
 }
 
-exports.about =  function (req, res) {
-    console.log("app.get(/about) ");
+exports.postUrl = function(req, res){
+    console.log("postUrl");
+    console.log(req.body);
+    var url = req.body.stampurl;
 
-    res.render('about', { path: req.path,
-                           pageTitle: 'ABout'});
+    res.render('uploadedstamp', { path: req.path,
+                           stampImg: url,
+                           pageTitle: 'Upload'});
 }
 
-exports.postUrl = function(req, res){
+exports.postStampData = function(req, res){
+    console.log("postStampData");
+    console.log(req.body);
     var url = req.body.stampurl;
-    console.log(url);
     var s = new cv.ImageDataStream();
 
     s.on('load', function(matrix){
         console.log('loaded');
-        processStampImage(null, matrix, req, res);
+        processStampImage(null, matrix, req, res, req.body.letterleft,
+                          req.body.letterright);
     })
 
     request(url).pipe(s);
 }
 
-function stampInfoCallback(req, res, l, r, img) {
+function stampInfoCallback(req, res, l, r, img, leftImg, rightImg) {
     console.log("callback");
-    res.render('uploadedstamp', { path: req.path,
-                   pageTitle: 'Animal Guess',
+    res.render('result', { path: req.path,
+                   pageTitle: 'result',
                    stampImg: img,
+                   leftLetterImg: leftImg,
+                   rightLetterImg: rightImg,
                    data: JSON.stringify(l)});
 }
 
@@ -51,7 +59,7 @@ function angle(pt1, pt2, pt0) {
     return (dx1*dx2 + dy1*dy2)/Math.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
-function processStampImage(err, im, req, res) {
+function processStampImage(err, im, req, res, leftLetter, rightLetter) {
     var leftArray = [];
     var rightArray = [];
 
@@ -153,12 +161,15 @@ function processStampImage(err, im, req, res) {
     }
 
     var stampImg = 'images/gray.jpg';
+    var leftImg = 'images/gray.jpg';
+    var rightImg = 'images/gray.jpg';
     im_gray.save(stampImg);
     var left = leftArray[Math.floor(leftArray.length / 2)];
     if (left) {
         console.log(left);
         var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
         im_crop.save('public/images/qvplate'+ left.threshold +  'left' + '.jpg' );
+        leftImg = 'images/qvplate'+ left.threshold +  'left' + '.jpg';
     }
     var right = rightArray[Math.floor(rightArray.length / 2)];
     if (right) {
@@ -166,9 +177,17 @@ function processStampImage(err, im, req, res) {
         im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
 
         im_crop.save('public/images/qvplate'+ right.threshold +  'right' + '.jpg' );
+        rightImg = 'images/qvplate'+ right.threshold +  'right' + '.jpg';
     }
+    plate.intialize();
+    console.log("plate.calculate(" + leftLetter + rightLetter + ", 0, 0, 2, 2)");
+    var buf = plate.calculate(leftLetter + rightLetter, 0, 2, 2, -2);
+    console.log("result: " + buf.toString());
+
     console.log('done');
-    stampInfoCallback(req, res, left, right, stampImg);
+    stampInfoCallback(req, res, left, right, stampImg,
+                      leftImg,
+                      rightImg);
 }
 
 // request('http://thumbs1.ebaystatic.com/d/l225/m/m49DWYRoVidktSF-QxAzsAQ.jpg').pipe(s);
