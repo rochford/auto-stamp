@@ -9,8 +9,9 @@ harvester backlog
 - exclude words to own module, regexp for the years
 - automated polling of the server
 
-letterdetect backlog
+threshold backlog
 ====================
+- width 180, height 220 - rescale images and retest
 - more corner square detection improvements.
 - unit test case cleanup threshold.h and main_threshold.cpp
 - mechanism to verify expected result in unit test
