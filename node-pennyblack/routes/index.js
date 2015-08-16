@@ -1,14 +1,18 @@
 "use strict";
 
 var cv = require('../../node-opencv/lib/opencv'),
-    request = require('request'),
-    plate = require('../../node-litchfield-plate/build/Release/plate');
+        request = require('request'),
+        plate = require('../../node-litchfield-plate/build/Release/plate');
+
+exports.initialize = function() {
+    plate.intialize();
+}
 
 exports.index =  function (req, res) {
     console.log("app.get(/index) ");
 
     res.render('index', { path: req.path,
-                           pageTitle: 'Upload'});
+                   pageTitle: 'Upload'});
 }
 
 exports.postUrl = function(req, res){
@@ -17,8 +21,8 @@ exports.postUrl = function(req, res){
     var url = req.body.stampurl;
 
     res.render('uploadedstamp', { path: req.path,
-                           stampImg: url,
-                           pageTitle: 'Upload'});
+                   stampImg: url,
+                   pageTitle: 'Upload'});
 }
 
 exports.postStampData = function(req, res){
@@ -50,8 +54,7 @@ function stampInfoCallback(req, res, l, r, img, leftImg, rightImg, plates) {
                    stampImg: req.body.stampurl,
                    leftLetterImg: leftImg,
                    rightLetterImg: rightImg,
-                   plates: plates,
-                   data: JSON.stringify(l)});
+                   plates: plates});
 }
 
 var constanttl = new cv.Point(1000, 1000);
@@ -77,7 +80,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
     var im_gray = new cv.Matrix(height, width);
 
     im_gray = im.copy();
-    im_gray.resize(77*6,88*6);
+    im_gray.resize(540,660);
     im_gray.convertGrayscale();
 
     for (var thresh= 20; thresh < 200; thresh++) {
@@ -97,7 +100,6 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                         || !(rPoint.x < (bb.x + bb.width))
                         || !(bb.y < rPoint.y)
                         ||  !(rPoint.y < (bb.y + bb.height) )) {
-//                    console.log(lPoint);
                     continue;
                 }
             }
@@ -109,64 +111,58 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                         || !(lPoint.x < (bb.x + bb.width))
                         || !(bb.y < lPoint.y)
                         ||  !(lPoint.y < (bb.y + bb.height) )) {
-//                    console.log(rPoint);
                     continue;
                 }
             }
-//            if ( contours.cornerCount(j) === 4 && contours.isConvex(j))
+            var maxCosine = 0;
+            for( var k = 2; k < contours.cornerCount(j)+1; k++ )
             {
+                // find the maximum cosine of the angle between joint edges
+                var cosine = Math.abs(angle(contours.point(j, k%4), contours.point(j, k-2), contours.point(j, k-1)));
+                maxCosine = Math.max(maxCosine, cosine);
+            }
 
-                var maxCosine = 0;
-                for( var k = 2; k < contours.cornerCount(j)+1; k++ )
-                {
-                    // find the maximum cosine of the angle between joint edges
-                    var cosine = Math.abs(angle(contours.point(j, k%4), contours.point(j, k-2), contours.point(j, k-1)));
-                    maxCosine = Math.max(maxCosine, cosine);
+            if (maxCosine < 0.3) {
+
+                // child checking.
+                var childContour = contours.hierarchy(j);
+                var tl = new cv.Point(1000, 1000);
+                var br = new cv.Point(0, 0);
+                while (childContour[2] !== -1) {
+                    contours.approxPolyDP(childContour, 0.001, true);
+                    var childBB = contours.boundingRect(childContour[2]);
+
+                    if ( childBB.x < tl.x)
+                        tl = new cv.Point(childBB.x, tl.y);
+                    if ( childBB.y < tl.y)
+                        tl = new cv.Point(tl.x, childBB.y);
+
+                    if ( (childBB.x + childBB.width ) > br.x)
+                        br = new cv.Point(childBB.x + childBB.width, br.y);
+                    if ( (childBB.y + childBB.height ) > br.y)
+                        br = new cv.Point(br.x, childBB.y + childBB.height);
+
+                    childContour = contours.hierarchy(childContour[2]);
+                }
+                if (tl.x === constanttl.x || br.x === constantbr.x ||
+                        tl.y === constanttl.y || br.y === constantbr.y)
+                    continue;
+
+                if ((bb.x < lPoint.x)
+                        && (lPoint.x < (bb.x + bb.width))
+                        && (bb.y < lPoint.y)
+                        && (lPoint.y < (bb.y + bb.height) )) {
+                    leftArray.push({boundingBox: bb, threshold: thresh, contour: j,
+                                       childTl: { x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
+                } else if ((bb.x < rPoint.x)
+                           && (rPoint.x < (bb.x + bb.width))
+                           && (bb.y < rPoint.y)
+                           && (rPoint.y < (bb.y + bb.height) )) {
+                    rightArray.push({boundingBox: bb, threshold: thresh, contour: j,
+                                        childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                 }
 
-                if (maxCosine < 0.3) {
-
-                    //                    console.log(bb);
-                    // child checking.
-                    var childContour = contours.hierarchy(j);
-                    var tl = new cv.Point(1000, 1000);
-                    var br = new cv.Point(0, 0);
-                    while (childContour[2] !== -1) {
-                        contours.approxPolyDP(childContour, 0.001, true);
-                        var childBB = contours.boundingRect(childContour[2]);
-
-                        if ( childBB.x < tl.x)
-                            tl = new cv.Point(childBB.x, tl.y);
-                        if ( childBB.y < tl.y)
-                            tl = new cv.Point(tl.x, childBB.y);
-
-                        if ( (childBB.x + childBB.width ) > br.x)
-                            br = new cv.Point(childBB.x + childBB.width, br.y);
-                        if ( (childBB.y + childBB.height ) > br.y)
-                            br = new cv.Point(br.x, childBB.y + childBB.height);
-
-                        childContour = contours.hierarchy(childContour[2]);
-                    }
-                    if (tl.x === constanttl.x || br.x === constantbr.x ||
-                            tl.y === constanttl.y || br.y === constantbr.y)
-                        continue;
-
-                    if ((bb.x < lPoint.x)
-                            && (lPoint.x < (bb.x + bb.width))
-                            && (bb.y < lPoint.y)
-                            && (lPoint.y < (bb.y + bb.height) )) {
-                        leftArray.push({boundingBox: bb, threshold: thresh, contour: j,
-                                           childTl: { x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
-                    } else if ((bb.x < rPoint.x)
-                               && (rPoint.x < (bb.x + bb.width))
-                               && (bb.y < rPoint.y)
-                               && (rPoint.y < (bb.y + bb.height) )) {
-                        rightArray.push({boundingBox: bb, threshold: thresh, contour: j,
-                                            childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
-                    }
-
-                    console.log('total child rect: ' + tl.x + ', ' + tl.y);
-                }
+                console.log('total child rect: ' + tl.x + ', ' + tl.y);
             }
         }
     }
@@ -206,7 +202,6 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         im_crop.save('public/images/qvplate'+ right.threshold +  'right' + '.jpg' );
         rightImg = 'images/qvplate'+ right.threshold +  'right' + '.jpg';
     }
-    plate.intialize();
     console.log("plate.calculate(" + leftLetter + rightLetter + ", 0, 0, 2, 2)");
     var buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz);
     console.log("result: " + buf.toString());

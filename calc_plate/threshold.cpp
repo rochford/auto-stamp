@@ -169,7 +169,7 @@ vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSqu
     }
     if ( squares.size() > 1 ) {
         Mat tmp = src.clone();
-        resize(tmp,tmp,Size(77*6,88*6));
+        resize(tmp,tmp,Size(180*3,220*3));
 
         // Starting from the middle threshold value seems to be the best approach.
         // vector should already be in threshold order.

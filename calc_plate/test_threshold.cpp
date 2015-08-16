@@ -18,7 +18,7 @@ using namespace std;
 SUITE(CornerLettersSuite)
 {
     CornerSquareInput aa { "A", "A", Point(104,431), Point(363,435), "../data/AA.jpg", {7}};
-    CornerSquareInput al { "A", "L", Point(29,487), Point(422,471), "../data/7AL.jpg", {7}};
+    CornerSquareInput al { "A", "L", Point(25,476), Point(420,473), "../data/7AL.jpg", {7}};
 
     CornerSquareInput be { "B", "E", Point(51,449), Point(382,459), "../data/9BE.JPG", {9}};
     CornerSquareInput cd { "C", "D", Point(77,497), Point(396,487), "../data/6CD.jpg", {6}};

@@ -1,7 +1,7 @@
 {
   "name": "node-pennyblack",
   "description": "penny black corner letter detection",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "PORT=3000 node app.js"
