@@ -41,6 +41,8 @@ SUITE(CornerLettersSuite)
     CornerSquareInput na { "N", "A", Point(95,483), Point(388,448), "../data/1NA.jpg", {1}};
     CornerSquareInput nl { "N", "L", Point(61,491), Point(419,476), "../data/5NL.jpg", {5}};
     CornerSquareInput ob { "O", "B", Point(74,481), Point(392,445), "../data/7OB.jpg", {7}};
+
+    CornerSquareInput sg { "S", "G", Point(101,425), Point(361,443), "../data/1SG.jpg", {1}};
     vector<CornerSquareInput> data {
         //                aa,
         al,
@@ -63,6 +65,7 @@ SUITE(CornerLettersSuite)
                 na,
                 //                        nl,
                 //                        ob
+                sg,
     };
 
     TEST(smoke_stamps)
