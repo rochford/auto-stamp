@@ -20,7 +20,7 @@ void Calculate(const Nan::FunctionCallbackInfo<v8::Value>& info) {
     int leftH = info[2]->Uint32Value();
     int rightV = info[3]->Uint32Value();
     int rightH = info[4]->Uint32Value();
-    std::vector<int> v = litch.calculatePlate(letters, leftV, leftH, rightV, rightH);
+    std::vector<int> v = litch.calculatePlate(letters, leftV, leftH, rightV, rightH, 2);
 
     std::string str;
     for (auto n : v) {
@@ -65,11 +65,11 @@ void Calculate(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
 void Initialize(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   litch.Initialize();
-  info.GetReturnValue().Set(Nan::New("intialize").ToLocalChecked());
+  info.GetReturnValue().Set(Nan::New("initialize").ToLocalChecked());
 }
 
 void Init(v8::Local<v8::Object> exports) {
-    exports->Set(Nan::New("intialize").ToLocalChecked(),
+    exports->Set(Nan::New("initialize").ToLocalChecked(),
                  Nan::New<v8::FunctionTemplate>(Initialize)->GetFunction());
     exports->Set(Nan::New("calculate").ToLocalChecked(),
                Nan::New<v8::FunctionTemplate>(Calculate)->GetFunction());

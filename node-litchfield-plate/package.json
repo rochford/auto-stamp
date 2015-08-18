@@ -9,7 +9,7 @@
     "nan": "^2.0.0"
   },
   "scripts": {
-    "test": "node plate.js"
+    "test": "node test.js"
   },
   "gypfile": true
 }
