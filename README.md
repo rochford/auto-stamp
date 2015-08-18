@@ -1,22 +1,11 @@
 auto-stamp
 ==========
-Stamp detection, pricing and statistics.
-
-harvester backlog
-=================
-- Historic data requests to ebay
-- add in express webserver
-- exclude words to own module, regexp for the years
-- automated polling of the server
+Penny black plate detection
 
 threshold backlog
 ====================
-- width 180, height 220 - rescale images and retest
-- more corner square detection improvements.
 - unit test case cleanup threshold.h and main_threshold.cpp
-- mechanism to verify expected result in unit test
 - more stamps in test suite
-- litchfield plate detection source file
 - If red MX cancel is in Letter corner squares, try to filter it out.
 - better blacklist - exclude all but corner letters
 - test main() to test all ../data/ images
@@ -25,8 +14,19 @@ threshold backlog
 - node.js plugin considerations
 - valgrind checking
 
+
 node-pennyblack backlog
 =======================
-- port threshold changes to node-pennyblack
+- UI user experience cleanup
+- save corner letter files with unique names.
 - Draft UI flow.
 - NGINX DNS- share server with animalguess.com
+- cookie policy jade file
+- update limitations file
+- update about jade file
+- samples jade file
+
+node-litchfield-plate
+=====================
+- javascript wrapper for the c++
+- alignment to text functions

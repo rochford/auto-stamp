@@ -2,10 +2,10 @@
 
 var cv = require('../../node-opencv/lib/opencv'),
         request = require('request'),
-        plate = require('../../node-litchfield-plate/build/Release/plate');
+        plate = require('../../node-litchfield-plate/plate.js');
 
 exports.initialize = function() {
-    plate.intialize();
+    plate.initialize();
 }
 
 exports.index =  function (req, res) {
@@ -162,7 +162,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                                         childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                 }
 
-                console.log('total child rect: ' + tl.x + ', ' + tl.y);
+//                console.log('total child rect: ' + tl.x + ', ' + tl.y);
             }
         }
     }
@@ -187,23 +187,28 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         var lbottom =  (left.boundingBox.y+left.boundingBox.height)*fx - left.childBr.y*fx;
         lvert = ltop - lbottom;
         lhoriz = lleft - lright;
-        console.log(lvert, lhoriz);
-
-        console.log(left);
         var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
         im_crop.save('public/images/qvplate'+ left.threshold +  'left' + '.jpg' );
         leftImg = 'images/qvplate'+ left.threshold +  'left' + '.jpg';
     }
     var right = rightArray[Math.floor(rightArray.length / 2)];
     if (right) {
-        console.log(right);
+        fx = 1.0/(right.boundingBox.width/20.0);
+        var rleft = right.childTl.x*fx - right.boundingBox.x*fx;
+        var rright = (right.boundingBox.x+right.boundingBox.width)*fx - right.childBr.x*fx;
+        var rtop = right.childTl.y*fx - right.boundingBox.y*fx;
+        var rbottom =  (right.boundingBox.y+right.boundingBox.height)*fx - right.childBr.y*fx;
+        rvert = rtop - rbottom;
+        rhoriz = rleft - rright;
+
         im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
 
         im_crop.save('public/images/qvplate'+ right.threshold +  'right' + '.jpg' );
         rightImg = 'images/qvplate'+ right.threshold +  'right' + '.jpg';
     }
-    console.log("plate.calculate(" + leftLetter + rightLetter + ", 0, 0, 2, 2)");
     var buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz);
+    console.log(plate.printAlignment(lvert, lhoriz));
+    console.log(plate.printAlignment(rvert, rhoriz));
     console.log("result: " + buf.toString());
 
     console.log('done');
@@ -212,9 +217,3 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                       rightImg,
                       buf);
 }
-
-// request('http://thumbs1.ebaystatic.com/d/l225/m/m49DWYRoVidktSF-QxAzsAQ.jpg').pipe(s);
-// request('http://thumbs1.ebaystatic.com/d/l225/m/mdmVN2j5ksmcIQQkoZYp35g.jpg').pipe(s);
-//request('http://thumbs3.ebaystatic.com/d/l225/m/mkZ4BNd8FNv0wNfSoppQjrw.jpg').pipe(s);
-// request('http://thumbs3.ebaystatic.com/d/l225/m/mt2WWknJ-Q6xnBVMT0DpGDA.jpg').pipe(s);
-
