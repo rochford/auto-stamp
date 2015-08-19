@@ -2,7 +2,8 @@
 
 var cv = require('../../node-opencv/lib/opencv'),
         request = require('request'),
-        plate = require('../../node-litchfield-plate/plate.js');
+        plate = require('../../node-litchfield-plate/plate.js'),
+        tmp = require('tmp');
 
 exports.initialize = function() {
     plate.initialize();
@@ -188,8 +189,8 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         lvert = ltop - lbottom;
         lhoriz = lleft - lright;
         var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
-        im_crop.save('public/images/qvplate'+ left.threshold +  'left' + '.jpg' );
-        leftImg = 'images/qvplate'+ left.threshold +  'left' + '.jpg';
+        var tmp = randomFileName(im_crop);
+        leftImg = 'images' + tmp ;
     }
     var right = rightArray[Math.floor(rightArray.length / 2)];
     if (right) {
@@ -203,8 +204,8 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
 
         im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
 
-        im_crop.save('public/images/qvplate'+ right.threshold +  'right' + '.jpg' );
-        rightImg = 'images/qvplate'+ right.threshold +  'right' + '.jpg';
+        tmp = randomFileName(im_crop);
+        rightImg = 'images' + tmp ;
     }
 
     var buf = "";
@@ -221,4 +222,11 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                       leftImg,
                       rightImg,
                       buf);
+}
+
+function randomFileName(im_crop)
+{
+    var name = tmp.tmpNameSync();
+    im_crop.save('public/images' + name + ".jpg" );
+    return name + ".jpg"
 }
