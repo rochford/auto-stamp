@@ -206,7 +206,12 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         im_crop.save('public/images/qvplate'+ right.threshold +  'right' + '.jpg' );
         rightImg = 'images/qvplate'+ right.threshold +  'right' + '.jpg';
     }
-    var buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz);
+
+    var buf = "";
+    var offset = 0;
+    while (buf.toString().length < 2 && offset< 3) {
+        buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz, offset++);
+    }
     console.log(plate.printAlignment(lvert, lhoriz));
     console.log(plate.printAlignment(rvert, rhoriz));
     console.log("result: " + buf.toString());

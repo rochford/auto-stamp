@@ -11,13 +11,15 @@ exports.calculate = function(letters,
                              leftVert,
                              leftHoriz,
                              rightVert,
-                             rightHoriz)
+                             rightHoriz,
+                             offset)
 {
     var ret = plate.calculate(letters,
                               leftVert,
                               leftHoriz,
                               rightVert,
-                              rightHoriz);
+                              rightHoriz,
+                              offset);
     return ret;
 }
 

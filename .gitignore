@@ -8,6 +8,7 @@ letterdetect/oflaw
 letterdetect/*.jpg
 calc_plate/test_threshold
 calc_plate/threshold
+node-pennyblack/public/images/qvp*
 node_modules/
 test.db
 *.cbp

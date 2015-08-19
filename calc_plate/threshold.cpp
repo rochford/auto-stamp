@@ -236,21 +236,19 @@ vector<int> Threshold_Demo( int, void*, const Mat& src, Mat& src_gray, CornerSqu
             rhoriz = rleft - rright;
         }
 
-        vector<int> plates = litchfield.calculatePlate( input.leftLetter + input.rightLetter,
-                        lvert, lhoriz,
-                        rvert,  rhoriz );
+        vector<int> plates;
+        int offset = 0;
+        while (!plates.size() && (offset <3))
+        {
+            plates = litchfield.calculatePlate( input.leftLetter + input.rightLetter,
+                            lvert, lhoriz,
+                            rvert,  rhoriz, offset++ );
+        }
         cout << "Candidates: ";
-        if (plates.size())
-        {
-            for (auto i : plates) {
-                cout << i << ", ";
-            }
-            cout << endl;
+        for (auto i : plates) {
+            cout << i << ", ";
         }
-        else
-        {
-            cout << "[]" << endl;
-        }
+        cout << endl;
 
 #if 0
         imshow( window_name, tmp );

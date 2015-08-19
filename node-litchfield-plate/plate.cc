@@ -16,11 +16,12 @@ void Calculate(const Nan::FunctionCallbackInfo<v8::Value>& info) {
           // convert it to string
           letters = std::string(*str);
         }
-    int leftV = info[1]->Uint32Value();
-    int leftH = info[2]->Uint32Value();
-    int rightV = info[3]->Uint32Value();
-    int rightH = info[4]->Uint32Value();
-    std::vector<int> v = litch.calculatePlate(letters, leftV, leftH, rightV, rightH, 2);
+    int leftV = info[1]->IntegerValue();
+    int leftH = info[2]->IntegerValue();
+    int rightV = info[3]->IntegerValue();
+    int rightH = info[4]->IntegerValue();
+    int offset = info[5]->IntegerValue();
+    std::vector<int> v = litch.calculatePlate(letters, leftV, leftH, rightV, rightH, offset);
 
     std::string str;
     for (auto n : v) {
