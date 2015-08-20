@@ -8,6 +8,7 @@ var express = require('express'),
         bodyParser = require('body-parser'),
         errorhandler = require('errorhandler'),
         http = require('http'),
+        fs = require('fs'),
         path = require('path');
 var app = express();
 
@@ -17,6 +18,24 @@ app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({ extended: false })); // to support URL-encoded bodies
 // app.use(morgan('dev'));
 app.use(methodOverride());
+
+app.get('/tmp/:file', function(req, res) {
+    console.log(req.params);
+    res.sendFile(__dirname + '/public/images/tmp/'+ req.params.file, {}, function (err) {
+        if (err) {
+            console.log(err);
+            res.status(err.status).end();
+        }
+        else {
+            fs.unlink(__dirname + '/public/images/tmp/'+ req.params.file, function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+    });
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 var env = process.env.NODE_ENV || 'development';
@@ -27,7 +46,6 @@ if ('development' == env) {
 app.get('/', index.index);
 app.post('/upload', index.postUrl);
 app.post('/stampdata', index.postStampData);
-
 app.get('/limitations', info.limitations);
 app.get('/about', info.about);
 

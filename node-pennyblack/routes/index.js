@@ -2,6 +2,7 @@
 
 var cv = require('../../node-opencv/lib/opencv'),
         request = require('request'),
+        async = require('async'),
         plate = require('../../node-litchfield-plate/plate.js'),
         tmp = require('tmp');
 
@@ -163,7 +164,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                                         childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                 }
 
-//                console.log('total child rect: ' + tl.x + ', ' + tl.y);
+                //                console.log('total child rect: ' + tl.x + ', ' + tl.y);
             }
         }
     }
@@ -190,7 +191,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         lhoriz = lleft - lright;
         var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
         var tmp = randomFileName(im_crop);
-        leftImg = 'images' + tmp ;
+        leftImg = tmp ;
     }
     var right = rightArray[Math.floor(rightArray.length / 2)];
     if (right) {
@@ -205,7 +206,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
 
         tmp = randomFileName(im_crop);
-        rightImg = 'images' + tmp ;
+        rightImg = tmp;
     }
 
     var buf = "";
@@ -227,6 +228,6 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
 function randomFileName(im_crop)
 {
     var name = tmp.tmpNameSync();
-    im_crop.save('public/images' + name + ".jpg" );
+    im_crop.save('public/images'+ name + ".jpg" );
     return name + ".jpg"
 }
