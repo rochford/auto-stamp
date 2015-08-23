@@ -7,15 +7,21 @@ html(lang="en")
                 div.jumbotron
                     legend #{pageTitle}
                     div.row
-                        div.col-md-4
+                        div.col-md-3
                             img(src="#{stampImg}", max-height="300px", max-width="200px",alt="penny black")
-                        div.col-md-6
+                        div.col-md-8
                             img(src="#{leftLetterImg}", max-height="30px", max-width="30px",alt="penny black")
                             img(src="#{rightLetterImg}", max-height="30px", max-width="30px",alt="penny black")
-                            p Left Letter
-                                p Central, right
-                            p Right Letter
-                                p Very High, sl. left
+                            div.row
+                                div.col-md-4
+                                    p Left Letter
+                                div.col-md-4
+                                    p #{leftAlignment}
+                            div.row
+                                div.col-md-4
+                                    p Right Letter
+                                div.col-md-4
+                                    p #{rightAlignment}
                             p plates
                                 #{plates}
         include includes/footer

@@ -49,13 +49,17 @@ exports.postStampData = function(req, res){
     request(url).pipe(s);
 }
 
-function stampInfoCallback(req, res, l, r, img, leftImg, rightImg, plates) {
+function stampInfoCallback(req, res, leftData, rightData, plates) {
     console.log("callback");
+    var leftAlignText = plate.printAlignment(leftData.verticalAlignment, leftData.horizontalAlignment);
+    var rightAlignText = plate.printAlignment(rightData.verticalAlignment, rightData.horizontalAlignment);
     res.render('result', { path: req.path,
                    pageTitle: 'result',
                    stampImg: req.body.stampurl,
-                   leftLetterImg: leftImg,
-                   rightLetterImg: rightImg,
+                   leftLetterImg: leftData.cornerImage,
+                   leftAlignment: leftAlignText,
+                   rightLetterImg: rightData.cornerImage,
+                   rightAlignment: rightAlignText,
                    plates: plates});
 }
 
@@ -68,6 +72,20 @@ function angle(pt1, pt2, pt0) {
     var dx2 = pt2.x - pt0.x;
     var dy2 = pt2.y - pt0.y;
     return (dx1*dx2 + dy1*dy2)/Math.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
+}
+
+function cornerSquare(img, square) {
+    var fx = 1.0/(square.boundingBox.width/20.0);
+    var lleft = square.childTl.x*fx - square.boundingBox.x*fx;
+    var lright = (square.boundingBox.x+square.boundingBox.width)*fx - square.childBr.x*fx;
+    var ltop = square.childTl.y*fx - square.boundingBox.y*fx;
+    var lbottom =  (square.boundingBox.y+square.boundingBox.height)*fx - square.childBr.y*fx;
+    var vert = ltop - lbottom;
+    var horiz = lleft - lright;
+    var im_crop = img.crop(square.boundingBox.x, square.boundingBox.y,
+                           square.boundingBox.width, square.boundingBox.height);
+    var tmp = randomFileName(im_crop);
+    return {vertical: vert, horizontal:horiz, image: tmp};
 }
 
 function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, rPoint) {
@@ -169,12 +187,9 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         }
     }
 
-    var stampImg = 'images/gray.jpg';
     var leftImg = 'images/unknowncorner.jpg';
     var rightImg = 'images/unknowncorner.jpg';
-    im_gray.save(stampImg);
 
-    var fx = 1.0;
     var lvert = -1000;
     var lhoriz = -1000;
     var rvert = -1000;
@@ -182,31 +197,17 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
 
     var left = leftArray[Math.floor(leftArray.length / 2)];
     if (left) {
-        fx = 1.0/(left.boundingBox.width/20.0);
-        var lleft = left.childTl.x*fx - left.boundingBox.x*fx;
-        var lright = (left.boundingBox.x+left.boundingBox.width)*fx - left.childBr.x*fx;
-        var ltop = left.childTl.y*fx - left.boundingBox.y*fx;
-        var lbottom =  (left.boundingBox.y+left.boundingBox.height)*fx - left.childBr.y*fx;
-        lvert = ltop - lbottom;
-        lhoriz = lleft - lright;
-        var im_crop = im_gray.crop( left.boundingBox.x, left.boundingBox.y, left.boundingBox.width, left.boundingBox.height);
-        var tmp = randomFileName(im_crop);
-        leftImg = tmp ;
+        var ret = cornerSquare(im_gray, left);
+        lvert = ret.vertical;
+        lhoriz = ret.horizontal;
+        leftImg = ret.image;
     }
     var right = rightArray[Math.floor(rightArray.length / 2)];
     if (right) {
-        fx = 1.0/(right.boundingBox.width/20.0);
-        var rleft = right.childTl.x*fx - right.boundingBox.x*fx;
-        var rright = (right.boundingBox.x+right.boundingBox.width)*fx - right.childBr.x*fx;
-        var rtop = right.childTl.y*fx - right.boundingBox.y*fx;
-        var rbottom =  (right.boundingBox.y+right.boundingBox.height)*fx - right.childBr.y*fx;
-        rvert = rtop - rbottom;
-        rhoriz = rleft - rright;
-
-        im_crop = im_gray.crop( right.boundingBox.x, right.boundingBox.y, right.boundingBox.width, right.boundingBox.height);
-
-        tmp = randomFileName(im_crop);
-        rightImg = tmp;
+        var ret = cornerSquare(im_gray, right);
+        rvert = ret.vertical;
+        rhoriz = ret.horizontal;
+        rightImg = ret.image;
     }
 
     var buf = "";
@@ -214,14 +215,20 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
     while (buf.toString().length < 2 && offset< 3) {
         buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz, offset++);
     }
-    console.log(plate.printAlignment(lvert, lhoriz));
-    console.log(plate.printAlignment(rvert, rhoriz));
     console.log("result: " + buf.toString());
 
+    var leftData = {};
+    leftData.cornerImage = leftImg;
+    leftData.verticalAlignment = lvert;
+    leftData.horizontalAlignment = lhoriz;
+    var rightData = {};
+    rightData.cornerImage = rightImg;
+    rightData.verticalAlignment = rvert;
+    rightData.horizontalAlignment = rhoriz;
     console.log('done');
-    stampInfoCallback(req, res, left, right, stampImg,
-                      leftImg,
-                      rightImg,
+    stampInfoCallback(req, res,
+                      leftData,
+                      rightData,
                       buf);
 }
 
