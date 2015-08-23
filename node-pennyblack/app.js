@@ -48,6 +48,7 @@ app.post('/upload', index.postUrl);
 app.post('/stampdata', index.postStampData);
 app.get('/limitations', info.limitations);
 app.get('/about', info.about);
+app.get('/privacy-policy', info.privacy);
 
 http.createServer(app).listen(app.get('port'), function () {
     index.initialize();

@@ -13,3 +13,8 @@ exports.about =  function (req, res) {
                            pageTitle: 'About'});
 }
 
+exports.privacy =  function (req, res) {
+    res.render('privacy-policy', { path: req.path,
+                           version: pjson.version,
+                           pageTitle: 'Privacy Policy'});
+}

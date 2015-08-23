@@ -6,12 +6,17 @@ html(lang="en")
             div.container
                 div.jumbotron
                     legend #{pageTitle}
-                    img(src="#{stampImg}",  max-height="300px", max-width="200px",alt="penny black")
-                    p The result is...
-                    img(src="#{leftLetterImg}",  max-height="30px", max-width="30px",alt="penny black")
-                    img(src="#{rightLetterImg}",  max-height="30px", max-width="30px",alt="penny black")
-                    p plates
-                        #{plates}
-
+                    div.row
+                        div.col-md-4
+                            img(src="#{stampImg}", max-height="300px", max-width="200px",alt="penny black")
+                        div.col-md-6
+                            img(src="#{leftLetterImg}", max-height="30px", max-width="30px",alt="penny black")
+                            img(src="#{rightLetterImg}", max-height="30px", max-width="30px",alt="penny black")
+                            p Left Letter
+                                p Central, right
+                            p Right Letter
+                                p Very High, sl. left
+                            p plates
+                                #{plates}
         include includes/footer
 

@@ -17,14 +17,16 @@ threshold backlog
 
 node-pennyblack backlog
 =======================
-- UI user experience cleanup
-- save corner letter files with unique names.
 - Draft UI flow.
-- NGINX DNS- share server with animalguess.com
-- cookie policy jade file
-- update limitations file
-- update about jade file
+- UI user experience cleanup (UX point click directive)
+- security input validation of corner letter files (as deleting them).
+- use async series with async tmp file names.
+- file upload feature
 - samples jade file
+- error page
+- update limitations file
+- NGINX DNS- share server with animalguess.com
+- analytics
 
 node-litchfield-plate
 =====================

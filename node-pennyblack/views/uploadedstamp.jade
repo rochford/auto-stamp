@@ -21,30 +21,24 @@ html(lang="en")
             div.container
                 div.jumbotron
                     legend #{pageTitle}
-                    img(src="#{stampImg}", width="540", height="660",alt="penny black")
-                    p Enter the information about the stamp...
-                    form(method='post',action='/stampdata')
-                        div.row
-                            | XXX
-                            input(name='stampurl',class="form-control",type='hidden',value="#{stampImg}")
-                        div.row
-                            | Left Letter
-                            input(name='letterleft',class="form-control",type='text')
-                        div.row
-                            | Left Point
-                            input(id="leftx",name='leftx',class="form-control",type='text',value="xxx")
-                            input(id="lefty",name='lefty',class="form-control",type='text',value="xxx")
-                        div.row
-                            | Right Letter
-                            input(name='letterright',class="form-control",type='text')
-                        div.row
-                            | Right Point
-                            input(id="rightx",name='rightx',class="form-control",type='text')
-                            input(id="righty",name='righty',class="form-control",type='text')
-                        div.row
-                            input(name='submit',type='submit',class="btn btn-primary").submit-button
-                    p
-                        #{data}
+                    div.row
+                        div.col-md-8
+                            img(src="#{stampImg}",width="540", height="660",alt="penny black")
+                        div.col-md-4
+                            p Enter the information about the stamp...
+                            form(method='post',action='/stampdata')
+                                input(name='stampurl',class="form-control",type='hidden',value="#{stampImg}")
+                                | Left Letter
+                                input(name='letterleft',class="form-control",type='text')
+                                | Left Point
+                                input(id="leftx",name='leftx',class="form-control",type='text')
+                                input(id="lefty",name='lefty',class="form-control",type='text')
+                                | Right Letter
+                                input(name='letterright',class="form-control",type='text')
+                                | Right Point
+                                input(id="rightx",name='rightx',class="form-control",type='text')
+                                input(id="righty",name='righty',class="form-control",type='text')
+                                input(name='submit',type='submit',class="btn btn-primary").submit-button
         include includes/footer
 
 

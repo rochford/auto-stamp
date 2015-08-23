@@ -7,13 +7,14 @@ html(lang="en")
         div.container-fluid.visible-md.visible-lg
         p
         div.container.text-center
-            div
-                img(src="images/penny.jpg" max-height="300px", max-width="200px",alt="penny black")
+            div.row
+                img(src="images/5FC.jpg" max-height="300px", max-width="200px",alt="penny black")
                 h4
-                form(method='post',action='/upload')
-                    div.row
-                        input(name='stampurl',class="form-control",type='text')
-                    div.row
-                        input(name='submit',type='submit',class="btn btn-primary").submit-button
+                div.row
+                    form(method='post',action='/upload')
+                        div(class="col-md-6 col-md-offset-2")
+                            input(name='stampurl',class="form-control",type='text')
+                        div(class="col-md-1")
+                            input(name='submit',type='submit',class="btn btn-primary").submit-button
 
     include includes/footer
