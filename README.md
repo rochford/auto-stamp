@@ -17,18 +17,17 @@ threshold backlog
 
 node-pennyblack backlog
 =======================
-- Draft UI flow.
 - UI user experience cleanup (UX point click directive)
 - security input validation of corner letter files (as deleting them).
 - use async series with async tmp file names.
-- file upload feature
 - samples jade file
 - error page
-- update limitations file
+- Draft UI flow.
 - NGINX DNS- share server with animalguess.com
 - analytics
+- file upload feature
+
 
 node-litchfield-plate
 =====================
 - javascript wrapper for the c++
-- alignment to text functions
