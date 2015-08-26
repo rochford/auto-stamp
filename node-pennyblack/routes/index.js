@@ -35,15 +35,17 @@ exports.postStampData = function(req, res){
 
     s.on('load', function(matrix){
         console.log('loaded');
-
-        var lPoint = new cv.Point(parseInt(req.body.leftx), parseInt(req.body.lefty));
-        var rPoint = new cv.Point(parseInt(req.body.rightx), parseInt(req.body.righty));
-        console.log(lPoint.x);
+        var lPoint = new cv.Point(Math.round(req.body.leftx), Math.round(req.body.lefty));
+        var rPoint = new cv.Point(Math.round(req.body.rightx), Math.round(req.body.righty));
         processStampImage(null, matrix, req, res,
                           req.body.letterleft,
                           req.body.letterright,
                           lPoint,
                           rPoint);
+    })
+
+    s.on('error', function(err){
+        res.render('error', { pageTitle: 'error'});
     })
 
     request(url).pipe(s);
@@ -211,30 +213,21 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
     }
 
     var buf = "";
-    var offset = 0;
-    while (buf.toString().length < 2 && offset< 3) {
+    var offset = 2;
+//    while (buf.toString().length < 2 && offset< 3)
+    {
         buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz, offset++);
     }
     console.log("result: " + buf.toString());
 
-    var leftData = {};
-    leftData.cornerImage = leftImg;
-    leftData.verticalAlignment = lvert;
-    leftData.horizontalAlignment = lhoriz;
-    var rightData = {};
-    rightData.cornerImage = rightImg;
-    rightData.verticalAlignment = rvert;
-    rightData.horizontalAlignment = rhoriz;
-    console.log('done');
     stampInfoCallback(req, res,
-                      leftData,
-                      rightData,
+                      {cornerImage : leftImg, verticalAlignment : lvert, horizontalAlignment : lhoriz},
+                      {cornerImage : rightImg, verticalAlignment : rvert, horizontalAlignment : rhoriz},
                       buf);
 }
 
-function randomFileName(im_crop)
-{
-    var name = tmp.tmpNameSync();
-    im_crop.save('public/images'+ name + ".jpg" );
-    return name + ".jpg"
+function randomFileName(im_crop) {
+    var name = tmp.tmpNameSync() + ".jpg";
+    im_crop.save('public/images'+ name);
+    return name;
 }
