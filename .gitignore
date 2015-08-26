@@ -6,6 +6,8 @@ letterdetect/threshold
 letterdetect/test_threshold
 letterdetect/oflaw
 letterdetect/*.jpg
+node-litchfield-plate/build/
+node-litchfield-plate/a.out
 calc_plate/test_threshold
 calc_plate/threshold
 node-pennyblack/public/images/qvp*
@@ -21,3 +23,4 @@ Makefile
 node-pennyblack/*.jpg
 *.svn
 *.cmake
+*.out

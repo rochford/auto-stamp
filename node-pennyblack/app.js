@@ -50,6 +50,9 @@ app.get('/limitations', info.limitations);
 app.get('/about', info.about);
 app.get('/privacy-policy', info.privacy);
 
+// create directory
+fs.mkdirSync('public/images/tmp');
+
 http.createServer(app).listen(app.get('port'), function () {
     index.initialize();
     console.log("Express server listening on port " + app.get('port'));

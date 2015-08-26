@@ -77,7 +77,7 @@ function horizontalAlignment(a)
 exports.printAlignment = function(offsetVertical,
                                   offsetHorizontal)
 {
-    var ret = verticalAlignment(parseInt(offsetVertical));
-    ret = ret + horizontalAlignment(parseInt(offsetHorizontal));
+    var ret = verticalAlignment(Math.round(offsetVertical));
+    ret = ret + horizontalAlignment(Math.round(offsetHorizontal));
     return ret;
 }

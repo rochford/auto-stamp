@@ -21,7 +21,6 @@ node-pennyblack backlog
 - security input validation of corner letter files (as deleting them).
 - use async series with async tmp file names.
 - samples jade file
-- error page
 - Draft UI flow.
 - NGINX DNS- share server with animalguess.com
 - analytics
