@@ -50,8 +50,11 @@ app.get('/limitations', info.limitations);
 app.get('/about', info.about);
 app.get('/privacy-policy', info.privacy);
 
-// create directory
-fs.mkdirSync('public/images/tmp');
+// create directory if not existing
+fs.exists('public/images/tmp', function (exists) {
+    if (!exists) fs.mkdirSync('public/images/tmp');
+});
+
 
 http.createServer(app).listen(app.get('port'), function () {
     index.initialize();
