@@ -62,7 +62,8 @@ function stampInfoCallback(req, res, leftData, rightData, plates) {
                    leftAlignment: leftAlignText,
                    rightLetterImg: rightData.cornerImage,
                    rightAlignment: rightAlignText,
-                   plates: plates});
+                   plates: plates
+               });
 }
 
 var constanttl = new cv.Point(1000, 1000);
@@ -88,6 +89,20 @@ function cornerSquare(img, square) {
                            square.boundingBox.width, square.boundingBox.height);
     var tmp = randomFileName(im_crop);
     return {vertical: vert, horizontal:horiz, image: tmp};
+}
+
+function getAlignment(img, arr) {
+    var croppedImage = 'images/unknowncorner.jpg';
+    var vert = -1000, horiz = -1000;
+
+    var corner = arr[Math.floor(arr.length / 2)];
+    if (corner) {
+        var ret = cornerSquare(img, corner);
+        vert = ret.vertical;
+        horiz = ret.horizontal;
+        croppedImage = ret.image;
+    }
+    return {cornerImage : croppedImage, verticalAlignment : vert, horizontalAlignment : horiz};
 }
 
 function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, rPoint) {
@@ -189,40 +204,24 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         }
     }
 
-    var leftImg = 'images/unknowncorner.jpg';
-    var rightImg = 'images/unknowncorner.jpg';
+    var leftSq = getAlignment(im_gray, leftArray);
+    var rightSq = getAlignment(im_gray, rightArray);
 
-    var lvert = -1000;
-    var lhoriz = -1000;
-    var rvert = -1000;
-    var rhoriz = -1000;
-
-    var left = leftArray[Math.floor(leftArray.length / 2)];
-    if (left) {
-        var ret = cornerSquare(im_gray, left);
-        lvert = ret.vertical;
-        lhoriz = ret.horizontal;
-        leftImg = ret.image;
-    }
-    var right = rightArray[Math.floor(rightArray.length / 2)];
-    if (right) {
-        var ret = cornerSquare(im_gray, right);
-        rvert = ret.vertical;
-        rhoriz = ret.horizontal;
-        rightImg = ret.image;
-    }
-
-    var buf = "";
-    var offset = 2;
-//    while (buf.toString().length < 2 && offset< 3)
+    var buf = [];
+    var offset = 1;
+    while (offset< 3)
     {
-        buf = plate.calculate(leftLetter + rightLetter, lvert, lhoriz, rvert, rhoriz, offset++);
+        var plateResult = plate.calculate(leftLetter + rightLetter,
+                                          leftSq.vert, leftSq.horiz,
+                                          rightSq.vert, rightSq.horiz,
+                                          offset);
+        console.log("result["+ offset + "] " + plateResult.toString());
+        buf[offset++] = plateResult;
     }
-    console.log("result: " + buf.toString());
 
     stampInfoCallback(req, res,
-                      {cornerImage : leftImg, verticalAlignment : lvert, horizontalAlignment : lhoriz},
-                      {cornerImage : rightImg, verticalAlignment : rvert, horizontalAlignment : rhoriz},
+                      leftSq,
+                      rightSq,
                       buf);
 }
 
