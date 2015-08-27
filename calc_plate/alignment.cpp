@@ -1,6 +1,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "alignment.h"
 
@@ -75,6 +76,7 @@ vector<int> LitchfieldData::calculatePlate(const std::string& letterPair,
             plates.push_back(i.plate);
         }
     }
+    std::sort(std::begin(plates), std::end(plates));
     return plates;
 }
 
