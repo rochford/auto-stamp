@@ -18,6 +18,7 @@ threshold backlog
 node-pennyblack backlog
 =======================
 - UI user experience cleanup (UX point click directive)
+- display the letter alignment in result page
 - security input validation of corner letter files (as deleting them).
 - use async series with async tmp file names.
 - samples jade file
@@ -29,4 +30,4 @@ node-pennyblack backlog
 
 node-litchfield-plate
 =====================
-- javascript wrapper for the c++
+- api to display letter alignment
