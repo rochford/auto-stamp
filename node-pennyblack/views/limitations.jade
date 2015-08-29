@@ -1,27 +1,30 @@
 doctype html
 html(lang="en")
-        include includes/header
-        body
-            include includes/topbar
-            div.container
-                div.jumbotron
-                    legend #{pageTitle}
-                    p This system has many limitations which include
-                    ul
-                        li Incomplete corner letter squares
-                        li Ink blots or other marks within the corner letter squares.
-                        li Maltese cross cancels within the corner letter squares.
-                        li Litchfield letter slanting factors are not included.
-                        li low quality scanning.
-                        li it does not work with photographs, it has to be a scanned image.
-                        li stamp not being vertical in the image.
-                        li Recut, or double entry letters
-                        li scanned images where the height/width proportions have been altered.
-                        li it does not check if the stamp is a penny black or penny blue
-                        li Rather than not return the correct plate, it returns multiple candidate plates.
-                        li If both of the corner letters are not shown correctly, then I would not trust the result
-                        li Litchfield 1st Edition contains some errata.
-                        li Although I have tested this with hundreds of stamps, it probably wont work with your stamp.
-        include includes/footer
+    include includes/header
+    body
+        include includes/topbar
+        div.container
+            div.jumbotron
+                legend #{pageTitle}
+                p This system has many limitations which include
+                ul
+                    li Incomplete corner letter squares.
+                    li Ink blots or other marks within the corner letter squares.
+                    li Maltese cross cancels within the corner letter squares.
+                    li Litchfield letter slanting factors are not included.
+                    li Rather than NOT return the correct plate, it returns multiple candidate plates.
+                    li Low quality scanning.
+                    li It does not work with photographs, it has to be a scanned image.
+                    li Stamp not being vertical in the image.
+                    li Recut, or double entry letters.
+                    li Upside down stamp images.
+                    li Scanned images where the height/width proportions have been altered.
+                    li It does not check if the stamp is a penny black or penny red.
+                    li It cannot detect a forgery.
+                    li It does not examine the watermark.
+                    li If both of the corner letters are not shown correctly, then I would not trust the result.
+                    li Litchfield 1st Edition contains some errata.
+                    li Although I have tested this with hundreds of stamps, it probably won't work with your stamp.
+    include includes/footer
 
 

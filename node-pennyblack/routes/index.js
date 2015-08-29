@@ -11,30 +11,43 @@ exports.initialize = function() {
 }
 
 exports.index =  function (req, res) {
-    console.log("app.get(/index) ");
-
     res.render('index', { path: req.path,
-                   pageTitle: 'Upload'});
+                   pageTitle: '1d plate'});
 }
 
 exports.postUrl = function(req, res){
-    console.log("postUrl");
-    console.log(req.body);
     var url = req.body.stampurl;
 
     res.render('uploadedstamp', { path: req.path,
                    stampImg: url,
-                   pageTitle: 'Upload'});
+                   pageTitle: 'Uploaded Image'});
+}
+
+function validateForm(body) {
+    var leftArray = ['A','B','C','D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
+    var rightArray = ['A','B','C','D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+    if (leftArray.indexOf(body.letterleft) == -1)
+        return false;
+    if (rightArray.indexOf(body.letterright) == -1)
+        return false;
+    if (body.leftx < 1 || body.lefty < 1 || body.rightx < 1 || body.righty < 1)
+        return false;
+    if (!body.stampurl)
+        return false;
+    return true;
 }
 
 exports.postStampData = function(req, res){
-    console.log("postStampData");
     console.log(req.body);
+    if (!validateForm(req.body)) {
+        res.render('error', { pageTitle: 'Error'});
+        return;
+    }
+
     var url = req.body.stampurl;
     var s = new cv.ImageDataStream();
 
     s.on('load', function(matrix){
-        console.log('loaded');
         var lPoint = new cv.Point(Math.round(req.body.leftx), Math.round(req.body.lefty));
         var rPoint = new cv.Point(Math.round(req.body.rightx), Math.round(req.body.righty));
         processStampImage(null, matrix, req, res,
@@ -45,18 +58,18 @@ exports.postStampData = function(req, res){
     })
 
     s.on('error', function(err){
-        res.render('error', { pageTitle: 'error'});
+        res.render('error', { pageTitle: 'Error'});
     })
 
     request(url).pipe(s);
 }
 
 function stampInfoCallback(req, res, leftData, rightData, plates) {
-    console.log("callback");
     var leftAlignText = plate.printAlignment(leftData.verticalAlignment, leftData.horizontalAlignment);
     var rightAlignText = plate.printAlignment(rightData.verticalAlignment, rightData.horizontalAlignment);
+
     res.render('result', { path: req.path,
-                   pageTitle: 'result',
+                   pageTitle: 'Result',
                    stampImg: req.body.stampurl,
                    leftLetterImg: leftData.cornerImage,
                    leftAlignment: leftAlignText,

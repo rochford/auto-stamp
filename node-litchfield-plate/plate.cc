@@ -25,7 +25,12 @@ void Calculate(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
     std::string str;
     for (auto n : v) {
-        str += std::to_string(n);
+        if (n == 0)
+            str += "1a";
+        else if (n == 1)
+            str += "1b";
+        else
+            str += std::to_string(n);
         str += ",";
     }
     // Some data we want to provide to Node.js userland code.

@@ -1,10 +1,17 @@
 {
   "name": "node-pennyblack",
-  "description": "penny black corner letter detection",
-  "version": "0.1.0",
+  "description": "penny black plate detection",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "start": "PORT=3000 node app.js"
+  },
+  "repository" : {
+     "type" : "git"
+    , "url" : "https://github.com/rochford/auto-stamp.git"
+  },
+  "engines" : {
+        "node" : ">=0.10.33 <0.12"
   },
   "dependencies": {
     "async": "^1.4.2",

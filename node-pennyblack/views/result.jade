@@ -1,30 +1,30 @@
 doctype html
 html(lang="en")
-        include includes/header
-        body
-            include includes/topbar
-            div.container
-                div.jumbotron
-                    legend #{pageTitle}
-                    div.row
-                        div.col-md-3
-                            img(src="#{stampImg}", height="240px", width="220px",alt="penny black")
-                        div(class="col-md-6 col-md-offset-1")
-                            img(src="#{leftLetterImg}", height="50px", width="50px",alt="penny black")
-                            img(src="#{rightLetterImg}", height="50px", width="50px",alt="penny black")
-                            div.row
-                                div.col-md-4
-                                    p Left Letter
-                                div.col-md-4
-                                    p #{leftAlignment}
-                            div.row
-                                div.col-md-4
-                                    p Right Letter
-                                div.col-md-4
-                                    p #{rightAlignment}
-                            p Strong Candidates
-                                #{plates[1]}
-                            p Candidates
-                                #{plates[2]}
-        include includes/footer
+    include includes/header
+    body
+        include includes/topbar
+        div.container
+            div.jumbotron
+                legend #{pageTitle}
+                div.row
+                    div.col-md-3
+                        img(src="#{stampImg}", height="240px", width="220px",alt="penny black")
+                    div(class="col-md-6 col-md-offset-1")
+                        img(src="#{leftLetterImg}", height="50px", width="50px",alt="penny black")
+                        img(src="#{rightLetterImg}", height="50px", width="50px",alt="penny black")
+                        div.row
+                            div.col-md-5
+                                p Left Letter
+                            div.col-md-4
+                                p #{leftAlignment}
+                        div.row
+                            div.col-md-5
+                                p Right Letter
+                            div.col-md-4
+                                p #{rightAlignment}
+                        p Strong Candidates
+                            #{plates[1]}
+                        p Candidates
+                            #{plates[2]}
+    include includes/footer
 

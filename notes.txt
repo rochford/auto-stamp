@@ -1,0 +1,290 @@
+
+            char* pos = _tess->GetBoxText(0);
+            char str [20];
+            sscanf (pos,"%s %d %d %d %d",str,&x1,&y1,&x2,&y2);
+            cout << pos << endl;
+            td.x1 = x1;
+            td.y1 = y1;
+            td.x2 = x2;
+            td.y2 = y2;
+
+
+
+    for( size_t i = 0; i < squares.size(); i++ )
+    {
+        Point p1 = squares[i][0];
+        Point p2 = squares[i][2];
+        Rect roiRect(p1, p2);
+
+        // resize to standard size
+        Mat roi = image(roiRect).clone();
+        Mat roiScaled(40, 40, DataType<float>::type);
+        resize(roi,roiScaled,roiScaled.size());
+
+        TextRecogItem td = recog->recognize(roiScaled);
+
+
+...
+Rect bb = Rect(Point(td.x1, td.y1), Point(td.x2, td.y2));
+rectangle(roiScaled, bb, Scalar(0, 0, 255));
+
+    Mat gray(image.size(), CV_8U), cedge, edge;
+    int edgeThresh = 1;
+
+    cedge.create(image.size(), image.type());
+    cvtColor(image, gray, CV_BGR2GRAY);
+
+    blur(gray, edge, Size(3,3));
+
+    // try several threshold levels
+    for( int l = 20; l < 100; l +=5 )
+    {
+        vector<vector<Point> > contours;
+        // Run the edge detector on grayscale
+        Canny(edge, edge, l, l*3, 3);
+//        dilate(edge, edge, Mat(), Point(-1,-1));
+        cedge = Scalar::all(0);
+
+        image.copyTo(cedge, edge);
+        imshow("Edge map", cedge);
+        waitKey(0);
+        cvtColor(cedge, gray, CV_BGR2GRAY);
+
+
+Forgive me, I thought I would share this. Please watch the video I took this evening:
+https://youtu.be/Io65czFDEKE
+
+The ebay penny black in the video was this one:
+http://www.ebay.co.uk/itm/SG-2-1d-black-Plate-6-F-J-very-fine-used-example-with-4-clear-good-margins-/371145628576?pt=LH_DefaultDomain_3&hash=item566a00dba0
+
+The video is shot in real time and is of a web server that I would like to further develop and put online (eventually) for others to use.
+The web server contains advanced image recognition software. The reason that the software returns plates 6 and 7 is that I have not yet figured out a good way to reliably detect the 'o' flaw - but I do like a challenge.
+If you have any thoughts on this either publicly or privately, I would be very interested to read them.
+
+
+
+  281  sudo PORT=80 COOKIE_SECRET='sdfd' MONGO_SERVER_URL='mongodb://localhost:27017/test' node app.js
+  282  history | grep node
+  283  history
+  284  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://10.73.142.217:27017/test' DEV_IP='80.223.186.9' node app.js &
+  285  mongo
+  286  sudo pkill node
+  287  nano routes/game.js
+  288  sudo PORT=80 COOKIE_SECRET='sdfd' MONGO_SERVER_URL='mongodb://localhost:27017/test' node app.js
+  289  mongo --version
+  290  sudo apt-get install -y mongodb-org
+  291  sudo PORT=80 COOKIE_SECRET='sdfd' MONGO_SERVER_URL='mongodb://localhost:27017/test' node app.js
+  292  nano routes/game.js
+  293  sudo nohup PORT=80 COOKIE_SECRET='sdfd' MONGO_SERVER_URL='mongodb://localhost:27017/test' node app.js
+  294  history
+  295  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  296  history
+  297  cat package.json
+  298  top
+  299  exit
+  300  ls
+  301  history
+  302  cd web/
+  303  ls
+  304  cd animal-ai-read-only/
+  305  history
+  306  sudo pkill node
+  307  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  308  sudo apt-get update
+  309  top
+  310  df
+  311  exit
+  312  history
+  313  cd web/animal-ai-read-only/
+  314  sudo pkill node
+  315  sudo apt-get update
+  316  history
+  317  1307
+  318  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  319  sudo apt-get update
+  320  sudo apt-get upgrade
+  321  ls
+  322  history
+  323  dc web/animal-ai-read-only/
+  324  sudo pkill node
+  325  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  326  ls
+  327  cd web/animal-ai-read-only/
+  328  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  329  sudo apt-get update
+  330  sudo apt-get upgrade
+  331  sudo reboot now
+  332  history
+  333  cd web/animal-ai-read-only/
+  334  nohup sudo PORT=80 COOKIE_SECRET='foobasdar' MONGO_SERVER_URL='mongodb://127.0.0.1:27017/test' DEV_IP='80.223.186.9' node app.js &
+  335  cd pennyblack/
+  336  ls
+  337  cd auto-stamp/
+  338  ls
+  339  cd node-opencv/
+  340  ls
+  341  node-gyp configure
+  342  df
+  343  top
+  344  ls
+  345  cd src/
+  346  ls
+  347  cat FaceRecognizer.cc
+  348  nano FaceRecognizer.cc
+  349  cd ..
+  350  cd node-pennyblack/
+  351  npm install
+  352  top
+  353  exit
+  354  mkdir pennyblack
+  355  cd pennyblack/
+  356  git clone https://github.com/rochford/auto-stamp.git
+  357  sudo apt-get install git
+  358  git clone https://github.com/rochford/auto-stamp.git
+  359  ls
+  360  cd auto-stamp/
+  361  sudo apt-get install cmake
+  362  node -v
+  363  ls
+  364  cd node-litchfield-plate/
+  365  sudo npm install -g node-gyp
+  366  sudo apt-get install build-essential
+  367  sudo apt-get install make
+  368  node-gyp configure
+  369  git pull
+  370  npm install --save nan
+  371  node-gyp configure
+  372  node-gyp build
+  373  sudo apt-get install gcc
+  374  sudo apt-get install gcc-4.6
+  375  node-gyp build
+  376  sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  377  sudo apt-get update
+  378  sudo apt-get install gcc-4.7 g++-4.7
+  379  node-gyp build
+  380  which g++
+  381  ls -lh /usr/bin/g++
+  382  sudo apt-get install gcc-4.7 g++-4.7
+  383  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.6
+  384  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 40 --slave /usr/bin/g++ g++ /usr/bin/g++-4.7
+  385  sudo update-alternatives --config gcc
+  386  which g++
+  387  ls -lh /usr/bin/g++
+  388  node-gyp build
+  389  node test.js
+  390  npm instal
+  391  node test.js
+  392  cd ..
+  393  git clone https://github.com/peterbraden/node-opencv.git
+  394  ls
+  395  cd ..
+  396  cd
+  397  ls
+  398  df
+  399  sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+  400  sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  401  ls
+  402  mkdir opencv
+  403  mv OpenCV-2.4.2.tar.bz2 opencv/
+  404  cd opencv/
+  405  ls
+  406  tar zxvf OpenCV-2.4.2.tar.bz2
+  407  tar xvf OpenCV-2.4.2.tar.bz2
+  408  ls
+  409  cd OpenCV-2.4.2/
+  410  ls
+  411  mkdir build
+  412  cd build/
+  413  make -j7
+  414  cd ..
+  415  cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  416  ls
+  417  cd cmake/
+  418  ls
+  419  cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  420  make
+  421  cd pennyblack/auto-stamp/node-opencv/
+  422  cd
+  423  cd opencv/
+  424  ls
+  425  cd OpenCV-2.4.2/
+  426  ls
+  427  sudo make install
+  428  cd cmake/
+  429  sudo make install
+  430  cd ..
+  431  cd pennyblack/auto-stamp/node-opencv/
+  432  ls
+  433  node-gyp configure
+  434  npm install nan
+  435  node-gyp configure
+  436  npm install bindings
+  437  node-gyp configure
+  438  npm install
+  439  sudo npm install
+  440  npm install
+  441  cd ..
+  442  cd node-pennyblack/
+  443  npm install
+  444  sudo npm install
+  445  npm start
+  446  df
+  447  cd pennyblack/auto-stamp/
+  448  ls
+  449  cd calc_plate/
+  450  ls
+  451  cmake .
+  452  make
+  453  nano CMakeLists.txt
+  454  cmake .
+  455  make
+  456  cd ..
+  457  cd node-pennyblack/
+  458  npm install
+  459  npm start
+  460  sudo reboot now
+  461  ls -l /usr/local/op*
+  462  ls -l /usr/local/
+  463  top
+  464  top
+  465  history
+  466  ls -l /usr/local/op*
+  467  ls -l /usr/local/share/op*
+  468  ls -l /usr/local/lib/op*
+  469  cd pennyblack/auto-stamp/node-pennyblack/
+  470  npm start
+  471  cd ../node-opencv/
+  472  ls
+  473  node clean
+  474  node-gyp clean
+  475* node-gyp co
+  476  node-gyp build
+  477  npm install
+  478  ls
+  479  cd test/
+  480  ls
+  481  node examples.js
+  482  node unit.js
+  483  sudo nano /etc/ld.so.conf.d/opencv.conf
+  484  sudo ldconfig
+  485  node unit.js
+  486  cd ../../
+
+
+ 479  ls
+  480  cat Makefile
+  481  ls
+  482  less cvconfig.h
+  483  cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D BUILD_EXAMPLES=OFF -D WITH_TBB=ON ..
+  484  history
+  485  history > ~/hist.txt
+  486  cmake .
+  487  make
+  488  sudo make install
+  489  ls
+  490  make install
+  491  sudo make install
+  492  cd
+  493  cd pennyblack/auto-stamp/calc_plate/
+  494  ls
+  495  ./threshold ../data/7AL.jpg

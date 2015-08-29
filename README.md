@@ -17,14 +17,15 @@ threshold backlog
 
 node-pennyblack backlog
 =======================
-- UI user experience cleanup (UX point click directive)
-- display the letter alignment in result page
+- threshold does not test so many thresholds, eg thres +=6
 - security input validation of corner letter files (as deleting them).
+- UI user experience cleanup (UX point click directive)
 - use async series with async tmp file names.
+- qvplate email address on about page
+- paypal donate button
 - samples jade file
 - Draft UI flow.
-- NGINX DNS- share server with animalguess.com
-- analytics
+- display the letter alignment in result page
 - file upload feature
 
 
