@@ -84,8 +84,8 @@ function cornerSquare(img, square) {
     var lright = (square.boundingBox.x+square.boundingBox.width)*wfx - square.childBr.x*wfx;
     var ltop = square.childTl.y*hfx - square.boundingBox.y*hfx;
     var lbottom =  (square.boundingBox.y+square.boundingBox.height)*hfx - square.childBr.y*hfx;
-    var vert = ltop - lbottom -1;
-    var horiz = lleft - lright + 1;
+    var vert = ltop - lbottom ;
+    var horiz = lleft - lright;
     var im_crop = img.crop(square.boundingBox.x, square.boundingBox.y,
                            square.boundingBox.width, square.boundingBox.height);
     var tmp = randomFileName(im_crop);
@@ -167,7 +167,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                 var tl = new cv.Point(1000, 1000);
                 var br = new cv.Point(0, 0);
                 while (childContour[2] !== -1) {
-                    contours.approxPolyDP(childContour, 0.001, true);
+                    //contours.approxPolyDP(childContour, 0.001, true);
                     var childBB = contours.boundingRect(childContour[2]);
 
                     if ( childBB.x < tl.x)
