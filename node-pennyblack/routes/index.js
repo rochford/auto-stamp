@@ -78,13 +78,14 @@ function angle(pt1, pt2, pt0) {
 }
 
 function cornerSquare(img, square) {
-    var fx = 1.0/(square.boundingBox.width/20.0);
-    var lleft = square.childTl.x*fx - square.boundingBox.x*fx;
-    var lright = (square.boundingBox.x+square.boundingBox.width)*fx - square.childBr.x*fx;
-    var ltop = square.childTl.y*fx - square.boundingBox.y*fx;
-    var lbottom =  (square.boundingBox.y+square.boundingBox.height)*fx - square.childBr.y*fx;
-    var vert = ltop - lbottom;
-    var horiz = lleft - lright;
+    var wfx = 1.0/(square.boundingBox.width/20.0);
+    var hfx = 1.0/(square.boundingBox.height/22.0);
+    var lleft = square.childTl.x*wfx - square.boundingBox.x*wfx;
+    var lright = (square.boundingBox.x+square.boundingBox.width)*wfx - square.childBr.x*wfx;
+    var ltop = square.childTl.y*hfx - square.boundingBox.y*hfx;
+    var lbottom =  (square.boundingBox.y+square.boundingBox.height)*hfx - square.childBr.y*hfx;
+    var vert = ltop - lbottom -1;
+    var horiz = lleft - lright + 1;
     var im_crop = img.crop(square.boundingBox.x, square.boundingBox.y,
                            square.boundingBox.width, square.boundingBox.height);
     var tmp = randomFileName(im_crop);
@@ -98,8 +99,8 @@ function getAlignment(img, arr) {
     var corner = arr[Math.floor(arr.length / 2)];
     if (corner) {
         var ret = cornerSquare(img, corner);
-        vert = ret.vertical;
-        horiz = ret.horizontal;
+        vert = Math.round(ret.vertical);
+        horiz = Math.round(ret.horizontal);
         croppedImage = ret.image;
     }
     return {cornerImage : croppedImage, verticalAlignment : vert, horizontalAlignment : horiz};
@@ -199,7 +200,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                                         childTl:{ x: tl.x, y:tl.y}, childBr:{ x: br.x, y:br.y}});
                 }
 
-                //                console.log('total child rect: ' + tl.x + ', ' + tl.y);
+//                console.log('total child rect: ' + tl.x + ', ' + tl.y);
             }
         }
     }
@@ -212,8 +213,8 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
     while (offset< 3)
     {
         var plateResult = plate.calculate(leftLetter + rightLetter,
-                                          leftSq.vert, leftSq.horiz,
-                                          rightSq.vert, rightSq.horiz,
+                                          leftSq.verticalAlignment, leftSq.horizontalAlignment,
+                                          rightSq.verticalAlignment, rightSq.horizontalAlignment,
                                           offset);
         console.log("result["+ offset + "] " + plateResult.toString());
         buf[offset++] = plateResult;
