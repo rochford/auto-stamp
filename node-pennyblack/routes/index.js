@@ -1,6 +1,6 @@
 "use strict";
 
-var cv = require('../../node-opencv/lib/opencv'),
+var cv = require('opencv'),
         request = require('request'),
         async = require('async'),
         plate = require('../../node-litchfield-plate/plate.js'),
