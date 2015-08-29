@@ -15,8 +15,16 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
+app.use(function (req, res, next) {
+    if ('/robots.txt' === req.url) {
+        res.type('text/plain');
+        res.send("User-agent: *\nAllow: /\nDisallow: /css/\nDisallow: /lib/\nDisallow: /img/\nDisallow: /images/\nDisallow: /javascritps/\n");
+    } else {
+        next();
+    }
+});
 app.use(bodyParser.urlencoded({ extended: false })); // to support URL-encoded bodies
-// app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(methodOverride());
 
 app.get('/tmp/:file', function(req, res) {
