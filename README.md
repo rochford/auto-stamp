@@ -17,6 +17,7 @@ threshold backlog
 
 node-pennyblack backlog
 =======================
+- ui uploaded stamp tab button, left & right letters next to each other.
 - threshold does not test so many thresholds, eg thres +=6
 - security input validation of corner letter files (as deleting them).
 - UI user experience cleanup (UX point click directive)
@@ -27,6 +28,7 @@ node-pennyblack backlog
 - Draft UI flow.
 - display the letter alignment in result page
 - file upload feature
+- containizer the webserver.
 
 
 node-litchfield-plate
