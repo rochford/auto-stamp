@@ -11,6 +11,7 @@ node-litchfield-plate/a.out
 calc_plate/test_threshold
 calc_plate/threshold
 node-pennyblack/public/images/qvp*
+node-pennyblack/public/images/tmp
 node_modules/
 node-opencv/
 test.db
