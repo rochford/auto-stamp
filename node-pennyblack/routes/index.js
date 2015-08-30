@@ -90,14 +90,18 @@ function angle(pt1, pt2, pt0) {
     return (dx1*dx2 + dy1*dy2)/Math.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
-function cornerSquare(img, square) {
+function cornerSquare(img, square, letter) {
+    var fudge = 0;
+    var serifAdjust = "BDEFLPR";
+    if (serifAdjust.indexOf(letter) != -1)
+        fudge = 1.5;
     var wfx = 1.0/(square.boundingBox.width/20.0);
-    var hfx = 1.0/(square.boundingBox.height/22.0);
-    var lleft = square.childTl.x*wfx - square.boundingBox.x*wfx;
+    var hfx = 1.0/(square.boundingBox.height/20.0);
+    var lleft = square.childTl.x*wfx - square.boundingBox.x*wfx + fudge;
     var lright = (square.boundingBox.x+square.boundingBox.width)*wfx - square.childBr.x*wfx;
     var ltop = square.childTl.y*hfx - square.boundingBox.y*hfx;
     var lbottom =  (square.boundingBox.y+square.boundingBox.height)*hfx - square.childBr.y*hfx;
-    var vert = ltop - lbottom ;
+    var vert = ltop - lbottom;
     var horiz = lleft - lright;
     var im_crop = img.crop(square.boundingBox.x, square.boundingBox.y,
                            square.boundingBox.width, square.boundingBox.height);
@@ -105,13 +109,13 @@ function cornerSquare(img, square) {
     return {vertical: vert, horizontal:horiz, image: tmp};
 }
 
-function getAlignment(img, arr) {
+function getAlignment(img, arr, letter) {
     var croppedImage = 'images/unknowncorner.jpg';
     var vert = -1000, horiz = -1000;
 
     var corner = arr[Math.floor(arr.length / 2)];
     if (corner) {
-        var ret = cornerSquare(img, corner);
+        var ret = cornerSquare(img, corner, letter);
         vert = Math.round(ret.vertical);
         horiz = Math.round(ret.horizontal);
         croppedImage = ret.image;
@@ -218,8 +222,8 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
         }
     }
 
-    var leftSq = getAlignment(im_gray, leftArray);
-    var rightSq = getAlignment(im_gray, rightArray);
+    var leftSq = getAlignment(im_gray, leftArray, leftLetter);
+    var rightSq = getAlignment(im_gray, rightArray, rightLetter);
 
     var buf = [];
     var offset = 1;

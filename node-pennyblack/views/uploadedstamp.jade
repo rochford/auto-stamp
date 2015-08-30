@@ -25,7 +25,10 @@ html(lang="en")
                         div.col-md-8
                             img(src="#{stampImg}",width="540", height="660",alt="penny black")
                         div.col-md-4
-                            p Enter the information about the stamp...
+                            p
+                                | Enter the letters and then click the mouse in the bottom
+                                | letf square and then the bottom right square. Do not click
+                                | on the actual letter, but the white area around it.
                             form(method='post',action='/stampdata')
                                 input(name='stampurl',class="form-control",type='hidden',value="#{stampImg}")
                                 | Left Letter
@@ -50,9 +53,6 @@ html(lang="en")
                                     option(value="R") R
                                     option(value="S") S
                                     option(value="T") T
-                                | Left Point
-                                input(id="leftx",name='leftx',class="form-control",type='text',readonly)
-                                input(id="lefty",name='lefty',class="form-control",type='text',readonly)
                                 | Right Letter
                                 select(name='letterright',class="form-control",type='text')
                                     option(value="A") A
@@ -67,6 +67,9 @@ html(lang="en")
                                     option(value="J") J
                                     option(value="K") K
                                     option(value="L") L
+                                | Left Point
+                                input(id="leftx",name='leftx',class="form-control",type='text',readonly)
+                                input(id="lefty",name='lefty',class="form-control",type='text',readonly)
                                 | Right Point
                                 input(id="rightx",name='rightx',class="form-control",type='text',readonly)
                                 input(id="righty",name='righty',class="form-control",type='text',readonly)

@@ -1,7 +1,7 @@
 {
   "name": "node-pennyblack",
   "description": "penny black plate detection",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "PORT=3000 node app.js"
