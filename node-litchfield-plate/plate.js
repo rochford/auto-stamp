@@ -14,6 +14,14 @@ exports.calculate = function(letters,
                              rightHoriz,
                              offset)
 {
+    if (Math.abs(leftVert) > 6)
+        leftVert = -1000;
+    if (Math.abs(leftHoriz) > 6)
+        leftHoriz = -1000;
+    if (Math.abs(rightVert) > 6)
+        rightVert = -1000;
+    if (Math.abs(rightHoriz) > 6)
+        rightHoriz = -1000;
     var ret = plate.calculate(letters,
                               leftVert,
                               leftHoriz,
@@ -25,6 +33,8 @@ exports.calculate = function(letters,
 
 function verticalAlignment(a) {
     switch (a) {
+    case -7:
+    case -6:
     case -5:
     case -4:
         return "ext high" ;
@@ -44,6 +54,8 @@ function verticalAlignment(a) {
         return "very low" ;
     case 4:
     case 5:
+    case 6:
+    case 7:
         return "ext low" ;
     }
 }
@@ -51,6 +63,8 @@ function verticalAlignment(a) {
 function horizontalAlignment(a)
 {
     switch (a) {
+    case -7:
+    case -6:
     case -5:
     case -4:
         return ", ext left";
@@ -70,6 +84,8 @@ function horizontalAlignment(a)
         return ", very right";
     case 4:
     case 5:
+    case 6:
+    case 7:
         return ", ext right";
     }
 }

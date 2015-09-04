@@ -18,9 +18,9 @@ vector<int> LitchfieldData::calculatePlate(const std::string& letterPair,
     bool leftIsValid = false;
     bool rightIsValid = false;
 
-    if (leftVert != -1000)
+    if (leftVert != -1000 && leftHoriz != -1000)
         leftIsValid = true;
-    if (rightVert != -1000)
+    if (rightVert != -1000 && rightHoriz != -1000)
         rightIsValid = true;
 
     int minLV = leftVert - maxOffset;
