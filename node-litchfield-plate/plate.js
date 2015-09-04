@@ -57,6 +57,8 @@ function verticalAlignment(a) {
     case 6:
     case 7:
         return "ext low" ;
+    default:
+        return "?";
     }
 }
 
@@ -87,6 +89,8 @@ function horizontalAlignment(a)
     case 6:
     case 7:
         return ", ext right";
+    default:
+        return ", ?";
     }
 }
 
