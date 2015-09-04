@@ -91,13 +91,9 @@ function angle(pt1, pt2, pt0) {
 }
 
 function cornerSquare(img, square, letter) {
-    var fudge = 0;
-    var serifAdjust = "BDEFLPR";
-    if (serifAdjust.indexOf(letter) != -1)
-        fudge = 1.5;
     var wfx = 1.0/(square.boundingBox.width/20.0);
     var hfx = 1.0/(square.boundingBox.height/20.0);
-    var lleft = square.childTl.x*wfx - square.boundingBox.x*wfx + fudge;
+    var lleft = square.childTl.x*wfx - square.boundingBox.x*wfx;
     var lright = (square.boundingBox.x+square.boundingBox.width)*wfx - square.childBr.x*wfx;
     var ltop = square.childTl.y*hfx - square.boundingBox.y*hfx;
     var lbottom =  (square.boundingBox.y+square.boundingBox.height)*hfx - square.childBr.y*hfx;
@@ -116,10 +112,12 @@ function getAlignment(img, arr, letter) {
     var corner = arr[Math.floor(arr.length / 2)];
     if (corner) {
         var ret = cornerSquare(img, corner, letter);
+        console.log(letter, corner);
         vert = Math.round(ret.vertical);
         horiz = Math.round(ret.horizontal);
         croppedImage = ret.image;
     }
+    console.log(letter, vert, horiz);
     return {cornerImage : croppedImage, verticalAlignment : vert, horizontalAlignment : horiz};
 }
 
@@ -187,14 +185,18 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                     //contours.approxPolyDP(childContour, 0.001, true);
                     var childBB = contours.boundingRect(childContour[2]);
 
-                    if ( childBB.x < tl.x)
+                    if ( (childBB.x < tl.x)
+                        && (childBB.x > bb.x))
                         tl = new cv.Point(childBB.x, tl.y);
-                    if ( childBB.y < tl.y)
+                    if ( (childBB.y < tl.y)
+                        && (childBB.y > bb.y))
                         tl = new cv.Point(tl.x, childBB.y);
 
-                    if ( (childBB.x + childBB.width ) > br.x)
+                    if ( ((childBB.x + childBB.width ) > br.x)
+                        && ((childBB.x + childBB.width ) < (bb.x + bb.width)))
                         br = new cv.Point(childBB.x + childBB.width, br.y);
-                    if ( (childBB.y + childBB.height ) > br.y)
+                    if ( ((childBB.y + childBB.height ) > br.y )
+                            && ((childBB.y + childBB.height ) < (bb.y + bb.height)))
                         br = new cv.Point(br.x, childBB.y + childBB.height);
 
                     childContour = contours.hierarchy(childContour[2]);
