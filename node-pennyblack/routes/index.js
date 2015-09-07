@@ -90,6 +90,14 @@ function angle(pt1, pt2, pt0) {
     return (dx1*dx2 + dy1*dy2)/Math.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
+function alignmentMaxLimit(n) {
+    if (n > 0)
+        n = Math.min(4, n);
+    else
+        n = Math.max(-4, n);
+    return n;
+}
+
 function cornerSquare(img, square, letter) {
     var wfx = 1.0/(square.boundingBox.width/20.0);
     var hfx = 1.0/(square.boundingBox.height/20.0);
@@ -99,6 +107,9 @@ function cornerSquare(img, square, letter) {
     var lbottom =  (square.boundingBox.y+square.boundingBox.height)*hfx - square.childBr.y*hfx;
     var vert = ltop - lbottom;
     var horiz = lleft - lright;
+    vert = alignmentMaxLimit(vert);
+    horiz = alignmentMaxLimit(horiz);
+
     var im_crop = img.crop(square.boundingBox.x, square.boundingBox.y,
                            square.boundingBox.width, square.boundingBox.height);
     var tmp = randomFileName(im_crop);
@@ -136,7 +147,7 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
     im_gray.resize(540,660);
     im_gray.convertGrayscale();
 
-    for (var thresh= 20; thresh < 200; thresh++) {
+    for (var thresh= 20; thresh < 200; thresh += 3) {
         var dst = im_gray.threshold(thresh, 255, "Binary Inverted");
         dst.medianBlur(3);
         dst.canny(thresh, thresh*3);
@@ -184,7 +195,6 @@ function processStampImage(err, im, req, res, leftLetter, rightLetter, lPoint, r
                 while (childContour[2] !== -1) {
                     //contours.approxPolyDP(childContour, 0.001, true);
                     var childBB = contours.boundingRect(childContour[2]);
-
                     if ( (childBB.x < tl.x)
                         && (childBB.x > bb.x))
                         tl = new cv.Point(childBB.x, tl.y);
